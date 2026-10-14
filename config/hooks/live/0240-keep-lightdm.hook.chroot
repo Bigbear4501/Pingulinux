@@ -1,0 +1,10 @@
+#!/bin/sh
+# KDE Plasma ist als zweite Sitzung installiert; LightDM bleibt der
+# einzige Anmeldebildschirm. Falls SDDM trotzdem mitinstalliert wurde,
+# wird es deaktiviert.
+echo "/usr/sbin/lightdm" > /etc/X11/default-display-manager
+ln -sf /usr/lib/systemd/system/lightdm.service /etc/systemd/system/display-manager.service
+if dpkg -l sddm 2>/dev/null | grep -q '^ii'; then
+  systemctl disable sddm 2>/dev/null || true
+fi
+exit 0

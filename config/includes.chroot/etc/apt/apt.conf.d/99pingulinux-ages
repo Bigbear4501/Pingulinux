@@ -1,0 +1,2 @@
+// Nach jeder Paketaenderung die altersabhaengigen Programmsperren neu setzen
+DPkg::Post-Invoke { "/usr/local/bin/pingulinux-apply-all-ages.py || true"; };

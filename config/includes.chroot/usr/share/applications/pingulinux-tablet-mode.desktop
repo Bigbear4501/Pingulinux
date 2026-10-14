@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Tablet-Modus
+Comment=Bildschirmtastatur und große Symbole für Touch
+Exec=/usr/local/bin/pingulinux-tablet-mode.sh
+Icon=computer-tablet
+Terminal=false
+Categories=Settings;HardwareSettings;
+NoDisplay=true

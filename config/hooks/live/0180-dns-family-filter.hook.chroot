@@ -1,0 +1,48 @@
+#!/bin/bash
+# 0180-dns-family-filter.hook.chroot
+#
+# Erzwingt systemweit die CleanBrowsing "Family Filter"-DNS-Server.
+# Diese blockieren bekannte Erwachsenen-/Gewalt-Inhalte bereits auf
+# DNS-Ebene, bevor eine Seite überhaupt lädt - wirkt in JEDEM
+# Programm (nicht nur Firefox), unabhängig davon, welche App gerade
+# läuft. Zusätzlich wird bei den Family-Filter-Servern Google/Bing/
+# YouTube automatisch in den "Safe Mode" versetzt.
+#
+# Server (offiziell von CleanBrowsing veröffentlicht):
+#   185.228.168.168 (primär)
+#   185.228.169.168 (sekundär)
+#
+# Technischer Ansatz: NetworkManager wird angewiesen, /etc/resolv.conf
+# NICHT selbst zu verwalten (dns=none), stattdessen schreiben wir die
+# Datei fest und machen sie unveränderlich (chattr +i), damit weder
+# DHCP noch NetworkManager sie überschreiben können.
+
+set -e
+
+echo "Richte CleanBrowsing Family-Filter als System-DNS ein..."
+
+mkdir -p /etc/NetworkManager/conf.d
+cat > /etc/NetworkManager/conf.d/dns-none.conf << 'EOF'
+# NetworkManager soll /etc/resolv.conf NICHT selbst verwalten/
+# überschreiben - wir setzen die DNS-Server fest (Kinderschutz-Filter).
+[main]
+dns=none
+EOF
+
+cat > /etc/resolv.conf << 'EOF'
+# Pingulinux OS: CleanBrowsing Family Filter (Kinderschutz-DNS)
+# Blockiert Erwachsenen-/Gewalt-Inhalte auf DNS-Ebene.
+nameserver 185.228.168.168
+nameserver 185.228.169.168
+EOF
+
+echo "DNS-Filter eingerichtet (Inhalt gesetzt)."
+echo "Hinweis: Die Unveränderlich-Sperre (chattr +i) wird NICHT beim"
+echo "Build gesetzt, sondern erst zur Laufzeit durch einen systemd-"
+echo "Dienst - sonst blockiert das live-builds eigenen Chroot-Teardown."
+
+# systemd-Dienst aktivieren, der die Sperre beim Booten des fertigen
+# Systems setzt (nicht während des Builds)
+if command -v systemctl &> /dev/null; then
+    systemctl enable pingulinux-dns-lock.service 2>/dev/null || true
+fi

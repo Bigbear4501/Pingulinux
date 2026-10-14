@@ -1,0 +1,10 @@
+[Unit]
+Description=Pingulinux: Programmsperren nach Alter setzen
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/pingulinux-apply-all-ages.py
+
+[Install]
+WantedBy=multi-user.target

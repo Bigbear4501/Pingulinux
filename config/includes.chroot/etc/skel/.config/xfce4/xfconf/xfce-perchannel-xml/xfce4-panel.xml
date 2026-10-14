@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Vereinfachtes Kids-Panel für XFCE.
+  Ein einziges Panel unten, groß, mit nur den nötigsten Elementen:
+  - Whisker Menu (großes Startmenü-Icon)
+  - Fensterliste (Taskbar)
+  - Uhr
+  Bewusst weggelassen: Workspace-Switcher, Systray mit vielen Icons,
+  Lock/Logout-Buttons direkt im Panel (liegen im Menü selbst).
+
+  Hinweis: Diese Datei ist ein Startpunkt. Am zuverlässigsten ist es,
+  das Panel einmal live über "Panel-Einstellungen" (GUI) so einzurichten,
+  wie du es willst, und die xfconf-Werte danach zu exportieren:
+    xfconf-query -c xfce4-panel -p /panels -R -v -x > exported-panel.xml
+  Diese Vorlage kannst du 1:1 ersetzen, sobald du dein Live-Setup exportiert hast.
+-->
+
+<channel name="xfce4-panel" version="1.0">
+  <property name="configver" type="int" value="2"/>
+
+  <property name="panels" type="array">
+    <value type="int" value="1"/>
+    <property name="panel-1" type="empty">
+      <property name="position" type="string" value="p=8;x=0;y=0"/>
+      <property name="length" type="uint" value="100"/>
+      <property name="position-locked" type="bool" value="true"/>
+      <property name="size" type="uint" value="42"/>
+      <property name="plugin-ids" type="array">
+        <value type="int" value="1"/>
+        <value type="int" value="2"/>
+        <value type="int" value="3"/>
+        <value type="int" value="4"/>
+        <value type="int" value="5"/>
+        <value type="int" value="7"/>
+        <value type="int" value="8"/>
+      </property>
+    </property>
+  </property>
+
+  <property name="plugins" type="empty">
+    <!-- 1: Whisker Menu (großes Startmenü) -->
+    <property name="plugin-1" type="string" value="whiskermenu">
+      <property name="button-icon" type="string" value="/usr/share/pingulinux/icons/pingu.png"/>
+      <property name="button-title" type="string" value="Start"/>
+      <property name="show-button-title" type="bool" value="true"/>
+      <property name="launcher-icon-size" type="uint" value="4"/>
+      <property name="category-icon-size" type="uint" value="3"/>
+      <!-- Nur ausgewählte Kategorien anzeigen -->
+      <property name="categories-visible" type="bool" value="true"/>
+    </property>
+
+    <!-- 2: Fensterliste / Taskbar -->
+    <property name="plugin-2" type="string" value="tasklist">
+      <property name="show-labels" type="bool" value="true"/>
+      <property name="grouping" type="uint" value="1"/>
+    </property>
+
+    <!-- 3: Separator (schiebt den Rest nach rechts) -->
+    <property name="plugin-3" type="string" value="separator">
+      <property name="expand" type="bool" value="true"/>
+      <property name="style" type="uint" value="0"/>
+    </property>
+
+    <!-- 4: Systray (nm-applet läuft NICHT - stattdessen eigenes
+         wavelan-Plugin für WLAN, siehe Plugin 6) -->
+    <property name="plugin-4" type="string" value="systray">
+      <property name="square-icons" type="bool" value="true"/>
+    </property>
+
+    <!-- 5: Helligkeit/Energie -->
+    <property name="plugin-5" type="string" value="power-manager-plugin"/>
+
+    <!-- 7: Lautstärke (korrekter interner Name ist "pulseaudio",
+         NICHT "pulseaudio-plugin" - das war der Fehler in früheren
+         Versuchen!) -->
+    <property name="plugin-7" type="string" value="pulseaudio"/>
+
+    <!-- 8: Uhr -->
+    <property name="plugin-8" type="string" value="clock">
+      <property name="digital-format" type="string" value="%H:%M"/>
+    </property>
+  </property>
+</channel>

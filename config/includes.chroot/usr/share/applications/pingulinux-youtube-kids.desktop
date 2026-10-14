@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=YouTube Kids
+Comment=Kindgerechte Videos – zusammen mit den Eltern
+Exec=/usr/local/bin/pingulinux-youtube-kids.sh
+Icon=video-display
+Terminal=false
+Categories=AudioVideo;Video;Network;

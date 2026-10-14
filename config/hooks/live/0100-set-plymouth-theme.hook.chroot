@@ -1,0 +1,33 @@
+#!/bin/bash
+# 0100-set-plymouth-theme.hook.chroot
+#
+# Wird von live-build automatisch in der Chroot-Umgebung ausgeführt
+# (Dateiname-Konvention: *.hook.chroot).
+# Setzt Pingulinux als Standard-Plymouth-Theme.
+
+set -e
+
+mkdir -p /etc/plymouth
+
+# Direkt in die Config schreiben - zuverlässiger als sich allein auf
+# plymouth-set-default-theme zu verlassen, das je nach Plymouth-Version
+# unterschiedlich zuverlässig funktioniert.
+cat > /etc/plymouth/plymouthd.conf << 'EOF'
+# Administrator customizations go in this file
+[Daemon]
+Theme=pingulinux
+EOF
+
+echo "Theme direkt in plymouthd.conf gesetzt."
+
+# Zusätzlich versuchen, falls das Tool vorhanden ist (schadet nicht)
+if command -v plymouth-set-default-theme &> /dev/null; then
+    plymouth-set-default-theme pingulinux 2>/dev/null || true
+fi
+
+# Initramfs neu bauen, damit das Theme dort mit eingebettet wird
+if command -v update-initramfs &> /dev/null; then
+    update-initramfs -u
+else
+    echo "update-initramfs nicht gefunden, überspringe." >&2
+fi

@@ -1,0 +1,94 @@
+[
+ {
+  "cmd": "tuxpaint",
+  "min_age": 2
+ },
+ {
+  "cmd": "gcompris-qt",
+  "min_age": 2
+ },
+ {
+  "cmd": "ristretto",
+  "min_age": 2
+ },
+ {
+  "cmd": "tuxtype",
+  "min_age": 4
+ },
+ {
+  "cmd": "vlc",
+  "min_age": 4
+ },
+ {
+  "cmd": "evince",
+  "min_age": 4
+ },
+ {
+  "cmd": "tuxmath",
+  "min_age": 5
+ },
+ {
+  "cmd": "pingus",
+  "min_age": 5
+ },
+ {
+  "cmd": "supertux2",
+  "min_age": 5
+ },
+ {
+  "cmd": "supertuxkart",
+  "min_age": 6
+ },
+ {
+  "cmd": "firefox-esr",
+  "min_age": 6
+ },
+ {
+  "cmd": "kturtle",
+  "min_age": 7
+ },
+ {
+  "cmd": "krita",
+  "min_age": 7
+ },
+ {
+  "cmd": "kgeography",
+  "min_age": 8
+ },
+ {
+  "cmd": "marble",
+  "min_age": 8
+ },
+ {
+  "cmd": "stellarium",
+  "min_age": 8
+ },
+ {
+  "cmd": "minetest",
+  "min_age": 8
+ },
+ {
+  "cmd": "luanti",
+  "min_age": 8
+ },
+ {
+  "cmd": "kalzium",
+  "min_age": 10
+ },
+ {
+  "cmd": "soffice",
+  "min_age": 9
+ },
+ {
+  "cmd": "thunderbird",
+  "min_age": 12
+ },
+ {
+  "cmd": "timeshift-gtk",
+  "min_age": 99
+ },
+ {
+  "cmd": "gufw",
+  "min_age": 99
+ }
+]

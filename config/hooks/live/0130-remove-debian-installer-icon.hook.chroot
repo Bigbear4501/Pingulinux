@@ -1,0 +1,42 @@
+#!/bin/bash
+# 0130-remove-debian-installer-icon.hook.chroot
+#
+# Läuft chrooted, NACH der Paketinstallation.
+# Entfernt automatisch generierte Debian-Installer-Desktop-Icons
+# (z.B. von "debian-installer-launcher" oder ähnlichen Paketen),
+# damit nur unser eigener "Pingulinux OS installieren"-Launcher übrig bleibt.
+
+set -e
+
+echo "Entferne automatische Debian-Installer-Icons..."
+
+# Bekannte .desktop-Dateien, die automatisch einen Installer-Launcher anzeigen
+CANDIDATES=(
+    "/usr/share/applications/calamares-install-debian.desktop"
+    "/usr/share/applications/debian-installer-launcher.desktop"
+    "/usr/share/applications/calamares.desktop"
+    "/usr/share/applications/livewelcome.desktop"
+)
+
+for f in "${CANDIDATES[@]}"; do
+    if [ -f "$f" ]; then
+        echo "Entferne: $f"
+        rm -f "$f"
+    fi
+done
+
+# Entferne auch unseren bisherigen Desktop-Launcher, damit der Installer
+# ausschließlich über das Whisker-Menü gestartet wird.
+rm -f /etc/skel/Desktop/install-pingulinux.desktop
+
+# Falls das Icon auch schon direkt in /etc/skel/Desktop kopiert wurde
+# (von live-config's automatischer Desktop-Icon-Erstellung)
+find /etc/skel/Desktop -iname "*debian-installer*" -o -iname "*calamares*" 2>/dev/null | while read -r f; do
+    # Unseren eigenen Launcher NICHT löschen
+    if [ "$(basename "$f")" != "install-pingulinux.desktop" ]; then
+        echo "Entferne aus Desktop-Vorlage: $f"
+        rm -f "$f"
+    fi
+done
+
+echo "Fertig."

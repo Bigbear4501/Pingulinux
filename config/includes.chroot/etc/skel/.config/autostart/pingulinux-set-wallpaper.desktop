@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Pingulinux Wallpaper einrichten
+Comment=Setzt das Wallpaper unabhängig vom tatsächlichen Monitor-Namen
+Exec=/usr/local/bin/pingulinux-set-wallpaper.sh
+Icon=utilities-terminal
+Terminal=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true

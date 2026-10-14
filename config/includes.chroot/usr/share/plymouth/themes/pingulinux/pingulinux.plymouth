@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Pingulinux OS
+Description=Boot-Splash für Pingulinux OS mit Maskottchen-Logo
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/pingulinux
+ScriptFile=/usr/share/plymouth/themes/pingulinux/pingulinux.script

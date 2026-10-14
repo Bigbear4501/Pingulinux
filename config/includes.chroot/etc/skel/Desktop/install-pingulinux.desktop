@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Pingulinux OS installieren
+Comment=Startet den Calamares-Installer
+Exec=/usr/local/bin/pingulinux-start-calamares.sh
+Icon=/usr/share/pingulinux/icons/pingu.png
+Terminal=false
+Categories=System;

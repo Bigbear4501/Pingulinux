@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Pingulinux Bildschirm-Drehung
+Exec=/usr/local/bin/pingulinux-autorotate.sh
+Terminal=false
+X-GNOME-Autostart-enabled=true
+NoDisplay=true

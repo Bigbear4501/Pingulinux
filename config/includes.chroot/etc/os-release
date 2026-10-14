@@ -1,0 +1,10 @@
+PRETTY_NAME="Pingulinux OS 1.0"
+NAME="Pingulinux OS"
+VERSION_ID="1.0"
+VERSION="1.0 (trixie-based)"
+VERSION_CODENAME=trixie
+ID=pingulinux
+ID_LIKE=debian
+HOME_URL="https://example.org/pingulinux"
+SUPPORT_URL="https://example.org/pingulinux/support"
+BUG_REPORT_URL="https://example.org/pingulinux/bugs"

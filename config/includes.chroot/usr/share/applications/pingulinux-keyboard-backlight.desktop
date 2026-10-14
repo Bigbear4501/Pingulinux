@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Tastaturbeleuchtung
+Comment=Helligkeit der Tastaturbeleuchtung einstellen
+Exec=/usr/local/bin/pingulinux-keyboard-backlight.sh
+Icon=keyboard-brightness
+Terminal=false
+Categories=Settings;HardwareSettings;

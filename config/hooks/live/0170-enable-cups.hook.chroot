@@ -1,0 +1,14 @@
+#!/bin/bash
+# 0170-enable-cups.hook.chroot
+#
+# Stellt sicher, dass der Drucker-Dienst (CUPS) beim Systemstart
+# automatisch aktiviert ist.
+
+set -e
+
+if command -v systemctl &> /dev/null; then
+    systemctl enable cups.service 2>/dev/null || true
+    systemctl enable cups-browsed.service 2>/dev/null || true
+fi
+
+echo "CUPS-Dienst aktiviert."

@@ -1,0 +1,8 @@
+#!/bin/sh
+# Stock-Discover im Menue verstecken - nur "Pingulinux App Store" bleibt sichtbar
+for f in org.kde.discover.desktop org.kde.discover-flatpak.desktop org.kde.discover.notifier.desktop; do
+  p=/usr/share/applications/$f
+  [ -f "$p" ] || continue
+  grep -q '^NoDisplay=' "$p" && sed -i 's/^NoDisplay=.*/NoDisplay=true/' "$p" || sed -i '/^\[Desktop Entry\]/a NoDisplay=true' "$p"
+done
+exit 0

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Pingulinux Launcher-Vertrauen
+Comment=Markiert eigene Desktop-Icons als vertrauenswürdig (unterdrückt Thunar-Warnung)
+Exec=/usr/local/bin/trust-desktop-icons.sh
+Icon=utilities-terminal
+Terminal=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true

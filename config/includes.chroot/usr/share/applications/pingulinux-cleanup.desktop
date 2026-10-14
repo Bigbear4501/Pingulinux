@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Systembereinigung
+Comment=Räumt ungenutzte Pakete und Zwischenspeicher auf
+Exec=/usr/local/bin/pingulinux-cleanup.sh
+Icon=edit-clear
+Terminal=false
+Categories=System;Utility;

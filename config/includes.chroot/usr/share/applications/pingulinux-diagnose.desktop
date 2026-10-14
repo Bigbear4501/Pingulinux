@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Hilfe und Fehlerdiagnose
+Comment=Prüft das System und erstellt einen Bericht
+Exec=/usr/local/bin/pingulinux-diagnose.sh
+Icon=help-browser
+Terminal=false
+Categories=System;Utility;

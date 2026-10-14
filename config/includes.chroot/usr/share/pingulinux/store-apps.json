@@ -1,0 +1,172 @@
+[
+ {
+  "category": "Internet",
+  "name": "Chromium",
+  "summary": "Schneller, moderner Webbrowser",
+  "icon": "chromium",
+  "apt": "chromium",
+  "flatpak": null,
+  "cmd": "chromium",
+  "min_age": 12
+ },
+ {
+  "category": "Internet",
+  "name": "Falkon",
+  "summary": "Leichter, schneller Webbrowser",
+  "icon": "falkon",
+  "apt": "falkon",
+  "flatpak": null,
+  "cmd": "falkon",
+  "min_age": 10
+ },
+ {
+  "category": "Internet",
+  "name": "FileZilla",
+  "summary": "Dateien über FTP übertragen",
+  "icon": "filezilla",
+  "apt": "filezilla",
+  "flatpak": null,
+  "cmd": "filezilla",
+  "min_age": 14
+ },
+ {
+  "category": "Büro",
+  "name": "Scribus",
+  "summary": "Layout und Desktop-Publishing",
+  "icon": "scribus",
+  "apt": "scribus",
+  "flatpak": null,
+  "cmd": "scribus",
+  "min_age": 12
+ },
+ {
+  "category": "Grafik",
+  "name": "GIMP",
+  "summary": "Bildbearbeitung",
+  "icon": "gimp",
+  "apt": "gimp",
+  "flatpak": "org.gimp.GIMP",
+  "cmd": "gimp",
+  "min_age": 10
+ },
+ {
+  "category": "Grafik",
+  "name": "Inkscape",
+  "summary": "Vektorgrafik zeichnen",
+  "icon": "inkscape",
+  "apt": "inkscape",
+  "flatpak": "org.inkscape.Inkscape",
+  "cmd": "inkscape",
+  "min_age": 10
+ },
+ {
+  "category": "Multimedia",
+  "name": "Kdenlive",
+  "summary": "Videoschnitt",
+  "icon": "kdenlive",
+  "apt": "kdenlive",
+  "flatpak": "org.kde.kdenlive",
+  "cmd": "kdenlive",
+  "min_age": 10
+ },
+ {
+  "category": "Multimedia",
+  "name": "Audacity",
+  "summary": "Audio aufnehmen und bearbeiten",
+  "icon": "audacity",
+  "apt": "audacity",
+  "flatpak": "org.audacityteam.Audacity",
+  "cmd": "audacity",
+  "min_age": 10
+ },
+ {
+  "category": "Bildung",
+  "name": "Anki",
+  "summary": "Karteikarten zum Lernen",
+  "icon": "anki",
+  "apt": "anki",
+  "flatpak": "net.ankiweb.Anki",
+  "cmd": "anki",
+  "min_age": 8
+ },
+ {
+  "category": "Bildung",
+  "name": "Klavaro",
+  "summary": "Tastschreiben üben",
+  "icon": "klavaro",
+  "apt": "klavaro",
+  "flatpak": null,
+  "cmd": "klavaro",
+  "min_age": 7
+ },
+ {
+  "category": "Spiele",
+  "name": "0 A.D.",
+  "summary": "Strategiespiel in der Antike",
+  "icon": "0ad",
+  "apt": "0ad",
+  "flatpak": "com.play0ad.zeroad",
+  "cmd": "0ad",
+  "min_age": 12
+ },
+ {
+  "category": "Spiele",
+  "name": "Extreme Tux Racer",
+  "summary": "Mit Tux den Berg hinunterrasen",
+  "icon": "extremetuxracer",
+  "apt": "extremetuxracer",
+  "flatpak": null,
+  "cmd": "etr",
+  "min_age": 4
+ },
+ {
+  "category": "Programmieren",
+  "name": "Geany",
+  "summary": "Einfacher Code-Editor",
+  "icon": "geany",
+  "apt": "geany",
+  "flatpak": null,
+  "cmd": "geany",
+  "min_age": 10
+ },
+ {
+  "category": "Programmieren",
+  "name": "Thonny",
+  "summary": "Python für Einsteiger",
+  "icon": "thonny",
+  "apt": "thonny",
+  "flatpak": "org.thonny.Thonny",
+  "cmd": "thonny",
+  "min_age": 8
+ },
+ {
+  "category": "Programmieren",
+  "name": "Scratch",
+  "summary": "Programmieren mit bunten Bausteinen",
+  "icon": "scratch",
+  "apt": null,
+  "flatpak": "edu.mit.Scratch",
+  "cmd": "/var/lib/flatpak/exports/bin/edu.mit.Scratch",
+  "min_age": 6
+ },
+ {
+  "category": "Dienstprogramme",
+  "name": "GParted",
+  "summary": "Partitionen verwalten",
+  "icon": "gparted",
+  "apt": "gparted",
+  "flatpak": null,
+  "cmd": "gparted",
+  "min_age": 99
+ },
+ {
+  "category": "Dienstprogramme",
+  "name": "BleachBit",
+  "summary": "Datenträger aufräumen",
+  "icon": "bleachbit",
+  "apt": "bleachbit",
+  "flatpak": null,
+  "cmd": "bleachbit",
+  "min_age": 99
+ }
+]

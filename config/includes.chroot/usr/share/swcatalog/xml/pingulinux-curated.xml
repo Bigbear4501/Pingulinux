@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components version="0.14" origin="pingulinux-curated">
+  <component type="desktop-application">
+    <id>chromium.desktop</id>
+    <name>Chromium</name>
+    <summary>Schneller, moderner Webbrowser</summary>
+    <pkgname>chromium</pkgname>
+  </component>
+  <component type="desktop-application">
+    <id>org.kde.falkon.desktop</id>
+    <name>Falkon</name>
+    <summary>Leichter, schneller Webbrowser</summary>
+    <pkgname>falkon</pkgname>
+  </component>
+  <component type="desktop-application">
+    <id>filezilla.desktop</id>
+    <name>FileZilla</name>
+    <summary>Dateien über FTP übertragen</summary>
+    <pkgname>filezilla</pkgname>
+  </component>
+  <component type="desktop-application">
+    <id>scribus.desktop</id>
+    <name>Scribus</name>
+    <summary>Layout und Desktop-Publishing</summary>
+    <pkgname>scribus</pkgname>
+  </component>
+  <component type="desktop-application">
+    <id>gimp.desktop</id>
+    <name>GIMP</name>
+    <summary>Bildbearbeitung</summary>
+    <pkgname>gimp</pkgname>
+  </component>
+  <component type="desktop-application">
+    <id>org.inkscape.Inkscape.desktop</id>
+    <name>Inkscape</name>
+    <summary>Vektorgrafik zeichnen</summary>
+    <pkgname>inkscape</pkgname>
+  </component>
+  <component type="desktop-application">
+    <id>org.kde.kdenlive.desktop</id>
+    <name>Kdenlive</name>
+    <summary>Videos schneiden</summary>
+    <pkgname>kdenlive</pkgname>
+  </component>
+  <component type="desktop-application">
+    <id>anki.desktop</id>
+    <name>Anki</name>
+    <summary>Mit Karteikarten lernen</summary>
+    <pkgname>anki</pkgname>
+  </component>
+  <component type="desktop-application">
+    <id>klavaro.desktop</id>
+    <name>Klavaro</name>
+    <summary>Zehnfingersystem/Tastschreiben üben</summary>
+    <pkgname>klavaro</pkgname>
+  </component>
+  <component type="desktop-application">
+    <id>0ad.desktop</id>
+    <name>0 A.D.</name>
+    <summary>Historisches Echtzeit-Strategiespiel</summary>
+    <pkgname>0ad</pkgname>
+  </component>
+  <component type="desktop-application">
+    <id>etr.desktop</id>
+    <name>Extreme Tux Racer</name>
+    <summary>Rennspiel mit Tux dem Pinguin</summary>
+    <pkgname>extremetuxracer</pkgname>
+  </component>
+  <component type="desktop-application">
+    <id>geany.desktop</id>
+    <name>Geany</name>
+    <summary>Einfacher Programmier-Editor</summary>
+    <pkgname>geany</pkgname>
+  </component>
+  <component type="desktop-application">
+    <id>gparted.desktop</id>
+    <name>GParted</name>
+    <summary>Festplatten-Partitionen verwalten</summary>
+    <pkgname>gparted</pkgname>
+  </component>
+  <component type="desktop-application">
+    <id>bleachbit.desktop</id>
+    <name>BleachBit</name>
+    <summary>Datenträger aufräumen</summary>
+    <pkgname>bleachbit</pkgname>
+  </component>
+</components>

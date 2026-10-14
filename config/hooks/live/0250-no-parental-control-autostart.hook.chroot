@@ -1,0 +1,6 @@
+#!/bin/sh
+# Eltern-Kontrollzentrum: weder Desktop-Symbol noch Autostart.
+# Nur noch im Startmenue. Raeumt auch Altlasten aus aelteren Staenden auf.
+rm -f /etc/skel/Desktop/pingulinux-parental-control.desktop \
+      /etc/skel/.config/autostart/pingulinux-parental-control.desktop
+exit 0

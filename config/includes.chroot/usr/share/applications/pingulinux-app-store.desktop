@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Pingulinux App Store
+Comment=Programme installieren und aktualisieren
+Exec=/usr/local/bin/pingulinux-store.py
+Icon=/usr/share/pingulinux/icons/pingu.png
+Terminal=false
+Categories=System;PackageManager;

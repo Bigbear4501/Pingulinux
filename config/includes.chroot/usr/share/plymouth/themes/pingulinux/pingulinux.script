@@ -1,0 +1,33 @@
+// pingulinux.script
+// Einfaches, robustes Plymouth-Script-Theme: zentriertes Logo mit Fade-In.
+// Korrekte Plymouth-Script-Syntax: "fun name(...) { ... }", NICHT JS-Stil
+// ("name = function(...) {...}" hat frueher einen SEGV-Absturz verursacht).
+// Erfolgreich getestet (rendert korrekt) - jetzt mit hellem Hintergrund
+// und sanftem Fade-In statt Debug-Blau.
+
+Window.SetBackgroundTopColor(1, 1, 1);
+Window.SetBackgroundBottomColor(0.95, 0.95, 0.95);
+
+logo_image = Image("logo.png");
+logo_sprite = Sprite(logo_image);
+
+logo_width = logo_image.GetWidth();
+logo_height = logo_image.GetHeight();
+
+screen_width = Window.GetWidth();
+screen_height = Window.GetHeight();
+
+logo_x = screen_width / 2 - logo_width / 2;
+logo_y = screen_height / 2 - logo_height / 2;
+logo_sprite.SetPosition(logo_x, logo_y, 10000);
+logo_sprite.SetOpacity(0);
+
+fun progress_callback(duration, progress) {
+    fade_in_progress = progress * 3;
+    if (fade_in_progress > 1) {
+        fade_in_progress = 1;
+    }
+    logo_sprite.SetOpacity(fade_in_progress);
+}
+
+Plymouth.SetBootProgressFunction(progress_callback);

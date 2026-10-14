@@ -1,0 +1,40 @@
+#!/bin/bash
+# 0140-simplify-calamares-pages.hook.chroot
+#
+# Läuft chrooted, NACH der Paketinstallation.
+# Entfernt "locale", "keyboard" UND "localecfg" aus der Calamares-
+# Sequenz (settings.conf) - sowohl aus der Anzeige (show) als auch
+# aus der Ausführung (exec), da unsere Distro bereits fest auf
+# Deutsch/Berlin/deutsches Tastaturlayout eingestellt ist (siehe
+# 0090-set-german-locale Hook).
+#
+# WICHTIGER FUND: "localecfg" ist ein SEPARATES Ausführungsmodul
+# (nicht dasselbe wie "locale"), das die eigentliche Sprachumstellung
+# auf dem Zielsystem durchführt. Es blieb beim ursprünglichen Fix
+# unentdeckt in der exec-Sequenz und überschrieb nach der Installation
+# unsere deutschen Standardeinstellungen mit einem Fallback-Wert
+# (vermutlich Englisch), da die zugehörige Auswahl-Seite ja entfernt
+# wurde und nie ein Wert gesetzt werden konnte.
+
+set -e
+
+SETTINGS="/etc/calamares/settings.conf"
+
+if [ ! -f "$SETTINGS" ]; then
+    echo "Calamares settings.conf nicht gefunden, überspringe." >&2
+    exit 0
+fi
+
+cp "$SETTINGS" "$SETTINGS.orig"
+
+# Entfernt Zeilen, die genau "- locale", "- keyboard" oder
+# "- localecfg" als YAML-Listeneintrag enthalten (beliebige
+# Einrückung davor).
+sed -i \
+    -e '/^\s*-\s*locale\s*$/d' \
+    -e '/^\s*-\s*keyboard\s*$/d' \
+    -e '/^\s*-\s*localecfg\s*$/d' \
+    "$SETTINGS"
+
+echo "Calamares-Seiten/Module 'locale', 'keyboard' und 'localecfg' aus der Sequenz entfernt."
+echo "Original gesichert unter $SETTINGS.orig zum Vergleich."

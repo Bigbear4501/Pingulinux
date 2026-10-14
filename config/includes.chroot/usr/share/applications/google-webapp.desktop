@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Google
+Comment=Öffnet Google im Browser
+Exec=firefox-esr --new-window "https://www.google.com"
+Icon=web-browser
+Terminal=false
+Categories=Network;

@@ -1,0 +1,6 @@
+#!/bin/sh
+# Touch-Unterstuetzung fuer Surface-Geraete (IPTS). Pakete sind je nach
+# Debian-Version evtl. nicht vorhanden - Fehler brechen den Build NICHT ab.
+apt-get install -y iptsd || echo "iptsd nicht verfuegbar - uebersprungen"
+apt-get install -y libwacom-surface || echo "libwacom-surface nicht verfuegbar - uebersprungen"
+exit 0

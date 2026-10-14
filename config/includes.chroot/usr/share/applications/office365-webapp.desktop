@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Office 365
+Comment=Öffnet Office 365 im Browser
+Exec=firefox-esr --new-window "https://www.office.com"
+Icon=x-office-document
+Terminal=false
+Categories=Office;

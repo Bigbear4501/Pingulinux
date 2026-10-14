@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Pingulinux Installer-Aufräumen
+Comment=Entfernt Installer-Verknüpfungen auf einem installierten System
+Exec=/usr/local/bin/pingulinux-remove-installer-if-installed.sh
+Icon=utilities-terminal
+Terminal=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true

@@ -1,0 +1,12 @@
+#!/bin/sh
+# Timekpr-Menueeintrag ohne Administrator-Rechte ausblenden.
+# Der "SU-Modus"-Eintrag (mit Passwort) bleibt sichtbar.
+for p in /usr/share/applications/timekpr*.desktop; do
+  [ -f "$p" ] || continue
+  # SU-Eintrag erkennen: Dateiname oder Exec enthaelt su/pkexec/sudo/gksu
+  if echo "$p" | grep -qi 'su' || grep -qiE '^Exec=.*(pkexec|sudo|gksu|su-to-root|[ -]su( |$))' "$p"; then
+    continue
+  fi
+  grep -q '^NoDisplay=' "$p" && sed -i 's/^NoDisplay=.*/NoDisplay=true/' "$p" || sed -i '/^\[Desktop Entry\]/a NoDisplay=true' "$p"
+done
+exit 0

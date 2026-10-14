@@ -1,0 +1,47 @@
+#!/bin/bash
+# 0090-set-german-locale.hook.chroot
+#
+# Stellt Deutsch (de_DE.UTF-8) als System-Standardsprache fest ein
+# und konfiguriert das Tastaturlayout auf Deutsch.
+# Läuft unabhängig von Boot-Parametern, greift also auch bei einer
+# späteren festen Installation.
+
+set -e
+
+# Sicherstellen, dass die deutsche Locale überhaupt generiert wird
+if [ -f /etc/locale.gen ]; then
+    sed -i 's/^# *de_DE.UTF-8 UTF-8/de_DE.UTF-8 UTF-8/' /etc/locale.gen
+    # Falls die Zeile komplett fehlt, hinzufügen
+    if ! grep -q "^de_DE.UTF-8 UTF-8" /etc/locale.gen; then
+        echo "de_DE.UTF-8 UTF-8" >> /etc/locale.gen
+    fi
+fi
+
+locale-gen de_DE.UTF-8
+
+# Systemweite Standard-Locale setzen
+cat > /etc/default/locale << 'EOF'
+LANG=de_DE.UTF-8
+LANGUAGE=de_DE:de
+EOF
+
+update-locale LANG=de_DE.UTF-8 LANGUAGE="de_DE:de"
+
+# Tastaturlayout auf Deutsch setzen
+if [ -f /etc/default/keyboard ]; then
+    sed -i 's/^XKBLAYOUT=.*/XKBLAYOUT="de"/' /etc/default/keyboard
+    sed -i 's/^XKBVARIANT=.*/XKBVARIANT=""/' /etc/default/keyboard
+fi
+
+# Konsolen-Zeichensatz/Tastatur anwenden, falls das Tool vorhanden ist
+if command -v setupcon &> /dev/null; then
+    setupcon || true
+fi
+
+# Zeitzone fest auf Europe/Berlin setzen (zusätzlich zum tz=-Bootparameter,
+# damit es auch bei einer späteren festen Installation über Calamares stimmt)
+echo "Europe/Berlin" > /etc/timezone
+ln -sf /usr/share/zoneinfo/Europe/Berlin /etc/localtime
+if command -v dpkg-reconfigure &> /dev/null; then
+    dpkg-reconfigure -f noninteractive tzdata 2>/dev/null || true
+fi

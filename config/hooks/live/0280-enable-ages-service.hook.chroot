@@ -1,0 +1,3 @@
+#!/bin/sh
+systemctl enable pingulinux-ages.service || true
+exit 0

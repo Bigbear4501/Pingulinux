@@ -1,0 +1,12 @@
+[Unit]
+Description=Pingulinux DNS-Kinderschutz-Filter absichern
+After=network.target NetworkManager.service
+Wants=NetworkManager.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/pingulinux-lock-dns.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

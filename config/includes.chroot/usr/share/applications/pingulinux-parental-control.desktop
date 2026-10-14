@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Eltern-Kontrollzentrum
+Comment=Bildschirmzeit, Firewall, DNS-Filter, Drucker, Backup und mehr verwalten (Passwort erforderlich)
+Exec=/usr/local/bin/pingulinux-parental-control.sh
+Icon=preferences-system
+Terminal=false
+Categories=System;Settings;

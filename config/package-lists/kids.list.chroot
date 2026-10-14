@@ -1,0 +1,165 @@
+# Desktop-Basis
+xfce4
+xfce4-goodies
+xfce4-whiskermenu-plugin
+lightdm
+lightdm-gtk-greeter
+zenity
+
+# Panel-Erweiterungen: Netzwerk, Helligkeit, Lautstärke, Benachrichtigungen
+network-manager
+network-manager-gnome
+xfce4-wavelan-plugin
+xfce4-power-manager
+xfce4-pulseaudio-plugin
+xfce4-notifyd
+pavucontrol
+
+# Lernsoftware
+gcompris-qt
+tuxpaint
+tuxtype
+kalzium
+kgeography
+marble
+stellarium
+
+# Programmieren lernen
+python3
+idle
+
+# Spiele
+supertuxkart
+minetest
+pingus
+tuxmath
+supertux
+
+# Browser
+firefox-esr
+firefox-esr-l10n-de
+thunderbird
+thunderbird-l10n-de
+
+# Büro/Kreativität
+libreoffice-writer
+libreoffice-impress
+libreoffice-calc
+libreoffice-l10n-de
+libreoffice-help-de
+krita
+krita-l10n
+
+# Bild- und PDF-Betrachter
+ristretto
+evince
+
+# Medienwiedergabe
+vlc
+
+# Programmieren lernen (Kinder-Einstieg mit einfacher Sprache
+# und Schildkröten-Grafik, deutsch lokalisiert)
+kturtle
+
+# Kindersicherung
+timekpr-next
+nftables
+gufw
+
+# Systemwiederherstellung (Eltern-Werkzeug, falls Kinder etwas
+# durcheinanderbringen - einfach zurückspringen können)
+timeshift
+
+# Eltern-Kontrollzentrum: App Store/Updates (Discover statt Synaptic -
+# deutlich kindgerechtere, moderne Oberfläche mit Kategorien/Icons,
+# läuft eigenständig ohne komplette Plasma-Arbeitsumgebung)
+plasma-discover
+packagekit
+
+# Flatpak-Unterstützung für Discover (zusätzliche Apps aus Flathub,
+# unabhängig von Debians eigenen Paketquellen)
+flatpak
+plasma-discover-backend-flatpak
+
+# Wartung
+unattended-upgrades
+
+# Drucker-Unterstützung
+cups
+cups-client
+system-config-printer
+printer-driver-all
+
+# Scanner-Unterstützung
+sane-utils
+libsane-common
+simple-scan
+
+# Für Fenstertitel-Anpassung (Calamares-Installer umbenennen)
+wmctrl
+
+# Für grafische Rechte-Abfragen (pkexec) im Eltern-Kontrollzentrum
+polkitd
+pkexec
+
+# Für Zugriffsrechte-Sperren (z.B. Terminal für eingeschränkte Konten)
+acl
+
+# Sprache
+locales
+task-german
+
+# Installer (Calamares statt Debian-Installer)
+calamares
+calamares-settings-debian
+qt5-gtk-platformtheme
+
+# Bootloader (bewusst im Live-System behalten, damit Calamares
+# später grub-install nutzen kann)
+grub-efi-amd64
+grub2-common
+
+# --- Hardware-Unterstuetzung (Surface Go 2 & Co.) ---
+firmware-linux
+firmware-linux-nonfree
+firmware-misc-nonfree
+firmware-atheros
+firmware-iwlwifi
+firmware-realtek
+firmware-intel-sound
+firmware-sof-signed
+bluez
+blueman
+iio-sensor-proxy
+onboard
+
+# Eigener App Store (GTK)
+python3-gi
+gir1.2-gtk-3.0
+
+# --- KDE Plasma als zweite, waehlbare Sitzung (Tablet/Touch-Tests) ---
+# Bewusst OHNE Metapaket kde-plasma-desktop (das wuerde SDDM mitbringen)
+plasma-desktop
+plasma-workspace
+plasma-workspace-data
+kwin-x11
+kwin-wayland
+maliit-keyboard
+maliit-framework
+plasma-nm
+plasma-pa
+powerdevil
+kscreen
+bluedevil
+dolphin
+breeze
+breeze-gtk-theme
+
+curl
+
+# Tablet / Touch / Tastaturbeleuchtung / Diagnose
+brightnessctl
+xinput
+upower
+pciutils
+usbutils

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Hilfe
+Comment=Hilfe und Verknüpfungen zu den Pingulinux-Seiten
+Exec=/usr/local/bin/pingulinux-help.sh
+Icon=help-browser
+Terminal=false
+Categories=System;

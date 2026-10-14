@@ -1,0 +1,4 @@
+# Erlaubt das automatische Entfernen der Installer-Verknüpfungen
+# auf einem installierten System, ohne Passwort-Abfrage.
+Cmnd_Alias PINGULINUX_CLEANUP = /bin/rm -f /usr/share/applications/pingulinux-installer.desktop, /bin/rm -f /usr/share/pingulinux/install-pingulinux.desktop, /bin/rm -f /usr/share/applications/calamares.desktop, /bin/rm -f /usr/share/applications/org.calamares.calamares.desktop
+%sudo ALL=(ALL) NOPASSWD: PINGULINUX_CLEANUP

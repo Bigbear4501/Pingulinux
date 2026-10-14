@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Pingulinux Standard-Lautstärke
+Comment=Setzt beim ersten Login die Lautstärke auf 50%, nicht stumm
+Exec=/usr/local/bin/pingulinux-default-volume.sh
+Icon=utilities-terminal
+Terminal=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true

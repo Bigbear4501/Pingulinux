@@ -1,0 +1,4 @@
+# Erlaubt Mitgliedern der sudo-Gruppe, Calamares ohne Passwort-Eingabe
+# zu starten. Das ist für ein Live-/Kinder-System bewusst so gewählt,
+# damit der Installations-Assistent ohne Hürde aufgerufen werden kann.
+%sudo ALL=(ALL) NOPASSWD: /usr/bin/calamares

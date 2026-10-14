@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Pingulinux installieren
+Comment=Pingulinux auf diesem Computer installieren
+Exec=/usr/local/bin/pingulinux-start-calamares.sh
+Icon=/usr/share/pingulinux/icons/pingu.png
+Terminal=false
+Categories=System;Settings;
+StartupNotify=true

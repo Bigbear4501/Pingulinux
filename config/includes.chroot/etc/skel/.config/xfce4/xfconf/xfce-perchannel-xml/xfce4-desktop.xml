@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Setzt das Pingulinux-Wallpaper als Standard-Desktop-Hintergrund.
+  Der genaue Property-Pfad (monitor0/workspace0 etc.) hängt vom
+  tatsächlichen Monitor-/Workspace-Namen ab, den XFCE beim ersten
+  Start erkennt. Diese Datei deckt die gängigsten Fälle ab.
+
+  Falls das Wallpaper nach dem Login nicht automatisch erscheint:
+  Rechtsklick auf Desktop -> Desktop-Einstellungen -> Bild manuell
+  auf /usr/share/backgrounds/pingulinux/wallpaper.png setzen, dann
+  xfconf-query -c xfce4-desktop -p /backdrop -R -v -x > diese-datei.xml
+  zum Exportieren des tatsächlich funktionierenden Pfads.
+-->
+
+<channel name="xfce4-desktop" version="1.0">
+  <property name="backdrop" type="empty">
+    <property name="screen0" type="empty">
+      <property name="monitor0" type="empty">
+        <property name="workspace0" type="empty">
+          <property name="last-image" type="string" value="/usr/share/backgrounds/pingulinux/wallpaper.png"/>
+          <property name="image-style" type="int" value="5"/>
+          <property name="color-style" type="int" value="0"/>
+        </property>
+      </property>
+      <property name="monitorVirtual-1" type="empty">
+        <property name="workspace0" type="empty">
+          <property name="last-image" type="string" value="/usr/share/backgrounds/pingulinux/wallpaper.png"/>
+          <property name="image-style" type="int" value="5"/>
+          <property name="color-style" type="int" value="0"/>
+        </property>
+      </property>
+    </property>
+  </property>
+</channel>

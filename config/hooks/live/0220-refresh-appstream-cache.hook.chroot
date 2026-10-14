@@ -1,0 +1,17 @@
+#!/bin/bash
+# 0220-refresh-appstream-cache.hook.chroot
+#
+# Aktualisiert den AppStream-Cache, damit Discover unsere zusätzliche
+# Metadaten-Datei (/usr/share/swcatalog/xml/pingulinux-curated.xml)
+# einliest. Diese ERGÄNZT die bestehende Debian-Programmliste in
+# Discover, ersetzt sie NICHT - das komplette Debian-Archiv bleibt
+# weiterhin normal durchsuchbar.
+
+set -e
+
+if command -v appstreamcli &> /dev/null; then
+    appstreamcli refresh-cache --force 2>&1 || echo "AppStream-Cache-Aktualisierung fehlgeschlagen, wird beim ersten Discover-Start automatisch nachgeholt." >&2
+    echo "AppStream-Cache aktualisiert (inkl. Pingulinux-Empfehlungen)."
+else
+    echo "appstreamcli nicht gefunden, überspringe (Cache wird beim ersten Discover-Start automatisch erstellt)." >&2
+fi

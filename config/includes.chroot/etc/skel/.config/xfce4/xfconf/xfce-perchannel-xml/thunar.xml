@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Deaktiviert Thunars "Exec Shield" - das ist die Funktion, die bei
+  ausführbaren Dateien (inkl. .desktop-Launchern) die Nachfrage
+  "Ist diese Datei vertrauenswürdig?" zeigt. Mit misc-exec-shield=false
+  starten ausführbare Dateien direkt per Doppelklick, ohne Rückfrage.
+-->
+
+<channel name="thunar" version="1.0">
+  <property name="misc-exec-shield" type="bool" value="false"/>
+</channel>

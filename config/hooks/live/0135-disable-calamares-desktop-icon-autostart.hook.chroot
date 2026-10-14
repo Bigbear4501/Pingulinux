@@ -1,0 +1,35 @@
+#!/bin/bash
+# 0135-disable-calamares-desktop-icon-autostart.hook.chroot
+#
+# calamares-settings-debian bringt einen XDG-Autostart-Eintrag mit
+# (/etc/xdg/autostart/calamares-desktop-icon.desktop), der bei JEDEM
+# Login das Skript /usr/bin/add-calamares-desktop-icon ausführt und
+# damit immer wieder ein "Install Debian"-Icon auf den Desktop legt -
+# unabhängig davon, was wir vorher gelöscht haben.
+#
+# Wir deaktivieren diesen Autostart-Eintrag direkt im Build, damit er
+# gar nicht erst greift.
+
+set -e
+
+AUTOSTART_FILE="/etc/xdg/autostart/calamares-desktop-icon.desktop"
+
+if [ -f "$AUTOSTART_FILE" ]; then
+    rm -f "$AUTOSTART_FILE"
+    echo "Autostart-Eintrag für Debian-Installer-Icon entfernt."
+else
+    echo "Autostart-Eintrag nicht gefunden (evtl. schon entfernt oder anders benannt)." >&2
+fi
+
+# Sicherheitshalber auch das ausführende Skript selbst unschädlich machen,
+# falls es von woanders noch aufgerufen werden sollte.
+ICON_SCRIPT="/usr/bin/add-calamares-desktop-icon"
+if [ -f "$ICON_SCRIPT" ]; then
+    cat > "$ICON_SCRIPT" << 'EOF'
+#!/bin/sh
+# Deaktiviert durch Pingulinux OS - erzeugt bewusst kein Debian-Installer-Icon.
+exit 0
+EOF
+    chmod +x "$ICON_SCRIPT"
+    echo "Icon-Erzeugungs-Skript entschärft."
+fi

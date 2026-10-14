@@ -1,0 +1,51 @@
+#!/bin/bash
+# 0200-setup-flathub.hook.chroot
+#
+# Richtet Flathub als Flatpak-Paketquelle systemweit ein, damit
+# Discover direkt beim ersten Start zusätzliche Apps von dort
+# anzeigen kann, ohne dass Eltern das manuell einrichten müssen.
+#
+# Zusätzlich: Programme, die bereits als Debian-Paket in Pingulinux OS
+# vorhanden sind, werden über Flatpaks eigene, offizielle Filter-
+# Funktion aus Flathub ausgeblendet - damit erscheint z.B. Firefox
+# nicht doppelt (einmal als Debian-Paket, einmal als Flatpak) in
+# Discover. Nutzt NUR Flatpak-eigene Bordmittel, rührt nicht an APT.
+
+set -e
+
+if command -v flatpak &> /dev/null; then
+    flatpak remote-add --if-not-exists --system flathub https://flathub.org/repo/flathub.flatpakrepo
+
+    # Filter-Datei anlegen: "deny" blendet die Flatpak-Version eines
+    # Programms aus, das wir bereits als Debian-Paket anbieten.
+    mkdir -p /etc/flatpak
+    cat > /etc/flatpak/flathub-filter.conf << 'EOF'
+# Pingulinux OS: Programme, die bereits als Debian-Paket vorhanden
+# sind, werden hier ausgeblendet, damit sie nicht doppelt in
+# Discover auftauchen (einmal als .deb, einmal als Flatpak).
+deny org.mozilla.firefox
+deny org.mozilla.Thunderbird
+deny org.videolan.VLC
+deny org.gimp.GIMP
+deny org.inkscape.Inkscape
+deny org.kde.kdenlive
+deny org.kde.falkon
+deny net.ankiweb.Anki
+deny org.chromium.Chromium
+deny org.libreoffice.LibreOffice
+deny org.kde.krita
+deny org.filezillaproject.Filezilla
+deny org.scribus.Scribus
+deny org.gnome.gitg
+deny org.gparted.gparted
+deny org.bleachbit.BleachBit
+# Alles andere ist weiterhin normal über Flathub verfügbar
+allow *
+EOF
+
+    flatpak remote-modify --system --filter=/etc/flatpak/flathub-filter.conf flathub
+
+    echo "Flathub eingerichtet, Duplikate zu Debian-Paketen ausgeblendet."
+else
+    echo "flatpak nicht gefunden, überspringe Flathub-Einrichtung." >&2
+fi

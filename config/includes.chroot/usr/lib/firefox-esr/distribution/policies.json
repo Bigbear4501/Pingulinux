@@ -1,0 +1,38 @@
+{
+ "policies": {
+  "Homepage": {
+   "URL": "https://www.fragfinn.de/",
+   "Locked": false,
+   "StartPage": "homepage"
+  },
+  "SearchEngines": {
+   "Add": [
+    {
+     "Name": "Kiddle",
+     "URLTemplate": "https://www.kiddle.co/s.php?q={searchTerms}",
+     "Method": "GET"
+    },
+    {
+     "Name": "DuckDuckGo",
+     "URLTemplate": "https://duckduckgo.com/?q={searchTerms}",
+     "Method": "GET"
+    }
+   ],
+   "Remove": [
+    "Google",
+    "Bing",
+    "Amazon.com"
+   ],
+   "Default": "Kiddle",
+   "PreventInstalls": false
+  },
+  "OverrideFirstRunPage": "",
+  "OverrideSecondRunPage": "",
+  "DontCheckDefaultBrowser": true,
+  "DisableFirefoxStudies": true,
+  "DNSOverHTTPS": {
+   "Enabled": false,
+   "Locked": true
+  }
+ }
+}
