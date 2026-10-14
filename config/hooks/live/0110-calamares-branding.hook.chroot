@@ -40,11 +40,11 @@ strings:
     versionedName:        "Pingulinux OS 1.0"
     shortVersionedName:   "Pingulinux 1.0"
     bootloaderEntryName:  "Pingulinux OS"
-    productUrl:           "https://example.org/pingulinux"
-    supportUrl:           "https://example.org/pingulinux/support"
-    knownIssuesUrl:       "https://example.org/pingulinux/issues"
-    releaseNotesUrl:      "https://example.org/pingulinux/releasenotes"
-    donateUrl:            "https://example.org/pingulinux/donate"
+    productUrl:           "https://github.com/Bigbear4501/Pingulinux"
+    supportUrl:           "https://github.com/Bigbear4501/Pingulinux"
+    knownIssuesUrl:       "https://github.com/Bigbear4501/Pingulinux"
+    releaseNotesUrl:      "https://github.com/Bigbear4501/Pingulinux"
+    donateUrl:            "https://github.com/Bigbear4501/Pingulinux"
 
 images:
     productLogo:          "logo.png"
