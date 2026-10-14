@@ -1,21 +1,30 @@
-# Alles ignorieren, nur die Projektdateien aufnehmen
-/*
-!/.gitignore
-!/README.md
-!/LICENSE
-!/rebuild.sh
-!/config/
+# live-build: Bau-Ergebnisse und Zwischenstände (mehrere GB)
+.build/
+cache/
+chroot/
+binary/
+bootstrap/
+local/
+config/bootstrap
+config/chroot
+config/binary
+config/common
+config/source
+config/build
 
-# Von "lb config" erzeugte Dateien nicht aufnehmen
-/config/binary
-/config/bootstrap
-/config/chroot
-/config/common
-/config/source
-/config/build
-
-# Große und temporäre Dateien
+# Fertige Abbilder und Bau-Protokolle
 *.iso
-*.log
-*.zip
 *.img
+*.hybrid.iso
+*.contents
+*.files
+*.packages
+*.zsync
+SHA256SUMS
+build.log
+*.log
+
+# Editor- und Systemdateien
+*~
+*.swp
+.DS_Store
