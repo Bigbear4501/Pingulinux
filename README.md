@@ -72,7 +72,7 @@ Die fertige ISO liegt danach im Ordner `~/kids-distro`.
 
 ## Roadmap
 
-- **Alpha 3:** Mehr Programme im App Store, linux-surface-Kernel, YouTube-Sperre pro Konto, DNS4EU als Option, Plasma-Optik.
+- **Alpha 3:** Mehr Programme im App Store, YouTube-Sperre pro Konto, DNS4EU als Option, Plasma-Optik.
 - **Beta 1 (Sicherheit und Stabilität):** Sicherheitsprüfung (Umgehungsversuche, Secure Boot, Dual-Boot), automatische Updates, Liste kompatibler Geräte, einfache Oberfläche für 2- bis 6-Jährige.
 - **Beta 2 (Erweiterung und Praxis):** Eltern-Dashboard mit Nutzungsstatistik, App-Listen pro Kind, eigenes Paket-Repository, Plasma-Mobile-Tablet-Image, KDE Connect, Test mit echten Familien.
 - **1.0:** Rechtliches (Impressum, Datenschutz, Lizenzen), Release-Prozess mit Signatur, Webseite und Dokumentation, englische Übersetzung, schlankere ISO.
