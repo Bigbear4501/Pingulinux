@@ -22,16 +22,16 @@ Maskottchen ist **Pingu**, ein Pinguin mit grüner Kappe und Sonnenbrille.
 
 > ⚠️ Die ISO ist rund 4 GB groß und liegt deshalb **nicht** in diesem Repository.
 
-- **ISO-Download (Alpha 2):** [sourceforge.net/projects/pingulinux/files/Alpha2](https://sourceforge.net/projects/pingulinux/files/Alpha2/)
-- **SHA256-Prüfsumme:** Datei `SHA256SUMS` im selben Ordner
+- **ISO-Download:** _(Link folgt)_
+- **SHA256-Prüfsumme:** _(folgt)_
 
-Prüfsumme nach dem Download prüfen (ISO und `SHA256SUMS` im selben Ordner):
+Prüfsumme nach dem Download prüfen:
 
 ```bash
-sha256sum -c SHA256SUMS
+sha256sum pingulinux-*.iso
 ```
 
-Erscheint `OK` hinter dem Dateinamen, ist die ISO vollständig und unverändert.
+Der Wert muss mit der oben angegebenen Prüfsumme übereinstimmen.
 
 ## Ausprobieren
 
@@ -43,7 +43,9 @@ Erscheint `OK` hinter dem Dateinamen, ist die ISO vollständig und unverändert.
 ## Bekannte Einschränkungen (Alpha 2)
 
 - **Soziale Netzwerke und YouTube** sind über die Datei `/etc/hosts` gesperrt. Das gilt **systemweit**, also auch für die Eltern. Eine Sperre pro Konto ist für Alpha 3 geplant.
+- **Touch, Stift und Kameras** am Surface Go 2 brauchen vermutlich einen speziellen Kernel (linux-surface). Geplant für Alpha 3.
 - **Tablet-Modus:** Nur in der KDE-Sitzung (Wayland) vorgesehen. Noch nicht vollständig getestet.
+- **Wechsel zwischen XFCE und KDE:** Über das Sitzungs-Menü im Login-Bildschirm (kleines Symbol neben dem Passwortfeld). XFCE ist immer der Standard.
 - **Kinderschutz-Filter (DNS):** Nutzt einen externen DNS-Dienst (CleanBrowsing). Dabei werden DNS-Anfragen an diesen Dienst gesendet. Wer das nicht möchte, kann den Filter im Kontrollzentrum ausschalten.
 - **Calamares:** Ein kleiner schwarzer Kasten in der schmalen Seitenleiste des Installers ist ein bekannter, rein optischer Fehler.
 - Die ISO ist noch groß (rund 4 GB). Eine schlankere Version ist für 1.0 geplant.
@@ -72,11 +74,11 @@ Die fertige ISO liegt danach im Ordner `~/kids-distro`.
 
 ## Roadmap
 
-- **Alpha 3:** Mehr Programme im App Store, YouTube-Sperre pro Konto, DNS4EU als Option, Plasma-Optik.
+- **Alpha 3:** Mehr Programme im App Store, linux-surface-Kernel, YouTube-Sperre pro Konto, DNS4EU als Option, Plasma-Optik.
 - **Beta 1 (Sicherheit und Stabilität):** Sicherheitsprüfung (Umgehungsversuche, Secure Boot, Dual-Boot), automatische Updates, Liste kompatibler Geräte, einfache Oberfläche für 2- bis 6-Jährige.
-- **Beta 2 (Erweiterung und Praxis):** Eltern-Dashboard mit Nutzungsstatistik, App-Listen pro Kind, eigenes Paket-Repository, Plasma-Mobile-Tablet-Image, KDE Connect, Test mit echten Familien.
+- **Beta 2 (Erweiterung und Praxis):** Eltern-Dashboard mit Nutzungsstatistik, App-Listen pro Kind, eigenes Paket-Repository, Plasma-Mobile-Tablet-Image, ARM-Image, KDE Connect, Test mit echten Familien.
 - **1.0:** Rechtliches (Impressum, Datenschutz, Lizenzen), Release-Prozess mit Signatur, Webseite und Dokumentation, englische Übersetzung, schlankere ISO.
 
 ## Lizenz
 
-Die Konfiguration und die Skripte von Pingulinux stehen unter der **GNU General Public License v3.0** (siehe `LICENSE`). Enthaltene Programme stehen unter ihren jeweiligen Lizenzen. Die Firmware-Pakete (`non-free-firmware`) sind nicht frei im Sinne der Debian-Richtlinien.
+Siehe die Datei `LICENSE`. Enthaltene Programme stehen unter ihren jeweiligen Lizenzen. Die Firmware-Pakete (`non-free-firmware`) sind nicht frei im Sinne der Debian-Richtlinien.
