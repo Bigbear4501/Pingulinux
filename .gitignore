@@ -28,3 +28,8 @@ build.log
 *~
 *.swp
 .DS_Store
+wget-log*
+binary.modified_timestamps
+chroot.packages.*
+kids-distro-skeleton/
+pingulinux-branding/
