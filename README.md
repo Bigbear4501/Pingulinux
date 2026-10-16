@@ -42,8 +42,10 @@ Der Wert muss mit der oben angegebenen Prüfsumme übereinstimmen.
 
 ## Bekannte Einschränkungen (Alpha 2)
 
-- **Soziale Netzwerke und YouTube** sind über die Datei `/etc/hosts` gesperrt. Das gilt **systemweit**, also auch für die Eltern. Eine Sperre pro Konto ist für Alpha 3 geplant
+- **Soziale Netzwerke und YouTube** sind über die Datei `/etc/hosts` gesperrt. Das gilt **systemweit**, also auch für die Eltern. Eine Sperre pro Konto ist für Alpha 3 geplant.
+- **Touch, Stift und Kameras** am Surface Go 2 brauchen vermutlich einen speziellen Kernel (linux-surface). Geplant für Alpha 3.
 - **Tablet-Modus:** Nur in der KDE-Sitzung (Wayland) vorgesehen. Noch nicht vollständig getestet.
+- **Wechsel zwischen XFCE und KDE:** Über das Sitzungs-Menü im Login-Bildschirm (kleines Symbol neben dem Passwortfeld). XFCE ist immer der Standard.
 - **Kinderschutz-Filter (DNS):** Nutzt einen externen DNS-Dienst (CleanBrowsing). Dabei werden DNS-Anfragen an diesen Dienst gesendet. Wer das nicht möchte, kann den Filter im Kontrollzentrum ausschalten.
 - **Calamares:** Ein kleiner schwarzer Kasten in der schmalen Seitenleiste des Installers ist ein bekannter, rein optischer Fehler.
 - Die ISO ist noch groß (rund 4 GB). Eine schlankere Version ist für 1.0 geplant.
@@ -72,9 +74,9 @@ Die fertige ISO liegt danach im Ordner `~/kids-distro`.
 
 ## Roadmap
 
-- **Alpha 3:** Mehr Programme im App Store, YouTube-Sperre pro Konto, DNS4EU als Option, Plasma-Optik.
+- **Alpha 3:** Mehr Programme im App Store, linux-surface-Kernel, YouTube-Sperre pro Konto, DNS4EU als Option, Plasma-Optik.
 - **Beta 1 (Sicherheit und Stabilität):** Sicherheitsprüfung (Umgehungsversuche, Secure Boot, Dual-Boot), automatische Updates, Liste kompatibler Geräte, einfache Oberfläche für 2- bis 6-Jährige.
-- **Beta 2 (Erweiterung und Praxis):** Eltern-Dashboard mit Nutzungsstatistik, App-Listen pro Kind, eigenes Paket-Repository, Plasma-Mobile-Tablet-Image, KDE Connect, Test mit echten Familien.
+- **Beta 2 (Erweiterung und Praxis):** Eltern-Dashboard mit Nutzungsstatistik, App-Listen pro Kind, eigenes Paket-Repository, Plasma-Mobile-Tablet-Image, ARM-Image, KDE Connect, Test mit echten Familien.
 - **1.0:** Rechtliches (Impressum, Datenschutz, Lizenzen), Release-Prozess mit Signatur, Webseite und Dokumentation, englische Übersetzung, schlankere ISO.
 
 ## Lizenz
