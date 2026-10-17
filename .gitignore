@@ -33,3 +33,8 @@ binary.modified_timestamps
 chroot.packages.*
 kids-distro-skeleton/
 pingulinux-branding/
+wget-log*
+binary.modified_timestamps
+chroot.packages.*
+kids-distro-skeleton/
+pingulinux-branding/
