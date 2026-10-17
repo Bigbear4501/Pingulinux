@@ -18,7 +18,6 @@ Maskottchen ist **Pingu**, ein Pinguin mit grüner Kappe und Sonnenbrille.
 - **Eigener, geprüfter App Store** („Pingulinux App Store"): Debian-Pakete haben Vorrang, Flatpak wird nur angeboten, wenn es kein Debian-Paket gibt.
 - **Lernen und Spielen:** GCompris, Tux Paint, Tux Typing, Tux Math, Kalzium, KGeography, Stellarium, Marble, Krita, SuperTuxKart und mehr.
 - **Büro:** LibreOffice, Thunderbird.
-- **Hardware:** WLAN, Bluetooth und Sound getestet auf Surface Go 2 und MacBook Air. Bildschirmdrehung auf dem Surface Go 2 funktioniert. Tablet-Modus mit Bildschirmtastatur in der KDE-Sitzung.
 
 ## Download
 
@@ -49,14 +48,11 @@ Es muss `pingulinux-alpha2-amd64.iso: OK` erscheinen. Unter Windows: `certutil -
 ## Bekannte Einschränkungen und Fehler (Alpha 2)
 
 - **Soziale Netzwerke und YouTube** sind über die Datei `/etc/hosts` gesperrt. Das gilt **systemweit**, also auch für die Eltern. Eine Sperre pro Konto ist für Alpha 3 geplant.
-- **Touch, Stift und Kameras** am Surface Go 2 sind nicht getestet und brauchen vermutlich einen speziellen Kernel (linux-surface). Das ist derzeit nicht geplant.
 - **Tablet-Modus:** Nur in der KDE-Sitzung (Wayland) vorgesehen, nicht in XFCE.
-- **Wechsel zwischen XFCE und KDE:** Über das Sitzungs-Menü im Login-Bildschirm (kleines Symbol neben dem Passwortfeld). XFCE ist immer der Standard.
 - **Kinderschutz-Filter (DNS):** Nutzt einen externen DNS-Dienst (CleanBrowsing). Dabei werden DNS-Anfragen an diesen Dienst gesendet. Wer das nicht möchte, kann den Filter im Kontrollzentrum ausschalten.
-- **Live-Modus:** Das Kontrollzentrum braucht dort kein Passwort. Update, Upgrade und Systembereinigung funktionieren erst nach der Installation.
 - **Calamares:** Ein kleiner schwarzer Kasten in der schmalen Seitenleiste des Installers ist ein bekannter, rein optischer Fehler.
 - **Platzhalter-Links:** Im Installer-Branding und in der Datei `/etc/pingulinux/links.conf` fehlen noch Links für Datenschutz und Impressum, einzelne Links zeigen auf `example.org`. Wird bis 1.0 korrigiert.
-- **Versionsangabe:** Die ISO nennt sich in einigen Systemdateien noch nicht überall „Alpha 2". Wird mit dem nächsten Build bereinigt.
+- **Versionsangabe:** In einigen Systemdateien steht noch „Version 1". Wird mit dem nächsten Build bereinigt.
 - Die ISO ist noch groß (rund 4 GB). Eine schlankere Version ist für 1.0 geplant.
 
 ## Fehler melden
