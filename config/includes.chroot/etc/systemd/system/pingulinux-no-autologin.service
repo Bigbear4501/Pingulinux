@@ -1,0 +1,10 @@
+[Unit]
+Description=Pingulinux: keine automatische Anmeldung auf dem installierten System
+Before=display-manager.service lightdm.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/pingulinux-no-autologin.sh
+
+[Install]
+WantedBy=multi-user.target

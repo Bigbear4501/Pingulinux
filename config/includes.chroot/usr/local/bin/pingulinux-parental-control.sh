@@ -24,7 +24,12 @@ if ! grep -q "boot=live" /proc/cmdline 2>/dev/null; then
     fi
 fi
 
-# --- Hauptmenü ---
+# --- Hauptmenü als Kacheln ---
+if [ -x /usr/local/bin/pingulinux-control-tiles.py ] && /usr/bin/python3 -c "import gi" 2>/dev/null; then
+    exec /usr/local/bin/pingulinux-control-tiles.py
+fi
+
+# Ersatz (Liste), falls die Kachel-Ansicht nicht startet
 while true; do
     CHOICE=$(zenity --list \
         --title="Eltern-Kontrollzentrum" \
@@ -37,6 +42,7 @@ while true; do
         "🖨️  Drucker und Scanner" \
         "💾  Sicherung und Wiederherstellung" \
         "👨‍👩‍👧  Benutzerkonten" \
+        "📋  Konten-Übersicht" \
         "🛍️  Pingulinux App Store" \
         "🚀  Update-Assistent (neue Debian-Version)" \
         "🧹  Systembereinigung" \
@@ -45,10 +51,10 @@ while true; do
 
     case "$CHOICE" in
         "⏰  Bildschirmzeit")
-            sudo timekpra &
+            /usr/local/bin/pingulinux-admin-tool.sh bildschirmzeit &
             ;;
         "🛡️  Firewall und Netzwerk")
-            sudo gufw &
+            /usr/local/bin/pingulinux-admin-tool.sh firewall &
             ;;
         "🌐  Kinderschutz-Filter ein/aus")
             /usr/local/bin/pingulinux-toggle-dns-filter.sh
@@ -57,10 +63,13 @@ while true; do
             system-config-printer &
             ;;
         "💾  Sicherung und Wiederherstellung")
-            sudo timeshift-gtk &
+            /usr/local/bin/pingulinux-admin-tool.sh sicherung &
             ;;
         "👨‍👩‍👧  Benutzerkonten")
             /usr/local/bin/pingulinux-manage-users.sh &
+            ;;
+        "📋  Konten-Übersicht")
+            /usr/local/bin/pingulinux-admin-tool.sh konten &
             ;;
         "🚀  Update-Assistent (neue Debian-Version)")
             /usr/local/bin/pingulinux-upgrade-assistant.sh

@@ -2,19 +2,14 @@
 #
 # pingulinux-lock-dns.sh
 #
-# Läuft bei jedem Boot (systemd-Dienst): stellt sicher, dass
-# /etc/resolv.conf die Kinderschutz-DNS-Server enthält, und macht
-# die Datei anschließend unveränderlich, damit nichts (DHCP,
-# NetworkManager, etc.) sie überschreiben kann.
+# Laeuft bei jedem Boot (systemd-Dienst): setzt den Kinderschutz-DNS, den
+# die Eltern gewaehlt haben (/etc/pingulinux/dns-provider: cleanbrowsing,
+# dns4eu oder off), und macht /etc/resolv.conf unveraenderlich, damit
+# nichts (DHCP, NetworkManager, ...) sie ueberschreibt.
 
-RESOLV="/etc/resolv.conf"
-
-chattr -i "$RESOLV" 2>/dev/null || true
-
-cat > "$RESOLV" << 'EOF'
-# Pingulinux OS: CleanBrowsing Family Filter (Kinderschutz-DNS)
-nameserver 185.228.168.168
-nameserver 185.228.169.168
-EOF
-
-chattr +i "$RESOLV" 2>/dev/null || true
+CHOICE=$(cat /etc/pingulinux/dns-provider 2>/dev/null)
+case "$CHOICE" in
+  off) exit 0 ;;
+  dns4eu) exec /usr/local/bin/pingulinux-dns-filter-worker.sh dns4eu ;;
+  *) exec /usr/local/bin/pingulinux-dns-filter-worker.sh cleanbrowsing ;;
+esac

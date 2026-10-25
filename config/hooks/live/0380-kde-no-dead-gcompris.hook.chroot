@@ -1,0 +1,15 @@
+#!/bin/sh
+# KDE-Taskleiste: toter Starter „gcompris-qt.desktop“ entfernen.
+# Debian nennt GCompris inzwischen org.kde.gcompris.desktop. Der alte Name
+# erscheint deshalb als leeres Symbol (Tooltip „gcompris-qt.desktop“),
+# neben dem richtigen GCompris-Symbol.
+set -e
+for f in $(grep -rl "gcompris-qt\.desktop" /etc/skel /etc/xdg /usr/share/plasma /usr/local/bin/pingulinux-plasma-first-run.sh 2>/dev/null); do
+    # Nur Zeilen anfassen, in denen der alte Name steht
+    sed -i -E '/gcompris-qt\.desktop/{
+        s#,? ?"?(applications:|file:///usr/share/applications/)gcompris-qt\.desktop"?##g
+        s#\[ ?,#[#; s#launchers=,#launchers=#; s#,,#,#g; s#,(\]|$)#\1#
+    }' "$f"
+    echo "gcompris-qt.desktop entfernt aus $f"
+done
+exit 0

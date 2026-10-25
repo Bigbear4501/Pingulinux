@@ -1,10 +1,10 @@
 PRETTY_NAME="Pingulinux OS Alpha 2"
 NAME="Pingulinux OS"
-VERSION_ID="1.0"
-VERSION="Alpha 2"
+VERSION_ID="0.2"
+VERSION="Alpha 2 (trixie-based)"
 VERSION_CODENAME=trixie
 ID=pingulinux
 ID_LIKE=debian
 HOME_URL="https://github.com/Bigbear4501/Pingulinux"
-SUPPORT_URL="https://github.com/Bigbear4501/Pingulinux"
+SUPPORT_URL="https://github.com/Bigbear4501/Pingulinux/issues"
 BUG_REPORT_URL="https://github.com/Bigbear4501/Pingulinux/issues"

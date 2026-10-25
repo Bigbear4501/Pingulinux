@@ -1,0 +1,74 @@
+#!/bin/bash
+# 0300-kde-pingu-startmenu.hook.chroot
+#
+# Läuft chrooted, NACH der Paketinstallation.
+# KDE Plasma: Auf dem Startmenü-Knopf unten im Panel erscheint Pingu
+# statt des KDE-Symbols.
+#
+# Das Symbol ist eine Einstellung des Startmenü-Widgets (Kickoff) und wird
+# pro Benutzer in dessen Plasma-Konfiguration gespeichert. Deshalb zwei Wege:
+#  1. Plasma-Update-Skript: Plasma führt es bei jedem Benutzer einmal aus.
+#  2. Autostart beim KDE-Login: setzt das Symbol über D-Bus, falls Weg 1
+#     bei einem ganz neuen Konto nicht gegriffen hat. Läuft pro Benutzer
+#     nur einmal erfolgreich (Merker in ~/.config), danach nicht mehr.
+#     Ändert ein Erwachsener das Symbol später selbst, bleibt seine Wahl.
+
+set -e
+
+ICON=/usr/share/pingulinux/icons/pingu.png
+
+JS='var ps = panels();
+for (var i = 0; i < ps.length; i++) {
+  var ws = ps[i].widgets();
+  for (var j = 0; j < ws.length; j++) {
+    var t = ws[j].type;
+    if (t == "org.kde.plasma.kickoff" || t == "org.kde.plasma.kicker" || t == "org.kde.plasma.kickerdash") {
+      ws[j].currentConfigGroup = ["General"];
+      ws[j].writeConfig("icon", "'"$ICON"'");
+    }
+  }
+}'
+
+# --- Weg 1: Plasma-Update-Skript -------------------------------------------
+UPD=/usr/share/plasma/shells/org.kde.plasma.desktop/contents/updates
+if [ -d /usr/share/plasma/shells/org.kde.plasma.desktop ]; then
+    mkdir -p "$UPD"
+    printf '%s\n' "$JS" > "$UPD/pingulinux-startmenu-icon.js"
+    echo "Plasma-Update-Skript angelegt: $UPD/pingulinux-startmenu-icon.js"
+else
+    echo "Plasma-Shell nicht gefunden, Update-Skript übersprungen." >&2
+fi
+
+# --- Weg 2: Autostart beim KDE-Login ----------------------------------------
+cat > /usr/local/bin/pingulinux-kde-startmenu-icon.sh <<EOF
+#!/bin/bash
+# Setzt in KDE Plasma einmal pro Benutzer Pingu als Startmenü-Symbol.
+MARK="\$HOME/.config/pingulinux-kde-startmenu-icon.done"
+[ -f "\$MARK" ] && exit 0
+JS='$JS'
+# Plasma braucht nach dem Login ein paar Sekunden, bis das Panel steht.
+for i in \$(seq 1 30); do
+    if dbus-send --session --print-reply --dest=org.kde.plasmashell \\
+         /PlasmaShell org.kde.PlasmaShell.evaluateScript "string:\$JS" >/dev/null 2>&1; then
+        mkdir -p "\$HOME/.config"
+        touch "\$MARK"
+        exit 0
+    fi
+    sleep 2
+done
+exit 0
+EOF
+chmod 755 /usr/local/bin/pingulinux-kde-startmenu-icon.sh
+
+mkdir -p /etc/xdg/autostart
+cat > /etc/xdg/autostart/pingulinux-kde-startmenu-icon.desktop <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=Pingulinux Startmenü-Symbol
+Exec=/usr/local/bin/pingulinux-kde-startmenu-icon.sh
+OnlyShowIn=KDE;
+NoDisplay=true
+X-KDE-autostart-phase=2
+EOF
+
+echo "KDE: Pingu als Startmenü-Symbol eingerichtet."

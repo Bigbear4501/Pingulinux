@@ -1,0 +1,7 @@
+[Unit]
+Description=Pingulinux: DNS mit Social-Media-Sperre für Kinder unter 13
+ConditionPathExists=/run/pingulinux-social/dnsmasq.conf
+
+[Service]
+ExecStart=/usr/sbin/dnsmasq --keep-in-foreground --conf-file=/run/pingulinux-social/dnsmasq.conf
+Restart=on-failure

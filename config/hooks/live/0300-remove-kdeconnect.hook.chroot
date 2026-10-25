@@ -1,0 +1,5 @@
+#!/bin/sh
+# KDE Connect entfernen, falls es als Abhaengigkeit mitgekommen ist
+apt-get purge -y kdeconnect 2>/dev/null || true
+rm -f /usr/share/applications/org.kde.kdeconnect*.desktop /etc/xdg/autostart/org.kde.kdeconnect*.desktop 2>/dev/null || true
+exit 0

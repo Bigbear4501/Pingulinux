@@ -29,12 +29,16 @@ fi
 python3 - "$U" <<'PY' 2>/dev/null
 import json, os, shutil, subprocess, sys
 user = sys.argv[1]
-cmds = {"/usr/bin/xfce4-terminal"}
+cmds = {"/usr/bin/xfce4-terminal", "/usr/bin/konsole"}
 for src in ("/usr/share/pingulinux/store-apps.json", "/usr/share/pingulinux/app-ages.json"):
     try:
         for e in json.load(open(src, encoding="utf-8")):
             if e.get("cmd"):
                 cmds.add(e["cmd"])
+            if e.get("flatpak"):
+                d = os.path.join("/var/lib/flatpak/app", e["flatpak"])
+                if os.path.isdir(d):
+                    subprocess.run(["setfacl", "-x", "u:%s" % user, d], capture_output=True)
     except Exception:
         pass
 for cmd in cmds:
@@ -58,7 +62,7 @@ if ! OUT=$(deluser --remove-home "$U" 2>&1); then
 fi
 
 # Reste aufraeumen
-rm -f "/var/lib/pingulinux/profiles/$U"
+rm -f "/var/lib/pingulinux/profiles/$U" "/var/lib/pingulinux/birth/$U"
 rm -f "/var/lib/AccountsService/users/$U" "/var/lib/AccountsService/icons/$U"
 rm -f /var/lib/timekpr/config/timekpr."$U".conf /var/lib/timekpr/work/"$U".* 2>/dev/null
 rm -rf "/var/mail/$U" 2>/dev/null

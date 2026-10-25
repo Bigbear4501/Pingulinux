@@ -1,0 +1,39 @@
+#!/bin/bash
+# 0320-kde-no-discover.hook.chroot
+#
+# Läuft chrooted, NACH der Paketinstallation.
+# KDE Discover soll nicht automatisch starten (vor allem der Update-Hinweis
+# "Discover Notifier" beim Login). Pingulinux nutzt dafür den eigenen
+# App Store (pingulinux-store.py), der Flatpaks direkt installiert.
+#
+#  1. Autostart des Discover-Update-Hinweises abschalten (Hidden=true).
+#  2. Discover-Pakete entfernen, aber NUR, wenn dabei ausschließlich
+#     Discover-Pakete (plasma-discover*) entfernt würden. Flatpak selbst,
+#     Flathub und PackageKit bleiben erhalten.
+
+set -e
+
+for f in /etc/xdg/autostart/*discover*.desktop; do
+    [ -f "$f" ] || continue
+    if grep -q '^Hidden=' "$f"; then
+        sed -i 's/^Hidden=.*/Hidden=true/' "$f"
+    else
+        sed -i '/^\[Desktop Entry\]/a Hidden=true' "$f"
+    fi
+    echo "Autostart abgeschaltet: $f"
+done
+
+PKGS=$(dpkg-query -W -f='${Package} ${Status}\n' 'plasma-discover*' 2>/dev/null | awk '/install ok installed/{print $1}')
+if [ -z "$PKGS" ]; then
+    echo "Discover ist nicht installiert, nichts zu tun."
+    exit 0
+fi
+
+WOULD=$(apt-get -s purge $PKGS 2>/dev/null | awk '/^Purg /{print $2}' | sort -u)
+OTHERS=$(echo "$WOULD" | grep -v '^plasma-discover' || true)
+if [ -n "$WOULD" ] && [ -z "$OTHERS" ]; then
+    DEBIAN_FRONTEND=noninteractive apt-get purge -y $PKGS
+    echo "Discover entfernt: $(echo $PKGS)"
+else
+    echo "Discover bleibt installiert (Entfernen würde auch entfernen: $(echo $OTHERS)). Autostart ist trotzdem aus."
+fi

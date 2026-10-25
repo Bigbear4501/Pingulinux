@@ -3,14 +3,25 @@
 
 Installation: bevorzugt als Debian-Paket (apt); nur wenn es kein
 Debian-Paket gibt, wird die Flatpak-Version von Flathub genutzt.
-Installieren braucht das Passwort eines Administrators (pkexec).
+Installieren und Entfernen braucht das Passwort eines Administrators (pkexec).
 """
-import json, subprocess, threading
+import json, shlex, subprocess, threading
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GLib
 
 CATALOG = "/usr/share/pingulinux/store-apps.json"
+
+
+def is_live():
+    """Im Live-Modus lassen sich Flatpaks nicht installieren (zu wenig Platz im RAM)."""
+    try:
+        return "boot=live" in open("/proc/cmdline").read()
+    except OSError:
+        return False
+
+
+LIVE = is_live()
 LOGO = "/usr/share/pingulinux/icons/pingu.png"
 
 
@@ -33,6 +44,19 @@ def apt_installed(pkg):
 
 def flatpak_installed(ref):
     return run(["flatpak", "info", "--system", ref]).returncode == 0
+
+
+def apt_removal_set(pkg):
+    """Simuliert 'apt-get remove' (ohne root) und liefert die Pakete,
+    die dabei mit entfernt wuerden."""
+    r = run(["apt-get", "-s", "remove", pkg])
+    if r.returncode != 0:
+        return None
+    names = []
+    for line in r.stdout.splitlines():
+        if line.startswith("Remv "):
+            names.append(line.split()[1])
+    return names
 
 
 def pick_source(app):
@@ -129,12 +153,28 @@ class Store(Gtk.Window):
             self.applist.add(self.make_row(app))
         self.applist.show_all()
 
+    def pick_icon(self, app):
+        """Programm-Symbol, sonst ein passendes Kategorie-Symbol (statt Fehler-Bild)."""
+        theme = Gtk.IconTheme.get_default()
+        for name in (app["icon"], app["icon"].split(".")[-1].lower()):
+            if theme.has_icon(name):
+                return name
+        fallback = {"Internet": "applications-internet", "Spiele": "applications-games",
+                    "Grafik": "applications-graphics", "Multimedia": "applications-multimedia",
+                    "Büro": "applications-office", "Bildung": "applications-science",
+                    "Programmieren": "applications-development",
+                    "Dienstprogramme": "applications-utilities"}
+        for name in (fallback.get(app["category"], "applications-other"), "application-x-executable"):
+            if theme.has_icon(name):
+                return name
+        return "application-x-executable"
+
     def make_row(self, app):
         r = Gtk.ListBoxRow()
         h = Gtk.Box(spacing=14)
         h.set_margin_top(10); h.set_margin_bottom(10)
         h.set_margin_start(14); h.set_margin_end(14)
-        img = Gtk.Image.new_from_icon_name(app["icon"], Gtk.IconSize.DIALOG)
+        img = Gtk.Image.new_from_icon_name(self.pick_icon(app), Gtk.IconSize.DIALOG)
         h.pack_start(img, False, False, 0)
         v = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         n = Gtk.Label(xalign=0)
@@ -148,14 +188,22 @@ class Store(Gtk.Window):
         v.pack_start(n, False, False, 0)
         v.pack_start(s, False, False, 0)
         h.pack_start(v, True, True, 0)
-        btn = Gtk.Button()
         if is_installed(app, app["_src"]):
-            btn.set_label("✓ Installiert")
+            rm = Gtk.Button(label="Entfernen")
+            rm.connect("clicked", self.on_remove, app, rm)
+            h.pack_end(rm, False, False, 0)
+            ok = Gtk.Label(label="✓ Installiert")
+            h.pack_end(ok, False, False, 0)
+        elif LIVE and app["_src"] == "flatpak":
+            btn = Gtk.Button(label="Nach der Installation verfügbar")
             btn.set_sensitive(False)
+            btn.set_tooltip_text("Dieses Programm kommt als Flatpak. Flatpaks lassen sich erst "
+                                 "installieren, wenn Pingulinux fest auf dem Computer installiert ist.")
+            h.pack_end(btn, False, False, 0)
         else:
-            btn.set_label("Installieren")
+            btn = Gtk.Button(label="Installieren")
             btn.connect("clicked", self.on_install, app, btn)
-        h.pack_end(btn, False, False, 0)
+            h.pack_end(btn, False, False, 0)
         r.add(h)
         return r
 
@@ -172,22 +220,85 @@ class Store(Gtk.Window):
         if app["_src"] == "apt":
             cmd = ["pkexec", "sh", "-c",
                    "export DEBIAN_FRONTEND=noninteractive; apt-get update -qq; "
-                   "apt-get install -y %s" % app["apt"]]
+                   "apt-get install -y %s" % shlex.quote(app["apt"])]
         else:
             cmd = ["pkexec", "sh", "-c",
                    "flatpak install -y --system flathub %s; rc=$?; "
-                   "/usr/local/bin/pingulinux-apply-all-ages.py; exit $rc" % app["flatpak"]]
+                   "/usr/local/bin/pingulinux-apply-all-ages.py; exit $rc" % shlex.quote(app["flatpak"])]
+        self.run_logged(cmd, app, "install")
+
+    def ask(self, text, secondary, question=True):
+        d = Gtk.MessageDialog(transient_for=self, modal=True,
+                              message_type=Gtk.MessageType.QUESTION if question else Gtk.MessageType.INFO,
+                              buttons=Gtk.ButtonsType.NONE, text=text)
+        d.format_secondary_text(secondary)
+        if question:
+            d.add_button("Abbrechen", Gtk.ResponseType.CANCEL)
+            d.add_button("Entfernen", Gtk.ResponseType.OK)
+        else:
+            d.add_button("OK", Gtk.ResponseType.OK)
+        resp = d.run()
+        d.destroy()
+        return resp == Gtk.ResponseType.OK
+
+    def on_remove(self, _w, app, btn):
+        if self.busy:
+            return
+        if app["_src"] == "apt":
+            would = apt_removal_set(app["apt"])
+            if would is None or app["apt"] not in [p.split(":")[0] for p in would]:
+                self.ask("%s kann nicht entfernt werden" % app["name"],
+                         "Das Programm gehört zum Grundsystem von Pingulinux.",
+                         question=False)
+                return
+            others = [p for p in would if p.split(":")[0] != app["apt"]]
+            if others:
+                self.ask("%s kann nicht einzeln entfernt werden" % app["name"],
+                         "Dabei würden auch andere Programme oder Systemteile entfernt:\n%s"
+                         % ", ".join(others[:12]) + (" …" if len(others) > 12 else ""),
+                         question=False)
+                return
+        if not self.ask("%s entfernen?" % app["name"],
+                        "Das Programm wird für alle Konten entfernt. Gespeicherte Dateien "
+                        "(zum Beispiel Bilder oder Dokumente) bleiben erhalten. "
+                        "Ein Erwachsener muss gleich das Passwort eingeben."):
+            return
+        self.busy = True
+        btn.set_sensitive(False)
+        btn.set_label("Bitte warten…")
+        self.status.set_text("%s wird entfernt – ein Erwachsener muss das Passwort eingeben." % app["name"])
+        threading.Thread(target=self.do_remove, args=(app,), daemon=True).start()
+
+    def do_remove(self, app):
+        if app["_src"] == "apt":
+            cmd = ["pkexec", "sh", "-c",
+                   "export DEBIAN_FRONTEND=noninteractive; "
+                   "apt-get remove -y --no-auto-remove %s; rc=$?; "
+                   "/usr/local/bin/pingulinux-apply-all-ages.py; exit $rc" % shlex.quote(app["apt"])]
+        else:
+            cmd = ["pkexec", "sh", "-c",
+                   "flatpak uninstall -y --system %s; rc=$?; "
+                   "[ $rc -eq 0 ] && flatpak uninstall -y --system --unused; "
+                   "/usr/local/bin/pingulinux-apply-all-ages.py; exit $rc" % shlex.quote(app["flatpak"])]
+        self.run_logged(cmd, app, "remove")
+
+    def run_logged(self, cmd, app, action):
         r = run(cmd)
         with open("/tmp/pingulinux-store.log", "a") as f:
             f.write("$ %s\n%s\n%s\n" % (" ".join(cmd), r.stdout[-3000:], r.stderr[-3000:]))
-        GLib.idle_add(self.done, app, r.returncode)
+        GLib.idle_add(self.done, app, r.returncode, action)
 
-    def done(self, app, rc):
+    def done(self, app, rc, action="install"):
         self.busy = False
         if rc == 0:
-            self.status.set_text("✅ %s ist jetzt installiert." % app["name"])
+            if action == "remove":
+                self.status.set_text("✅ %s wurde entfernt." % app["name"])
+            else:
+                self.status.set_text("✅ %s ist jetzt installiert." % app["name"])
         elif rc in (126, 127):
-            self.status.set_text("Abgebrochen – es wurde nichts installiert.")
+            self.status.set_text("Abgebrochen – es wurde nichts geändert.")
+        elif action == "remove":
+            self.status.set_text("⚠️ Entfernen fehlgeschlagen. Details: /tmp/pingulinux-store.log")
         else:
             self.status.set_text("⚠️ Installation fehlgeschlagen. Details: /tmp/pingulinux-store.log")
         self.refresh()

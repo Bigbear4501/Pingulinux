@@ -1,0 +1,46 @@
+#!/bin/bash
+# 0145-calamares-no-autologin.hook.chroot
+#
+# Läuft chrooted, NACH der Paketinstallation.
+# Blendet im Installer (Calamares, Seite "Benutzer") den Haken
+# "Automatisch anmelden ohne Passwortabfrage" aus und lässt ihn aus.
+# Grund: Auf einem Kinder-PC soll man sich immer mit Passwort anmelden,
+# damit Kinder nicht automatisch im Elternkonto (mit Admin-Rechten) landen.
+#
+#   displayAutologin: false  -> Haken wird nicht angezeigt
+#   doAutologin:      false  -> Automatisches Anmelden bleibt aus
+
+set -e
+
+FILES=""
+for f in /etc/calamares/modules/users.conf /usr/share/calamares/modules/users.conf; do
+    [ -f "$f" ] && FILES="$FILES $f"
+done
+
+# Gibt es noch keine eigene users.conf unter /etc, die mitgelieferte kopieren,
+# damit unsere Einstellung Vorrang hat.
+if [ ! -f /etc/calamares/modules/users.conf ] && [ -f /usr/share/calamares/modules/users.conf ]; then
+    mkdir -p /etc/calamares/modules
+    cp /usr/share/calamares/modules/users.conf /etc/calamares/modules/users.conf
+    FILES="/etc/calamares/modules/users.conf $FILES"
+fi
+
+if [ -z "$FILES" ]; then
+    echo "Calamares users.conf nicht gefunden, überspringe." >&2
+    exit 0
+fi
+
+set_key() {
+    # set_key DATEI SCHLÜSSEL WERT
+    if grep -qE "^[[:space:]]*$2[[:space:]]*:" "$1"; then
+        sed -i -E "s/^([[:space:]]*)$2[[:space:]]*:.*/\1$2: $3/" "$1"
+    else
+        printf '\n%s: %s\n' "$2" "$3" >> "$1"
+    fi
+}
+
+for f in $FILES; do
+    set_key "$f" displayAutologin false
+    set_key "$f" doAutologin false
+    echo "Automatisches Anmelden im Installer ausgeblendet: $f"
+done

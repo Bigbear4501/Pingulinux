@@ -163,3 +163,25 @@ xinput
 upower
 pciutils
 usbutils
+
+# --- KDE-Gegenstuecke zu den XFCE-Programmen (fuer die Plasma-Sitzung) ---
+gwenview
+okular
+kate
+kcalc
+ark
+kde-spectacle
+konsole
+plasma-systemmonitor
+
+# Alpha 3: WLAN MacBook Air, Social-Media-Sperre, YouTube-Kids-Fenster
+firmware-brcm80211
+dnsmasq-base
+gir1.2-webkit2-4.1
+gstreamer1.0-plugins-good
+gstreamer1.0-plugins-bad
+gstreamer1.0-libav
+
+# Alpha 3: Passwort-Fenster (Polkit-Agent), WLAN MacBook Air, Social-Media-Sperre, YouTube-Kids-Fenster
+polkit-kde-agent-1
+mate-polkit

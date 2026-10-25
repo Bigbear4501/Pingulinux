@@ -1,0 +1,9 @@
+#!/bin/bash
+# 0330-social-block.hook.chroot
+# Läuft chrooted, NACH der Paketinstallation.
+# Schaltet die Social-Media-Sperre für Kinder unter 13 ein
+# (Dienst beim Start, stündliche Prüfung, Neustart bei Änderungen).
+set -e
+mkdir -p /var/lib/pingulinux/birth /var/lib/pingulinux/profiles
+systemctl enable pingulinux-social-block.service pingulinux-social-block.timer pingulinux-social-block.path
+echo "Social-Media-Sperre (ab 13) aktiviert."

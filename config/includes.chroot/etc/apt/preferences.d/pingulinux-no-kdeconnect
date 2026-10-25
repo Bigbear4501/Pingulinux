@@ -1,0 +1,4 @@
+# KDE Connect wird in Pingulinux nicht gebraucht und soll nicht installiert werden
+Package: kdeconnect* libkdeconnect*
+Pin: release *
+Pin-Priority: -1

@@ -1,0 +1,16 @@
+#!/bin/sh
+# Tux Typing auf Deutsch: deutsche Oberfläche und deutsche Wörter (Thema „deutsch“).
+# Für neue Konten liegt /etc/skel/.tuxtype/settings.txt bereit, hier zusätzlich
+# die systemweite Vorgabe.
+set -e
+D=/usr/share/tuxtype
+if [ -d "$D/themes/deutsch" ]; then
+    if [ -f "$D/settings.txt" ] && grep -q '^lang=' "$D/settings.txt"; then
+        sed -i 's/^lang=.*/lang=deutsch/' "$D/settings.txt"
+    else
+        echo "lang=deutsch" >> "$D/settings.txt"
+    fi
+    echo "Tux Typing: Deutsch eingestellt"
+else
+    echo "Tux Typing: Thema deutsch nicht gefunden (tuxtype-data installiert?)" >&2
+fi

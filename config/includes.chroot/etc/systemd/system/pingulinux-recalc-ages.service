@@ -1,0 +1,7 @@
+[Unit]
+Description=Pingulinux: Alter der Kinderkonten aktualisieren
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/pingulinux-recalc-ages.sh

@@ -1,0 +1,8 @@
+#!/bin/bash
+# 0350-greeter-osk.hook.chroot
+# Läuft chrooted, NACH der Paketinstallation.
+# Schaltet den Dienst ein, der auf Touch-Geräten die Bildschirmtastatur
+# im Anmeldebildschirm automatisch anzeigt.
+set -e
+systemctl enable pingulinux-greeter-osk.service
+echo "Bildschirmtastatur im Anmeldebildschirm für Touch-Geräte aktiviert."

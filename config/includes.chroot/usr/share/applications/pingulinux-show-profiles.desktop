@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Konten-Übersicht
+Comment=Alter und Bildschirmzeit aller Kinderkonten (Passwort erforderlich)
+Exec=/usr/local/bin/pingulinux-admin-tool.sh konten
+Icon=system-users
+Terminal=false
+Categories=System;Settings;

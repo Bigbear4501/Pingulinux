@@ -1,0 +1,4 @@
+# Bildschirmtastatur in KDE (Maliit): nur Deutsch, kein Englisch
+[org.maliit.keyboard.maliit]
+enabled-languages=['de']
+active-language='de'

@@ -1,0 +1,11 @@
+[Unit]
+Description=Pingulinux: Social-Media-Sperre für Kinder unter 13 setzen
+Wants=network-online.target
+After=network-online.target nftables.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/pingulinux-social-block.py
+
+[Install]
+WantedBy=multi-user.target

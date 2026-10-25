@@ -13,7 +13,7 @@ warn() { echo "⚠️ $1" >> "$SUMMARY"; }
 # --- Kurzpruefungen ---
 if ping -c1 -W3 1.1.1.1 >/dev/null 2>&1; then ok "Internetverbindung ist da"; else warn "Keine Internetverbindung (WLAN/LAN prüfen)"; fi
 if getent hosts debian.org >/dev/null 2>&1; then ok "Namensauflösung (DNS) funktioniert"; else warn "Webadressen lassen sich nicht auflösen (DNS)"; fi
-if grep -q "185.228.168.168" /etc/resolv.conf 2>/dev/null; then ok "Kinderschutz-Filter ist EIN"; else warn "Kinderschutz-Filter ist AUS"; fi
+if grep -qE "185.228.168.168|86.54.11.12" /etc/resolv.conf 2>/dev/null; then ok "Kinderschutz-Filter ist EIN"; else warn "Kinderschutz-Filter ist AUS"; fi
 
 USED=$(df --output=pcent / | tail -1 | tr -dc '0-9')
 if [ "${USED:-0}" -ge 90 ]; then warn "Festplatte fast voll (${USED}%) – Systembereinigung starten"; else ok "Festplatte hat genug Platz (${USED}% belegt)"; fi

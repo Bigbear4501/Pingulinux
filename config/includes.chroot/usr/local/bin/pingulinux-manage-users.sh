@@ -42,18 +42,32 @@ while true; do
                 continue
             fi
 
-            AGE=$(zenity --scale --title="Alter von $NEWUSER" --text="Wie alt ist das Kind?\nDas Alter bestimmt automatisch Bildschirmzeit und Schutzeinstellungen." --min-value=2 --max-value=17 --value=8 --step=1)
-            [ -z "$AGE" ] && continue
+            YNOW=$(date +%Y)
+            YEARS=$(seq "$YNOW" -1 $((YNOW - 17)) | paste -sd'|')
+            FORM=$(zenity --forms --title="Geburtstag von $NEWUSER" --width=380 \
+                --text="Wann wurde das Kind geboren?\nDas Alter bestimmt automatisch Bildschirmzeit und Schutzeinstellungen und wächst mit dem Kind mit." \
+                --add-combo="Geburtsmonat" --combo-values="Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember" \
+                --add-combo="Geburtsjahr" --combo-values="$YEARS" --separator=";")
+            [ -z "$FORM" ] && continue
+            BMON_NAME="${FORM%%;*}"; BYEAR="${FORM##*;}"
+            case "$BMON_NAME" in
+                Januar) BMON=01;; Februar) BMON=02;; "März") BMON=03;; April) BMON=04;; Mai) BMON=05;; Juni) BMON=06;;
+                Juli) BMON=07;; August) BMON=08;; September) BMON=09;; Oktober) BMON=10;; November) BMON=11;; Dezember) BMON=12;;
+                *) zenity --error --title="Fehler" --text="⚠️ Bitte Geburtsmonat und -jahr auswählen." --width=350; continue;;
+            esac
+            case "$BYEAR" in [0-9][0-9][0-9][0-9]) ;; *) zenity --error --title="Fehler" --text="⚠️ Bitte Geburtsmonat und -jahr auswählen." --width=350; continue;; esac
+            BIRTH="$BYEAR-$BMON"
+            AGE=$(/usr/local/bin/pingulinux-age-from-birth.sh "$BIRTH")
 
             AVATAR=$(choose_avatar "$NEWUSER")
 
-            if echo "$PASS1" | pkexec /usr/local/bin/pingulinux-create-restricted-user.sh "$NEWUSER" "$AGE" "$AVATAR"; then
+            if echo "$PASS1" | pkexec /usr/local/bin/pingulinux-create-restricted-user.sh "$NEWUSER" "$BIRTH" "$AVATAR"; then
                 if [ "$AGE" -lt 13 ]; then
-                    SOCIAL="\n• Social-Media-Seiten und normales YouTube sind gesperrt (gilt für den ganzen Computer).\n• YouTube Kids liegt auf dem Desktop (nur mit Eltern-Freigabe)."
+                    SOCIAL="\n• Social-Media-Seiten und normales YouTube sind gesperrt (gilt nur für dieses Konto, im Firefox).\n• YouTube Kids liegt auf dem Desktop (nur mit Eltern-Freigabe)."
                 else
                     SOCIAL=""
                 fi
-                zenity --info --title="Fertig" --text="✅ Benutzerkonto '$NEWUSER' wurde angelegt.\n\n• Eingeschränktes Konto (kein Admin, kein Terminal)\n• Bildschirmzeit automatisch passend für $AGE Jahre$SOCIAL\n\nDie Zeiten kannst du im Kontrollzentrum unter „Bildschirmzeit“ anpassen." --width=450
+                zenity --info --title="Fertig" --text="✅ Benutzerkonto '$NEWUSER' wurde angelegt.\n\n• Eingeschränktes Konto (kein Admin, kein Terminal)\n• Bildschirmzeit automatisch passend für $AGE Jahre (wächst mit dem Kind mit)$SOCIAL\n\nDie Zeiten kannst du im Kontrollzentrum unter „Bildschirmzeit“ anpassen." --width=450
             else
                 zenity --error --title="Fehler" --text="⚠️ Das Benutzerkonto konnte nicht angelegt werden." --width=350
             fi

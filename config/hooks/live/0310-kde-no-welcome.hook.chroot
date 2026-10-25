@@ -1,0 +1,35 @@
+#!/bin/bash
+# 0310-kde-no-welcome.hook.chroot
+#
+# Läuft chrooted, NACH der Paketinstallation.
+# KDE Plasma: Das KDE-Willkommenscenter (plasma-welcome) soll nicht
+# automatisch starten. Pingulinux hat eigene Hilfe und ein eigenes
+# Kontrollzentrum; das KDE-Fenster würde Kinder nur verwirren.
+#
+#  1. Autostart abschalten (Hidden=true), falls es eine Autostart-Datei gibt.
+#  2. Paket ganz entfernen, aber NUR, wenn dabei nichts anderes mit
+#     entfernt würde. Sonst bleibt es installiert, startet aber nicht mehr.
+
+set -e
+
+for f in /etc/xdg/autostart/*plasma-welcome*.desktop; do
+    [ -f "$f" ] || continue
+    if grep -q '^Hidden=' "$f"; then
+        sed -i 's/^Hidden=.*/Hidden=true/' "$f"
+    else
+        sed -i '/^\[Desktop Entry\]/a Hidden=true' "$f"
+    fi
+    echo "Autostart abgeschaltet: $f"
+done
+
+if dpkg -s plasma-welcome >/dev/null 2>&1; then
+    WOULD=$(apt-get -s purge plasma-welcome 2>/dev/null | awk '/^Purg /{print $2}' | sort -u)
+    if [ "$WOULD" = "plasma-welcome" ]; then
+        DEBIAN_FRONTEND=noninteractive apt-get purge -y plasma-welcome
+        echo "plasma-welcome entfernt."
+    else
+        echo "plasma-welcome bleibt installiert (Entfernen würde auch entfernen: $(echo $WOULD))."
+    fi
+else
+    echo "plasma-welcome ist nicht installiert, nichts zu tun."
+fi

@@ -1,38 +1,32 @@
 #!/bin/bash
 #
 # pingulinux-update-social-block.sh  (als root)
-# Sperrt Social-Media-Seiten systemweit, solange es mindestens ein
-# Kinderkonto unter 13 Jahren gibt. Aenderungen stehen nur zwischen den
-# Markierungen in /etc/hosts.
+# Sperrt Social-Media-Seiten und normales YouTube pro Konto: Fuer jedes
+# Kinderkonto unter 13 Jahren wird eine Markierungsdatei angelegt. Firefox
+# (pingulinux.cfg) erkennt sie und setzt dann die feste Sperrliste
+# /usr/share/pingulinux/block-social.pac. Eltern und aeltere Kinder sind
+# nicht betroffen. Die frueheren Eintraege in /etc/hosts werden entfernt.
 
 PROFDIR=/var/lib/pingulinux/profiles
-BEGIN="# BEGIN pingulinux-social"
-END="# END pingulinux-social"
-DOMAINS="facebook.com instagram.com tiktok.com snapchat.com twitter.com x.com reddit.com discord.com threads.net"
+MARKDIR=/var/lib/pingulinux/blocksocial
 
-young=0
+mkdir -p "$MARKDIR"
+chmod 755 "$MARKDIR"
+
+# Alte systemweite Sperre aus /etc/hosts entfernen (Alpha 2)
+sed -i '/^# BEGIN pingulinux-social$/,/^# END pingulinux-social$/d' /etc/hosts
+sed -i '/^# BEGIN pingulinux-youtube$/,/^# END pingulinux-youtube$/d' /etc/hosts
+
+# Alle Markierungen neu setzen
+rm -f "$MARKDIR"/* 2>/dev/null
 for f in "$PROFDIR"/*; do
   [ -f "$f" ] || continue
   u=$(basename "$f")
   id "$u" >/dev/null 2>&1 || { rm -f "$f"; continue; }   # geloeschte Konten
-  a=$(cat "$f"); [ "$a" -lt 13 ] 2>/dev/null && young=1
+  a=$(cat "$f")
+  if [ "$a" -lt 13 ] 2>/dev/null; then
+    : > "$MARKDIR/$u"
+    chmod 644 "$MARKDIR/$u"
+  fi
 done
-
-# YouTube (normales YouTube; YouTube Kids bleibt ueber youtubekids.com)
-YT_BEGIN="# BEGIN pingulinux-youtube"
-YT_END="# END pingulinux-youtube"
-YT_DOMAINS="youtube.com www.youtube.com m.youtube.com music.youtube.com youtu.be www.youtu.be"
-
-sed -i "/^$BEGIN\$/,/^$END\$/d" /etc/hosts
-sed -i "/^$YT_BEGIN\$/,/^$YT_END\$/d" /etc/hosts
-if [ "$young" = 1 ]; then
-  {
-    echo "$BEGIN"
-    for d in $DOMAINS; do echo "0.0.0.0 $d"; echo "0.0.0.0 www.$d"; done
-    echo "$END"
-    echo "$YT_BEGIN"
-    for d in $YT_DOMAINS; do echo "0.0.0.0 $d"; done
-    echo "$YT_END"
-  } >> /etc/hosts
-fi
 exit 0

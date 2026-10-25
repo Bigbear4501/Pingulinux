@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Passwort-Fenster für Verwaltung
+Comment=Polkit-Agent: fragt nach dem Passwort, wenn ein Programm Admin-Rechte braucht
+Exec=sh -c 'for a in /usr/libexec/polkit-mate-authentication-agent-1 /usr/lib/x86_64-linux-gnu/polkit-mate/polkit-mate-authentication-agent-1; do [ -x "$a" ] && exec "$a"; done'
+OnlyShowIn=XFCE;
+NoDisplay=true
+X-GNOME-Autostart-Phase=Initialization

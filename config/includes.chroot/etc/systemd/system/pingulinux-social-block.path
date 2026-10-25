@@ -1,0 +1,11 @@
+[Unit]
+Description=Pingulinux: Social-Media-Sperre neu setzen, wenn sich Alter oder DNS ändern
+
+[Path]
+PathChanged=/var/lib/pingulinux/birth
+PathChanged=/var/lib/pingulinux/profiles
+PathChanged=/etc/resolv.conf
+Unit=pingulinux-social-block.service
+
+[Install]
+WantedBy=multi-user.target

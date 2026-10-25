@@ -1,0 +1,4 @@
+# KDE: Tastaturbelegung nur Deutsch
+[Layout]
+LayoutList=de
+Use=true

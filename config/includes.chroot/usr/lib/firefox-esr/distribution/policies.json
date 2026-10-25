@@ -33,6 +33,7 @@
   "DNSOverHTTPS": {
    "Enabled": false,
    "Locked": true
-  }
+  },
+  "BlockAboutConfig": true
  }
 }

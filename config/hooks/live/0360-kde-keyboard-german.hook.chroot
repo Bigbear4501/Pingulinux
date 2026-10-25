@@ -1,0 +1,10 @@
+#!/bin/sh
+# KDE-Bildschirmtastatur (Maliit) nur auf Deutsch, Englisch entfernt.
+# Die Vorgabe steht in 90_pingulinux-maliit.gschema.override.
+set -e
+if ls /usr/share/glib-2.0/schemas/*maliit* >/dev/null 2>&1; then
+    glib-compile-schemas /usr/share/glib-2.0/schemas
+    echo "Maliit: Sprache Deutsch eingestellt"
+else
+    echo "Maliit-Schema nicht gefunden, Bildschirmtastatur bleibt unverändert" >&2
+fi

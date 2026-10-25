@@ -7,3 +7,4 @@ Icon=utilities-terminal
 Terminal=false
 NoDisplay=true
 X-GNOME-Autostart-enabled=true
+OnlyShowIn=XFCE;

@@ -90,5 +90,33 @@
  {
   "cmd": "gufw",
   "min_age": 99
+ },
+ {
+  "cmd": "gwenview",
+  "min_age": 2
+ },
+ {
+  "cmd": "okular",
+  "min_age": 4
+ },
+ {
+  "cmd": "kcalc",
+  "min_age": 7
+ },
+ {
+  "cmd": "spectacle",
+  "min_age": 8
+ },
+ {
+  "cmd": "kate",
+  "min_age": 10
+ },
+ {
+  "cmd": "ark",
+  "min_age": 10
+ },
+ {
+  "cmd": "plasma-systemmonitor",
+  "min_age": 99
  }
 ]

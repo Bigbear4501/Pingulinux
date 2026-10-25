@@ -35,15 +35,15 @@ welcomeExpandingLogo:  false
 strings:
     productName:         "Pingulinux OS"
     shortProductName:    "Pingulinux"
-    version:              "1.0"
-    shortVersion:         "1.0"
-    versionedName:        "Pingulinux OS 1.0"
-    shortVersionedName:   "Pingulinux 1.0"
+    version:              "Alpha 2"
+    shortVersion:         "Alpha 2"
+    versionedName:        "Pingulinux OS Alpha 2"
+    shortVersionedName:   "Pingulinux Alpha 2"
     bootloaderEntryName:  "Pingulinux OS"
     productUrl:           "https://github.com/Bigbear4501/Pingulinux"
-    supportUrl:           "https://github.com/Bigbear4501/Pingulinux"
-    knownIssuesUrl:       "https://github.com/Bigbear4501/Pingulinux"
-    releaseNotesUrl:      "https://github.com/Bigbear4501/Pingulinux"
+    supportUrl:           "https://github.com/Bigbear4501/Pingulinux/issues"
+    knownIssuesUrl:       "https://github.com/Bigbear4501/Pingulinux/issues"
+    releaseNotesUrl:      "https://github.com/Bigbear4501/Pingulinux/releases"
     donateUrl:            "https://github.com/Bigbear4501/Pingulinux"
 
 images:

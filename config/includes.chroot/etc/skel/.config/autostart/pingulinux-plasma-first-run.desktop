@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Pingulinux Plasma-Optik einrichten
+Exec=/usr/local/bin/pingulinux-plasma-first-run.sh
+OnlyShowIn=KDE;
+NoDisplay=true
+X-GNOME-Autostart-enabled=true

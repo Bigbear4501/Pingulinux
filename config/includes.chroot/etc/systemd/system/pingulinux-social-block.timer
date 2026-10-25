@@ -1,0 +1,9 @@
+[Unit]
+Description=Pingulinux: Social-Media-Sperre stündlich prüfen (Geburtstage)
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=1h
+
+[Install]
+WantedBy=timers.target

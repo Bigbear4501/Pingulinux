@@ -1,0 +1,9 @@
+#!/bin/bash
+# 0146-no-autologin-service.hook.chroot
+# Läuft chrooted, NACH der Paketinstallation.
+# Ergänzt Hook 0145: Falls der Installer den Haken "Automatisch anmelden"
+# trotzdem anzeigt und jemand ihn setzt, wird die automatische Anmeldung
+# auf dem installierten System beim Start wieder entfernt.
+set -e
+systemctl enable pingulinux-no-autologin.service
+echo "Schutz gegen automatische Anmeldung aktiviert."

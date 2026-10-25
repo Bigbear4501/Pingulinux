@@ -13,7 +13,7 @@
 set -e
 
 USERNAME="$1"
-AGE="$2"
+AGE="$2"   # Geburtsmonat JJJJ-MM (oder Alter in Jahren)
 AVATAR="$3"
 PASSWORD=$(cat)
 
@@ -29,6 +29,7 @@ rm -f "/home/${USERNAME}/.config/autostart/pingulinux-parental-control.desktop" 
 # betroffen, nur dieses neue). Erfordert das Paket "acl".
 if command -v setfacl &> /dev/null; then
     setfacl -m u:"${USERNAME}":--- /usr/bin/xfce4-terminal 2>/dev/null || true
+    setfacl -m u:"${USERNAME}":--- /usr/bin/konsole 2>/dev/null || true
 fi
 
 # YouTube Kids als Symbol auf dem Desktop des Kindes
@@ -39,7 +40,14 @@ chown -R "${USERNAME}:${USERNAME}" "/home/${USERNAME}/Desktop" 2>/dev/null || tr
 
 # Alters-Profil (Bildschirmzeit, Social-Media-Sperre) automatisch setzen
 if [ -n "$AGE" ]; then
-    /usr/local/bin/pingulinux-apply-age-profile.sh "$USERNAME" "$AGE" || true
+    case "$AGE" in
+        *-*)
+            mkdir -p /var/lib/pingulinux/birth
+            echo "$AGE" > "/var/lib/pingulinux/birth/$USERNAME"
+            AGE=$(/usr/local/bin/pingulinux-age-from-birth.sh "$AGE") || AGE=""
+            ;;
+    esac
+    [ -n "$AGE" ] && /usr/local/bin/pingulinux-apply-age-profile.sh "$USERNAME" "$AGE" || true
 fi
 
 # Profilbild (leer = Pingu-Standardbild bleibt)
