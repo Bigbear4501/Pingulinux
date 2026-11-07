@@ -1,0 +1,8 @@
+#!/bin/bash
+# 0420-media-access.hook.chroot
+# Kamera und Mikrofon erst ab 10 Jahren.
+set -e
+getent group pingumedia >/dev/null || groupadd --system pingumedia
+mkdir -p /var/lib/pingulinux/birth /var/lib/pingulinux/profiles
+systemctl enable pingulinux-media-access.service pingulinux-media-access.path pingulinux-media-access.timer
+echo "Kamera und Mikrofon erst ab 10 aktiviert."

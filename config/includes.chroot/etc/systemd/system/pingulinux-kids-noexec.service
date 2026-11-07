@@ -1,0 +1,11 @@
+[Unit]
+Description=Pingulinux: Kinder können keine selbst heruntergeladenen Programme starten
+After=local-fs.target
+Before=display-manager.service systemd-user-sessions.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/pingulinux-kids-noexec.sh boot
+
+[Install]
+WantedBy=multi-user.target

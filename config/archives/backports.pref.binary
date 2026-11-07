@@ -1,0 +1,8 @@
+# Pingulinux: Die Backports-Quelle ist eingetragen, wird aber nicht von selbst
+# benutzt. Die ISO bleibt komplett beim stabilen Debian 13 (Kernel, Firmware,
+# Grafik). Neuere Pakete aus Backports holt nur, wer sie ausdrücklich wählt,
+# später über die Kachel „Hardware & Treiber“ im Eltern-Kontrollzentrum
+# (neuer Kernel mit passender Firmware installieren, entfernen, wechseln).
+Package: *
+Pin: release n=trixie-backports
+Pin-Priority: 100

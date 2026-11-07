@@ -1,4 +1,4 @@
 [User]
 Icon=/var/lib/AccountsService/icons/pingu
 SystemAccount=false
-XSession=xfce
+XSession=plasma

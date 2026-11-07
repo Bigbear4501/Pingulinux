@@ -1,18 +1,8 @@
 # Desktop-Basis
-xfce4
-xfce4-goodies
-xfce4-whiskermenu-plugin
-lightdm
-lightdm-gtk-greeter
 zenity
 
 # Panel-Erweiterungen: Netzwerk, Helligkeit, Lautstärke, Benachrichtigungen
 network-manager
-network-manager-gnome
-xfce4-wavelan-plugin
-xfce4-power-manager
-xfce4-pulseaudio-plugin
-xfce4-notifyd
 pavucontrol
 
 # Lernsoftware
@@ -51,7 +41,6 @@ krita
 krita-l10n
 
 # Bild- und PDF-Betrachter
-ristretto
 evince
 
 # Medienwiedergabe
@@ -129,16 +118,14 @@ firmware-realtek
 firmware-intel-sound
 firmware-sof-signed
 bluez
-blueman
 iio-sensor-proxy
-onboard
 
 # Eigener App Store (GTK)
 python3-gi
 gir1.2-gtk-3.0
 
-# --- KDE Plasma als zweite, waehlbare Sitzung (Tablet/Touch-Tests) ---
-# Bewusst OHNE Metapaket kde-plasma-desktop (das wuerde SDDM mitbringen)
+# --- KDE Plasma (einziger Desktop) ---
+# Bewusst OHNE Metapaket kde-plasma-desktop (SDDM wird einzeln installiert)
 plasma-desktop
 plasma-workspace
 plasma-workspace-data
@@ -184,4 +171,9 @@ gstreamer1.0-libav
 
 # Alpha 3: Passwort-Fenster (Polkit-Agent), WLAN MacBook Air, Social-Media-Sperre, YouTube-Kids-Fenster
 polkit-kde-agent-1
-mate-polkit
+
+# Pingulinux: zram, Passwort-Fenster (Polkit-Agent), WLAN MacBook Air, Social-Media-Sperre, YouTube-Kids-Fenster
+sddm
+sddm-theme-breeze
+qt6-virtualkeyboard-plugin
+systemd-zram-generator

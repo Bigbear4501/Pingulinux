@@ -1,0 +1,9 @@
+[Unit]
+Description=Pingulinux: Kamera/Mikrofon täglich prüfen (Geburtstage)
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,7 @@
+# Pingulinux: Kamera und Mikrofon nur für die Gruppe „pingumedia“
+# (Erwachsene und Kinder ab 10, siehe pingulinux-media-access.py).
+# Normalerweise bekommt das angemeldete Konto automatisch Zugriff („uaccess“).
+# Das wird hier für Kameras und Aufnahme-Geräte abgeschaltet.
+# Läuft nach 70-uaccess.rules und vor 73-seat-late.rules.
+SUBSYSTEM=="video4linux", TAG-="uaccess", GROUP="pingumedia", MODE="0660"
+SUBSYSTEM=="sound", KERNEL=="pcmC[0-9]*D[0-9]*c", TAG-="uaccess", GROUP="pingumedia", MODE="0660"

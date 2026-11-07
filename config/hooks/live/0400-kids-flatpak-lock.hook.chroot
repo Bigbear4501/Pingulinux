@@ -1,0 +1,7 @@
+#!/bin/bash
+# 0400-kids-flatpak-lock.hook.chroot
+# Kinder dürfen keine Flatpaks selbst installieren (flatpak --user).
+set -e
+mkdir -p /var/lib/pingulinux/birth /var/lib/pingulinux/profiles
+systemctl enable pingulinux-kids-flatpak-lock.service pingulinux-kids-flatpak-lock.path
+echo "Flatpak-Sperre für Kinder aktiviert."

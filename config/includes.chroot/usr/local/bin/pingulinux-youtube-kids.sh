@@ -1,18 +1,23 @@
 #!/bin/bash
 #
 # pingulinux-youtube-kids.sh
-# Oeffnet YouTube Kids als eigenes Fenster (Web-App).
-# Kinderkonten (ohne Admin-Rechte) brauchen dafuer die Freigabe eines
-# Erwachsenen (Administrator-Passwort). Das gilt auch fuer ganz kleine
-# Kinder, die sonst keinen Browser starten duerfen: Die Freigabe gilt nur
-# fuer diese eine YouTube-Kids-Sitzung.
-# Admin-/Eltern-Konten starten direkt.
+# Öffnet YouTube Kids im eigenen YouTube-Kids-Fenster
+# (pingulinux-youtube-kids-viewer.py). Das Fenster ist kein Browser und
+# kann nur YouTube Kids zeigen.
+#
+# Alpha 3: Kinderkonten brauchen die Freigabe eines Erwachsenen (Passwort).
+# Eltern-Konten und der Live-Modus starten direkt.
+# Gibt es die Datei /etc/pingulinux/youtube-kids-ohne-passwort, starten
+# auch Kinder direkt (geplant als Standard für Beta 1, mit Schalter im
+# Kontrollzentrum).
 
 zenity() { command zenity --window-icon=/usr/share/pingulinux/icons/pingu.png "$@"; }
-URL="https://www.youtubekids.com/"
+VIEWER=/usr/local/bin/pingulinux-youtube-kids-viewer.py
 
-if id -nG | tr ' ' '\n' | grep -qx sudo || grep -q "boot=live" /proc/cmdline 2>/dev/null; then
-    exec firefox-esr --new-window "$URL"
+is_parent() { id -nG | tr ' ' '\n' | grep -qx sudo; }
+
+if [ -e /etc/pingulinux/youtube-kids-ohne-passwort ] || is_parent || grep -q "boot=live" /proc/cmdline 2>/dev/null; then
+    exec "$VIEWER"
 fi
 
 zenity --question --title="YouTube Kids" --width=420 --ok-label="Eltern-Freigabe" --cancel-label="Abbrechen" \

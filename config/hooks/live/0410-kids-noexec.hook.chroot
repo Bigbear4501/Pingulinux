@@ -1,0 +1,7 @@
+#!/bin/bash
+# 0410-kids-noexec.hook.chroot
+# Kinder können keine selbst heruntergeladenen Programme starten (noexec).
+set -e
+mkdir -p /var/lib/pingulinux/birth /var/lib/pingulinux/profiles
+systemctl enable pingulinux-kids-noexec.service pingulinux-kids-noexec.path
+echo "noexec für Kinder-Ordner aktiviert."

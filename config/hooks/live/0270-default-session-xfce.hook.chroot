@@ -1,18 +1,7 @@
 #!/bin/sh
-# XFCE bleibt Standard, auch wenn KDE Plasma installiert ist.
-for s in /usr/bin/xfce4-session /usr/bin/startxfce4; do
+# Beta 1: KDE Plasma ist die Standard-Sitzung.
+# (Der Dateiname bleibt, damit die alte XFCE-Fassung sicher ersetzt wird.)
+for s in /usr/bin/startplasma-x11 /usr/bin/startplasma-wayland; do
   [ -x "$s" ] && update-alternatives --set x-session-manager "$s" 2>/dev/null && break
-done
-
-# Die Hauptdatei von LightDM hat Vorrang vor lightdm.conf.d: dort ebenfalls festlegen
-CONF=/etc/lightdm/lightdm.conf
-[ -f "$CONF" ] || printf '[Seat:*]\n' > "$CONF"
-grep -q '^\[Seat:\*\]' "$CONF" || printf '\n[Seat:*]\n' >> "$CONF"
-for key in user-session autologin-session; do
-  if grep -qE "^#?$key=" "$CONF"; then
-    sed -i -E "s|^#?$key=.*|$key=xfce|" "$CONF"
-  else
-    sed -i "/^\[Seat:\*\]/a $key=xfce" "$CONF"
-  fi
 done
 exit 0

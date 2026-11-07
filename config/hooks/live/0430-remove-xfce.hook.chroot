@@ -1,0 +1,13 @@
+#!/bin/bash
+# 0430-remove-xfce.hook.chroot
+# Beta 1: Pingulinux nutzt nur noch KDE Plasma.
+# - Terminal-Sperre für Kinder auf Konsole (statt xfce4-terminal)
+# - XFCE-Reste aufräumen, falls ein Paket XFCE doch mitgezogen hat
+set -e
+systemctl enable pingulinux-kids-terminal-lock.service pingulinux-kids-terminal-lock.path
+# Live-Benutzer: KDE statt XFCE
+F=/var/lib/AccountsService/users/pingu
+[ -f "$F" ] && sed -i 's/^XSession=xfce$/XSession=plasma/' "$F"
+# XFCE-Sitzung aus der Auswahl nehmen, falls sie trotzdem installiert ist
+rm -f /usr/share/xsessions/xfce.desktop
+echo "XFCE entfernt, KDE Plasma ist der einzige Desktop."

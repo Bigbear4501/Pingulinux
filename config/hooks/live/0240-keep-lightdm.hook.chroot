@@ -1,10 +1,16 @@
 #!/bin/sh
-# KDE Plasma ist als zweite Sitzung installiert; LightDM bleibt der
-# einzige Anmeldebildschirm. Falls SDDM trotzdem mitinstalliert wurde,
-# wird es deaktiviert.
-echo "/usr/sbin/lightdm" > /etc/X11/default-display-manager
-ln -sf /usr/lib/systemd/system/lightdm.service /etc/systemd/system/display-manager.service
-if dpkg -l sddm 2>/dev/null | grep -q '^ii'; then
-  systemctl disable sddm 2>/dev/null || true
+# Beta 1: SDDM (KDE) ist der Anmeldebildschirm, LightDM wird nicht mehr benutzt.
+# (Der Dateiname bleibt, damit die alte LightDM-Fassung sicher ersetzt wird.)
+echo "/usr/bin/sddm" > /etc/X11/default-display-manager
+ln -sf /usr/lib/systemd/system/sddm.service /etc/systemd/system/display-manager.service
+if dpkg -l lightdm 2>/dev/null | grep -q '^ii'; then
+  systemctl disable lightdm 2>/dev/null || true
 fi
+# Pingu als Standard-Profilbild (für Konten ohne eigenes Bild)
+if [ -f /usr/share/pingulinux/icons/pingu.png ]; then
+  mkdir -p /usr/share/sddm/faces
+  cp -f /usr/share/pingulinux/icons/pingu.png /usr/share/sddm/faces/.face.icon
+fi
+# Startwert für die Sitzung gehört dem Benutzer sddm
+[ -f /var/lib/sddm/state.conf ] && chown sddm:sddm /var/lib/sddm /var/lib/sddm/state.conf 2>/dev/null || true
 exit 0

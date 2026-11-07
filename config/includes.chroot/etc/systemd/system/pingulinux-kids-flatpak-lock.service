@@ -1,0 +1,10 @@
+[Unit]
+Description=Pingulinux: Kinder dürfen keine Flatpaks selbst installieren
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/pingulinux-kids-flatpak-lock.sh
+
+[Install]
+WantedBy=multi-user.target

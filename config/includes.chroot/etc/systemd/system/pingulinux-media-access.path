@@ -1,0 +1,10 @@
+[Unit]
+Description=Pingulinux: Kamera/Mikrofon neu setzen, wenn sich ein Alter ändert
+
+[Path]
+PathChanged=/var/lib/pingulinux/birth
+PathChanged=/var/lib/pingulinux/profiles
+Unit=pingulinux-media-access.service
+
+[Install]
+WantedBy=multi-user.target

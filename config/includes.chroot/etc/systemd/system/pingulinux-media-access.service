@@ -1,0 +1,11 @@
+[Unit]
+Description=Pingulinux: Kamera und Mikrofon erst ab 10 Jahren
+After=local-fs.target
+Before=display-manager.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/pingulinux-media-access.py
+
+[Install]
+WantedBy=multi-user.target

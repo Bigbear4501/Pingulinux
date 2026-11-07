@@ -28,7 +28,7 @@ rm -f "/home/${USERNAME}/.config/autostart/pingulinux-parental-control.desktop" 
 # Terminal-Zugriff für genau dieses Konto sperren (kein Admin-Konto
 # betroffen, nur dieses neue). Erfordert das Paket "acl".
 if command -v setfacl &> /dev/null; then
-    setfacl -m u:"${USERNAME}":--- /usr/bin/xfce4-terminal 2>/dev/null || true
+    setfacl -m u:"${USERNAME}":--- /usr/bin/konsole 2>/dev/null || true
     setfacl -m u:"${USERNAME}":--- /usr/bin/konsole 2>/dev/null || true
 fi
 

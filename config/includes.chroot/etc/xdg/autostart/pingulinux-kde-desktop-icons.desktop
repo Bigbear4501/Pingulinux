@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name=Pingulinux Schreibtisch-Symbole
-Comment=KDE: Eigener Ordner und Papierkorb auf dem Schreibtisch
+Comment=KDE: Eigener Ordner und Papierkorb; Eltern: Kontrollzentrum auf dem Schreibtisch
 Exec=/usr/local/bin/pingulinux-kde-desktop-icons.sh
 NoDisplay=true
 Terminal=false

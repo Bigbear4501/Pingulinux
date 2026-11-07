@@ -1,0 +1,10 @@
+[Unit]
+Description=Pingulinux: noexec neu setzen, wenn sich Kinderkonten ändern
+
+[Path]
+PathChanged=/var/lib/pingulinux/birth
+PathChanged=/var/lib/pingulinux/profiles
+Unit=pingulinux-kids-noexec.service
+
+[Install]
+WantedBy=multi-user.target
