@@ -1,0 +1,49 @@
+#!/bin/bash
+# 0470-iso-schlanker.hook.chroot  (Beta 1)
+#
+# Entfernt große Pakete, die nur als Abhängigkeit oder Empfehlung in die
+# ISO kommen und für Kinder keinen Nutzen haben:
+#   - Noto-Schriften für Chinesisch/Japanisch/Koreanisch und seltene
+#     Alphabete (fonts-noto-core bleibt)
+#   - ibus (Eingabe für asiatische Sprachen)
+#   - Qt5-WebEngine (alter Browser-Kern)
+#   - gcc-14 (Compiler)
+#   - cryfs (Plasma-Tresor)
+#
+# Sicherheitsnetz: Vorher wird simuliert, was mit verschwinden würde.
+# Wäre ein wichtiges Programm betroffen, bleibt das Paket drin und es
+# kommt eine Warnung „SCHLANK: …“ ins Bau-Log. Der Bau läuft weiter.
+
+TARGETS="fonts-noto-cjk fonts-noto-cjk-extra fonts-noto-extra fonts-noto-ui-extra
+ibus ibus-data ibus-gtk ibus-gtk3 ibus-gtk4 libqt5webenginecore5 libqt5webengine5
+libqt5webengine-data gcc-14 cryfs"
+
+# Diese Programme dürfen auf keinen Fall mit verschwinden
+PROTECT="plasma-desktop plasma-workspace kwin-wayland kwin-x11 sddm firefox-esr
+libreoffice-core libreoffice-writer calamares gcompris-qt tuxpaint tuxtype tuxmath
+supertux pingus minetest luanti kalzium kgeography marble kturtle vlc timekpr-next
+timeshift gufw zenity python3 python3-gi okular dolphin konsole maliit-keyboard
+plasma-nm plasma-pa bluedevil fonts-noto-core task-german flatpak thunderbird"
+
+export DEBIAN_FRONTEND=noninteractive
+removed=""
+for p in $TARGETS; do
+    dpkg -s "$p" >/dev/null 2>&1 || continue
+    sim=$(apt-get -s purge "$p" 2>/dev/null | awk '/^(Remv|Purg) /{print $2}')
+    hit=""
+    for q in $sim; do
+        for k in $PROTECT; do [ "$q" = "$k" ] && hit="$hit $q"; done
+    done
+    if [ -n "$hit" ]; then
+        echo "SCHLANK: $p bleibt drin, sonst würde auch verschwinden:$hit" >&2
+        continue
+    fi
+    if apt-get -y purge "$p" >/dev/null 2>&1; then
+        removed="$removed $(echo $sim | tr '\n' ' ')"
+    else
+        echo "SCHLANK: $p ließ sich nicht entfernen" >&2
+    fi
+done
+apt-get -y autoremove --purge >/dev/null 2>&1 || true
+echo "SCHLANK: entfernt:${removed:- nichts}"
+exit 0

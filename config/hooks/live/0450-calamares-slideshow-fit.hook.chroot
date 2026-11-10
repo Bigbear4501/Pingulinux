@@ -1,0 +1,51 @@
+#!/bin/sh
+# 0450-calamares-slideshow-fit.hook.chroot  (Beta 1, Bug b17)
+#
+# Die Diashow im Installer zeigte das Willkommensbild mit „Crop“: Auf
+# breiten, flachen Fenstern (z. B. Surface) wurde oben und unten
+# abgeschnitten, also auch die Überschrift „Willkommen bei Pingulinux!“.
+# Jetzt wird das Bild immer ganz gezeigt (Fit), oben ausgerichtet, auf
+# weißem Grund. Bleibt Platz frei, ist er weiß (wie der Kopf des Bildes).
+# Ersetzt nur show.qml aus 0110, das Bild selbst bleibt.
+
+D=/etc/calamares/branding/pingulinux
+[ -d "$D" ] || { echo "Calamares-Branding nicht gefunden, überspringe." >&2; exit 0; }
+
+cat > "$D/show.qml" <<'QMLEOF'
+import QtQuick 2.0
+import calamares.slideshow 1.0
+
+Presentation {
+    id: presentation
+
+    Slide {
+        Rectangle {
+            anchors.fill: parent
+            color: "#ffffff"
+        }
+        Image {
+            id: background
+            source: "welcome.png"
+            anchors.fill: parent
+            fillMode: Image.PreserveAspectFit
+            horizontalAlignment: Image.AlignHCenter
+            verticalAlignment: Image.AlignTop
+            smooth: true
+            mipmap: true
+        }
+    }
+
+    function nextSlide() {
+        presentation.goToNextSlide();
+    }
+
+    Timer {
+        interval: 5000
+        running: true
+        repeat: true
+        onTriggered: presentation.nextSlide()
+    }
+}
+QMLEOF
+echo "Calamares-Diashow: Willkommensbild wird ganz gezeigt (Fit)."
+exit 0

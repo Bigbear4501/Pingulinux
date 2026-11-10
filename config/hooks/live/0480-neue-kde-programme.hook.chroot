@@ -1,0 +1,32 @@
+#!/bin/sh
+# 0480-neue-kde-programme.hook.chroot  (Beta 1)
+# Neue Programme (Wunsch Mike, 8. Nov):
+#   crow-translate  Übersetzer
+#   knotes          Notizzettel für KDE
+#   skanpage        Scanner (KDE, ersetzt „Dokument-Scanner“ simple-scan)
+#   kamoso          Kamera-App (KDE)
+#   print-manager   Drucker (KDE, ersetzt system-config-printer)
+#   plasma-firewall Firewall (KDE, ersetzt Gufw; ufw bleibt als Unterbau)
+#   ktuberling blinken klettres khangman kanagram kbruch   KDE-Lernspiele
+# Jedes Paket einzeln: Fehlt eines in Debian 13, bricht der Bau NICHT ab,
+# im Bau-Log steht dann „NEU: … fehlt“.
+export DEBIAN_FRONTEND=noninteractive
+for p in ufw plasma-firewall crow-translate knotes skanpage kamoso print-manager ktuberling blinken klettres khangman kanagram kbruch; do
+    if apt-get install -y "$p" >/dev/null 2>&1; then
+        echo "NEU: $p installiert"
+    else
+        echo "NEU: $p fehlt (nicht installierbar)" >&2
+    fi
+done
+# LibreOffice an KDE anbinden (KDE-Aussehen und KDE-Dateidialoge).
+# Paketname je nach Debian-Stand: libreoffice-kf6, sonst libreoffice-qt6.
+for p in libreoffice-kf6 libreoffice-qt6; do
+    if apt-get install -y "$p" >/dev/null 2>&1; then
+        echo "NEU: $p installiert (LibreOffice im KDE-Stil)"; break
+    fi
+    echo "NEU: $p fehlt" >&2
+done
+# gtk3-Anbindung nicht mehr nötig, falls sie mitgekommen ist
+dpkg -s libreoffice-gtk3 >/dev/null 2>&1 && dpkg -s libreoffice-kf6 >/dev/null 2>&1 && \
+    apt-get purge -y libreoffice-gtk3 >/dev/null 2>&1 && echo "NEU: libreoffice-gtk3 entfernt"
+exit 0

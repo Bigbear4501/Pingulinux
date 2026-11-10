@@ -118,5 +118,49 @@
  {
   "cmd": "plasma-systemmonitor",
   "min_age": 99
+ },
+ {
+  "cmd": "ktuberling",
+  "min_age": 2
+ },
+ {
+  "cmd": "klettres",
+  "min_age": 3
+ },
+ {
+  "cmd": "blinken",
+  "min_age": 4
+ },
+ {
+  "cmd": "khangman",
+  "min_age": 6
+ },
+ {
+  "cmd": "knotes",
+  "min_age": 6
+ },
+ {
+  "cmd": "kanagram",
+  "min_age": 8
+ },
+ {
+  "cmd": "crow",
+  "min_age": 8
+ },
+ {
+  "cmd": "crow-translate",
+  "min_age": 8
+ },
+ {
+  "cmd": "kbruch",
+  "min_age": 9
+ },
+ {
+  "cmd": "kamoso",
+  "min_age": 10
+ },
+ {
+  "cmd": "skanpage",
+  "min_age": 10
  }
 ]

@@ -1,0 +1,64 @@
+# Pingulinux: Automatische Prüfung bei jedem Push und Pull Request.
+# Prüft nur, ob die Dateien fehlerfrei lesbar sind – baut keine ISO.
+#   - Shell-Skripte und Hooks: bash -n (Syntax) und ShellCheck (nur echte Fehler)
+#   - Python-Skripte: Syntax
+#   - JSON-Dateien (Altersgrenzen, App Store): gültiges JSON
+#   - Paketlisten: keine doppelten Einträge
+name: Prüfung
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Werkzeuge
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+
+      - name: Shell-Skripte und Hooks
+        run: |
+          fail=0
+          while IFS= read -r -d '' f; do
+            head -1 "$f" | grep -qE '^#!.*\b(ba)?sh\b' || continue
+            sh=$(head -1 "$f" | grep -q bash && echo bash || echo sh)
+            if ! $sh -n "$f" 2>/tmp/err; then
+              echo "::error file=$f::Syntaxfehler: $(cat /tmp/err)"; fail=1; continue
+            fi
+            if ! shellcheck -S error -s "$sh" "$f"; then
+              echo "::error file=$f::ShellCheck meldet Fehler"; fail=1
+            fi
+          done < <(find . -path ./.git -prune -o -type f \( -name '*.sh' -o -path '*/hooks/*' -o -path '*/usr/local/bin/*' \) -print0)
+          exit $fail
+
+      - name: Python-Skripte
+        run: |
+          fail=0
+          while IFS= read -r -d '' f; do
+            case "$f" in *.py) ;; *) head -1 "$f" | grep -q python || continue ;; esac
+            python3 -c "import ast,sys; ast.parse(open(sys.argv[1],encoding='utf-8').read(), sys.argv[1])" "$f" \
+              || { echo "::error file=$f::Python-Syntaxfehler"; fail=1; }
+          done < <(find . -path ./.git -prune -o -type f \( -name '*.py' -o -path '*/usr/local/bin/*' \) -print0)
+          exit $fail
+
+      - name: JSON-Dateien
+        run: |
+          fail=0
+          while IFS= read -r -d '' f; do
+            python3 -m json.tool "$f" >/dev/null || { echo "::error file=$f::Kein gültiges JSON"; fail=1; }
+          done < <(find . -path ./.git -prune -o -type f -name '*.json' -print0)
+          exit $fail
+
+      - name: Paketlisten
+        run: |
+          fail=0
+          for f in config/package-lists/*.list.chroot; do
+            [ -f "$f" ] || continue
+            d=$(grep -vE '^\s*(#|$)' "$f" | tr ' ' '\n' | grep -v '^$' | sort | uniq -d)
+            [ -n "$d" ] && { echo "::error file=$f::Doppelt: $d"; fail=1; }
+          done
+          exit $fail

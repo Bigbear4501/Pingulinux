@@ -1,0 +1,12 @@
+#!/bin/sh
+# 0510-timeshift-ausblenden.hook.chroot  (Beta 1)
+# Timeshift nicht im Startmenü zeigen: Sicherung und Wiederherstellung laufen
+# über das Eltern-Kontrollzentrum (pingulinux-wiederherstellen.py).
+# Timeshift selbst bleibt installiert (Unterbau, „Timeshift öffnen“ für Profis).
+for f in /usr/share/applications/timeshift-gtk.desktop /usr/share/applications/timeshift.desktop; do
+    [ -f "$f" ] || continue
+    sed -i '/^NoDisplay=/d' "$f"
+    sed -i '0,/^\[Desktop Entry\]/s//[Desktop Entry]\nNoDisplay=true/' "$f"
+    echo "Timeshift im Menü ausgeblendet: $f"
+done
+exit 0

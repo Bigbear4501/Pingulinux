@@ -558,5 +558,45 @@
   "flatpak": null,
   "cmd": "mu-editor",
   "min_age": 10
+ },
+ {
+  "category": "Spiele",
+  "name": "SuperTuxKart",
+  "summary": "Kart-Rennen mit Tux und Freunden",
+  "icon": "supertuxkart",
+  "apt": "supertuxkart",
+  "flatpak": null,
+  "cmd": "supertuxkart",
+  "min_age": 6
+ },
+ {
+  "category": "Bildung",
+  "name": "Stellarium",
+  "summary": "Sternenhimmel wie im Planetarium",
+  "icon": "stellarium",
+  "apt": "stellarium",
+  "flatpak": null,
+  "cmd": "stellarium",
+  "min_age": 8
+ },
+ {
+  "category": "Grafik",
+  "name": "Krita",
+  "summary": "Malen und Zeichnen für Fortgeschrittene",
+  "icon": "krita",
+  "apt": "krita",
+  "flatpak": null,
+  "cmd": "krita",
+  "min_age": 10
+ },
+ {
+  "category": "Bildung",
+  "name": "Kalzium",
+  "summary": "Periodensystem der Elemente",
+  "icon": "kalzium",
+  "apt": "kalzium",
+  "flatpak": null,
+  "cmd": "kalzium",
+  "min_age": 10
  }
 ]

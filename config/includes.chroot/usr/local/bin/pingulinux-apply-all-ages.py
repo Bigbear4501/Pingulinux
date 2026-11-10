@@ -110,8 +110,8 @@ def main():
     ents = entries()
     fps = flatpak_entries()
     for user, age in users():
-        # Terminals sind fuer Kinderkonten immer gesperrt (XFCE und KDE)
-        for term in ("/usr/bin/xfce4-terminal", "/usr/bin/konsole"):
+        # Terminal (Konsole) ist fuer Kinderkonten immer gesperrt
+        for term in ("/usr/bin/konsole",):
             if os.path.exists(term):
                 subprocess.run(["setfacl", "-m", "u:%s:---" % user, os.path.realpath(term)], capture_output=True)
         for cmd, min_age in ents.items():

@@ -1,0 +1,6 @@
+#!/bin/sh
+# 0500-sicherung.hook.chroot  (Beta 1, be21): tägliche Systemsicherung einschalten
+systemctl enable pingulinux-sicherung.timer
+# Timeshifts eigener cron-Eintrag würde doppelt prüfen – unser Timer übernimmt
+rm -f /etc/cron.d/timeshift-hourly /etc/cron.d/timeshift-boot
+exit 0

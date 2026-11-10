@@ -6,48 +6,38 @@
 # wichtigsten Verwaltungswerkzeuge bündelt.
 
 # --- Passwort-Abfrage (sudo-Passwort des Nutzers) ---
-# Pingulinux-Logo in allen Dialogfenstern
-zenity() { command zenity --window-icon=/usr/share/pingulinux/icons/pingu.png "$@"; }
+# Dialog-Fenster (kdialog, sonst zenity) mit Pingulinux-Logo
+. /usr/local/lib/pingulinux/dialog.sh
 # Im Live-Modus gibt es keine Passwort-Abfrage (Testsystem, Sudo ohne Passwort).
 # Auf dem installierten System wird das Administrator-Passwort geprueft.
 if ! grep -q "boot=live" /proc/cmdline 2>/dev/null; then
     sudo -k  # bisherigen sudo-Cache verwerfen, damit wirklich neu geprüft wird
 
-    PASSWORD=$(zenity --password --title="Eltern-Kontrollzentrum - Anmeldung" --ok-label="Anmelden" --cancel-label="Abbrechen")
+    PASSWORD=$(pd_passwort "Eltern-Kontrollzentrum" "Passwort eines Erwachsenen:")
     if [ -z "$PASSWORD" ]; then
         exit 0
     fi
 
     if ! echo "$PASSWORD" | sudo -S true 2>/dev/null; then
-        zenity --error --title="Eltern-Kontrollzentrum" --text="⚠️ Das Passwort stimmt nicht. Bitte versuche es noch einmal." --width=340
+        pd_fehler "Eltern-Kontrollzentrum" "⚠️ Das Passwort stimmt nicht. Bitte versuche es noch einmal."
         exit 1
     fi
 fi
 
 # --- Hauptmenü als Kacheln ---
-if [ -x /usr/local/bin/pingulinux-control-tiles.py ] && /usr/bin/python3 -c "import gi" 2>/dev/null; then
+if [ -x /usr/local/bin/pingulinux-control-tiles.py ] && /usr/bin/python3 -c "import PyQt6.QtWidgets" 2>/dev/null; then
     exec /usr/local/bin/pingulinux-control-tiles.py
 fi
 
 # Ersatz (Liste), falls die Kachel-Ansicht nicht startet
 while true; do
-    CHOICE=$(zenity --list \
-        --title="Eltern-Kontrollzentrum" \
-        --text="<big><b>Hallo! 🐧 Was möchtest du verwalten?</b></big>" \
-        --column="Funktion" \
-        --width=520 --height=680 --ok-label="Öffnen" --cancel-label="Beenden" --hide-header \
-        "⏰  Bildschirmzeit" \
-        "🛡️  Firewall und Netzwerk" \
-        "🌐  Kinderschutz-Filter ein/aus" \
-        "🖨️  Drucker und Scanner" \
-        "💾  Sicherung und Wiederherstellung" \
-        "👨‍👩‍👧  Benutzerkonten" \
-        "📋  Konten-Übersicht" \
-        "🛍️  Pingulinux App Store" \
-        "🚀  Update-Assistent (neue Debian-Version)" \
-        "🧹  Systembereinigung" \
-        "🛠️  Hilfe und Fehlerdiagnose" \
-        "❓  Hilfe")
+    # Ersatz-Menü: Schlüssel = angezeigter Text, damit die Fälle unten gleich bleiben
+    ITEMS=("⏰  Bildschirmzeit" "🛡️  Firewall und Netzwerk" "🌐  Kinderschutz-Filter ein/aus"
+           "🖨️  Drucker und Scanner" "💾  Sicherung und Wiederherstellung" "👨‍👩‍👧  Benutzerkonten"
+           "📋  Konten-Übersicht" "🛍️  Pingulinux App Store" "🚀  Update-Assistent (neue Debian-Version)"
+           "🧹  Systembereinigung" "🛠️  Hilfe und Fehlerdiagnose" "❓  Hilfe")
+    ARGS=(); for i in "${ITEMS[@]}"; do ARGS+=("$i" "$i"); done
+    CHOICE=$(pd_menue "Eltern-Kontrollzentrum" "<big><b>Hallo! 🐧 Was möchtest du verwalten?</b></big>" "${ARGS[@]}")
 
     case "$CHOICE" in
         "⏰  Bildschirmzeit")
@@ -60,7 +50,7 @@ while true; do
             /usr/local/bin/pingulinux-toggle-dns-filter.sh
             ;;
         "🖨️  Drucker und Scanner")
-            system-config-printer &
+            kcmshell6 kcm_printer_manager &
             ;;
         "💾  Sicherung und Wiederherstellung")
             /usr/local/bin/pingulinux-admin-tool.sh sicherung &

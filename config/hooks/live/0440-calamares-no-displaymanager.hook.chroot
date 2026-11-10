@@ -1,0 +1,22 @@
+#!/bin/sh
+# 0440-calamares-no-displaymanager.hook.chroot  (Beta 1, Bug b13)
+#
+# Der Installer (Calamares 3.3) zeigt den Haken „Automatisch anmelden“ und
+# lässt sich nicht ausblenden. Ist er gesetzt, richtet das Calamares-Modul
+# „displaymanager“ die automatische Anmeldung in SDDM ein. Danach klappte
+# die normale Anmeldung im Test nicht mehr („Passwort falsch“).
+#
+# Lösung: Das Modul „displaymanager“ läuft nicht mehr. SDDM ist schon fertig
+# eingerichtet (sddm.conf.d/10-pingulinux.conf, Standard-Sitzung KDE Plasma),
+# das Modul wird nicht gebraucht. Der Haken bleibt sichtbar, bewirkt aber
+# nichts mehr. Der Schutz 0146 (pingulinux-no-autologin) bleibt zusätzlich.
+
+SETTINGS=/etc/calamares/settings.conf
+[ -f "$SETTINGS" ] || { echo "Calamares settings.conf nicht gefunden, überspringe." >&2; exit 0; }
+sed -i -E '/^[[:space:]]*-[[:space:]]*displaymanager[[:space:]]*$/d' "$SETTINGS"
+if grep -qE '^[[:space:]]*-[[:space:]]*displaymanager' "$SETTINGS"; then
+    echo "WARNUNG: displaymanager steht noch in $SETTINGS" >&2
+else
+    echo "Calamares: Modul displaymanager aus der Sequenz entfernt (keine automatische Anmeldung)."
+fi
+exit 0

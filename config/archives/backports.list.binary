@@ -1,3 +1,0 @@
-# Debian Backports: neuere Versionen einzelner Pakete für Debian 13.
-# Wird nur auf ausdrücklichen Wunsch benutzt, siehe backports.pref.*
-deb http://deb.debian.org/debian trixie-backports main contrib non-free-firmware

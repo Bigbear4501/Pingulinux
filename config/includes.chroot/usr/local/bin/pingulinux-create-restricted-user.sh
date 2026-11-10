@@ -34,8 +34,7 @@ fi
 
 # YouTube Kids als Symbol auf dem Desktop des Kindes
 mkdir -p "/home/${USERNAME}/Desktop"
-cp /usr/share/applications/pingulinux-youtube-kids.desktop "/home/${USERNAME}/Desktop/" 2>/dev/null || true
-chmod +x "/home/${USERNAME}/Desktop/pingulinux-youtube-kids.desktop" 2>/dev/null || true
+ln -sfn /usr/share/applications/pingulinux-youtube-kids.desktop "/home/${USERNAME}/Desktop/pingulinux-youtube-kids.desktop"
 chown -R "${USERNAME}:${USERNAME}" "/home/${USERNAME}/Desktop" 2>/dev/null || true
 
 # Alters-Profil (Bildschirmzeit, Social-Media-Sperre) automatisch setzen

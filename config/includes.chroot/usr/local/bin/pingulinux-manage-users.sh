@@ -7,55 +7,61 @@
 # Admin-Konto (keine sudo-Gruppe) und ohne Zugriff auf den
 # Terminal-Emulator.
 
-# Pingulinux-Logo in allen Dialogfenstern
-zenity() { command zenity --window-icon=/usr/share/pingulinux/icons/pingu.png "$@"; }
+# Dialog-Fenster (kdialog, sonst zenity) mit Pingulinux-Logo
+. /usr/local/lib/pingulinux/dialog.sh
 # Fragt nach einem Profilbild (Galerie). Gibt den Dateipfad aus (leer = Standardbild)
 choose_avatar() {
     /usr/local/bin/pingulinux-pick-avatar.py "$1" 2>/dev/null
 }
+# Auswahl eines Benutzerkontos (Name wie im Anmeldebildschirm, dahinter der Benutzername)
+pick_user() {
+    local args=() u name
+    while IFS=: read -r u _ uid _ gecos _; do
+        [ "$uid" -ge 1000 ] && [ "$uid" -lt 60000 ] || continue
+        name="${gecos%%,*}"
+        args+=("$u" "${name:-$u} ($u)")
+    done < <(getent passwd)
+    pd_menue "$1" "Für wen?" "${args[@]}"
+}
 
 while true; do
-    ACTION=$(zenity --list \
-        --title="Benutzerkonten verwalten" \
-        --column="Aktion" \
-        --width=400 --height=250 \
-        "Neuen Benutzer anlegen" \
-        "Profilbild ändern" \
-        "Passwort ändern" \
-        "Benutzer löschen")
+    ACTION=$(pd_menue "Benutzerkonten verwalten" "Was möchtest du tun?" \
+        "Neuen Benutzer anlegen" "➕  Neuen Benutzer anlegen" \
+        "Profilbild ändern" "🖼️  Profilbild ändern" \
+        "Passwort ändern" "🔑  Passwort ändern" \
+        "Benutzer löschen" "🗑️  Benutzer löschen")
 
     case "$ACTION" in
         "Neuen Benutzer anlegen")
-            NEWUSER=$(zenity --entry --title="Neuer Benutzer" --text="Name des neuen Benutzerkontos:")
+            NEWUSER=$(pd_eingabe "Neuer Benutzer" "Name des neuen Benutzerkontos:")
             if [ -z "$NEWUSER" ]; then
                 continue
             fi
 
-            PASS1=$(zenity --password --title="Passwort für $NEWUSER festlegen")
+            PASS1=$(pd_passwort "Neuer Benutzer" "Passwort für $NEWUSER festlegen:")
             if [ -z "$PASS1" ]; then
                 continue
             fi
-            PASS2=$(zenity --password --title="Passwort wiederholen")
+            PASS2=$(pd_passwort "Neuer Benutzer" "Passwort wiederholen:")
 
             if [ "$PASS1" != "$PASS2" ]; then
-                zenity --error --title="Fehler" --text="⚠️ Die Passwörter stimmen nicht überein." --width=350
+                pd_fehler "Fehler" "⚠️ Die Passwörter stimmen nicht überein."
                 continue
             fi
 
             YNOW=$(date +%Y)
             YEARS=$(seq "$YNOW" -1 $((YNOW - 17)) | paste -sd'|')
-            FORM=$(zenity --forms --title="Geburtstag von $NEWUSER" --width=380 \
-                --text="Wann wurde das Kind geboren?\nDas Alter bestimmt automatisch Bildschirmzeit und Schutzeinstellungen und wächst mit dem Kind mit." \
-                --add-combo="Geburtsmonat" --combo-values="Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember" \
-                --add-combo="Geburtsjahr" --combo-values="$YEARS" --separator=";")
-            [ -z "$FORM" ] && continue
-            BMON_NAME="${FORM%%;*}"; BYEAR="${FORM##*;}"
+            # Geburtsmonat und -jahr (zwei kleine Auswahlfenster)
+            BMON_NAME=$(pd_combo "Geburtstag von $NEWUSER" "In welchem Monat wurde $NEWUSER geboren?\nDas Alter bestimmt automatisch Bildschirmzeit und Schutzeinstellungen und wächst mit dem Kind mit." \
+                "Januar" Januar Februar März April Mai Juni Juli August September Oktober November Dezember) || continue
+            # shellcheck disable=SC2086
+            BYEAR=$(pd_combo "Geburtstag von $NEWUSER" "In welchem Jahr wurde $NEWUSER geboren?" "$((YNOW - 6))" ${YEARS//|/ }) || continue
             case "$BMON_NAME" in
                 Januar) BMON=01;; Februar) BMON=02;; "März") BMON=03;; April) BMON=04;; Mai) BMON=05;; Juni) BMON=06;;
                 Juli) BMON=07;; August) BMON=08;; September) BMON=09;; Oktober) BMON=10;; November) BMON=11;; Dezember) BMON=12;;
-                *) zenity --error --title="Fehler" --text="⚠️ Bitte Geburtsmonat und -jahr auswählen." --width=350; continue;;
+                *) pd_fehler "Fehler" "⚠️ Bitte Geburtsmonat und -jahr auswählen."; continue;;
             esac
-            case "$BYEAR" in [0-9][0-9][0-9][0-9]) ;; *) zenity --error --title="Fehler" --text="⚠️ Bitte Geburtsmonat und -jahr auswählen." --width=350; continue;; esac
+            case "$BYEAR" in [0-9][0-9][0-9][0-9]) ;; *) pd_fehler "Fehler" "⚠️ Bitte Geburtsmonat und -jahr auswählen."; continue;; esac
             BIRTH="$BYEAR-$BMON"
             AGE=$(/usr/local/bin/pingulinux-age-from-birth.sh "$BIRTH")
 
@@ -63,63 +69,59 @@ while true; do
 
             if echo "$PASS1" | pkexec /usr/local/bin/pingulinux-create-restricted-user.sh "$NEWUSER" "$BIRTH" "$AVATAR"; then
                 if [ "$AGE" -lt 13 ]; then
-                    SOCIAL="\n• Social-Media-Seiten und normales YouTube sind gesperrt (gilt nur für dieses Konto, im Firefox).\n• YouTube Kids liegt auf dem Desktop (nur mit Eltern-Freigabe)."
+                    SOCIAL="\n• Social-Media-Seiten und normales YouTube sind gesperrt (gilt nur für dieses Konto, im Firefox).\n• YouTube Kids liegt auf dem Desktop."
                 else
                     SOCIAL=""
                 fi
-                zenity --info --title="Fertig" --text="✅ Benutzerkonto '$NEWUSER' wurde angelegt.\n\n• Eingeschränktes Konto (kein Admin, kein Terminal)\n• Bildschirmzeit automatisch passend für $AGE Jahre (wächst mit dem Kind mit)$SOCIAL\n\nDie Zeiten kannst du im Kontrollzentrum unter „Bildschirmzeit“ anpassen." --width=450
+                pd_info "Fertig" "✅ Benutzerkonto '$NEWUSER' wurde angelegt.\n\n• Eingeschränktes Konto (kein Admin, kein Terminal)\n• Bildschirmzeit automatisch passend für $AGE Jahre (wächst mit dem Kind mit)$SOCIAL\n\nDie Zeiten kannst du im Kontrollzentrum unter „Bildschirmzeit“ anpassen."
             else
-                zenity --error --title="Fehler" --text="⚠️ Das Benutzerkonto konnte nicht angelegt werden." --width=350
+                pd_fehler "Fehler" "⚠️ Das Benutzerkonto konnte nicht angelegt werden."
             fi
             ;;
         "Profilbild ändern")
-            EXISTING=$(getent passwd | awk -F: '$3 >= 1000 && $3 < 60000 {print $1}')
-            TARGET=$(echo "$EXISTING" | zenity --list --title="Profilbild ändern" --text="Für wen?" --column="Benutzer" --width=350 --height=300)
+            TARGET=$(pick_user "Profilbild ändern")
             if [ -n "$TARGET" ]; then
                 IMG=$(choose_avatar "$TARGET")
                 if [ -n "$IMG" ]; then
                     if pkexec /usr/local/bin/pingulinux-set-avatar.sh "$TARGET" "$IMG"; then
-                        zenity --info --title="Fertig" --text="✅ Das Profilbild von '$TARGET' wurde geändert.\n\nBeim nächsten Anmelden ist es überall zu sehen." --width=380
+                        pd_info "Fertig" "✅ Das Profilbild von '$TARGET' wurde geändert.\n\nBeim nächsten Anmelden ist es überall zu sehen."
                     else
-                        zenity --error --title="Fehler" --text="⚠️ Das Profilbild konnte nicht geändert werden." --width=350
+                        pd_fehler "Fehler" "⚠️ Das Profilbild konnte nicht geändert werden."
                     fi
                 fi
             fi
             ;;
         "Passwort ändern")
-            EXISTING=$(getent passwd | awk -F: '$3 >= 1000 && $3 < 60000 {print $1}')
-            TARGET=$(echo "$EXISTING" | zenity --list --title="Passwort ändern" --column="Benutzer" --width=350 --height=300)
+            TARGET=$(pick_user "Passwort ändern")
             if [ -n "$TARGET" ]; then
-                NEWPASS1=$(zenity --password --title="Neues Passwort für $TARGET")
+                NEWPASS1=$(pd_passwort "Passwort ändern" "Neues Passwort für $TARGET:")
                 if [ -z "$NEWPASS1" ]; then
                     continue
                 fi
-                NEWPASS2=$(zenity --password --title="Passwort wiederholen")
+                NEWPASS2=$(pd_passwort "Neuer Benutzer" "Passwort wiederholen:")
                 if [ "$NEWPASS1" != "$NEWPASS2" ]; then
-                    zenity --error --title="Fehler" --text="⚠️ Die Passwörter stimmen nicht überein." --width=350
+                    pd_fehler "Fehler" "⚠️ Die Passwörter stimmen nicht überein."
                     continue
                 fi
                 if ERR=$(printf '%s' "$NEWPASS1" | pkexec /usr/local/bin/pingulinux-set-password.sh "$TARGET" 2>&1); then
-                    zenity --info --title="Fertig" --text="✅ Passwort für '$TARGET' wurde geändert." --width=350
+                    pd_info "Fertig" "✅ Passwort für '$TARGET' wurde geändert."
                 else
-                    zenity --error --title="Fehler" --no-markup --text="⚠️ Das Passwort konnte nicht geändert werden.
+                    pd_fehler_roh "Fehler" "⚠️ Das Passwort konnte nicht geändert werden.
 
-$ERR" --width=420
+$ERR"
                 fi
             fi
             ;;
         "Benutzer löschen")
-            EXISTING=$(getent passwd | awk -F: '$3 >= 1000 && $3 < 60000 {print $1}')
-            TARGET=$(echo "$EXISTING" | zenity --list --title="Benutzer löschen" --column="Benutzer" --width=350 --height=300)
+            TARGET=$(pick_user "Benutzer löschen")
             if [ -n "$TARGET" ]; then
-                zenity --question --title="Wirklich löschen?" --text="Benutzer '$TARGET' inklusive Home-Verzeichnis wirklich löschen?" --width=350
-                if [ $? -eq 0 ]; then
+                if pd_frage "Wirklich löschen?" "Benutzer '$TARGET' mit allen eigenen Dateien wirklich löschen?" "Löschen" "Abbrechen"; then
                     if ERR=$(pkexec /usr/local/bin/pingulinux-delete-user.sh "$TARGET" 2>&1); then
-                        zenity --info --title="Fertig" --text="✅ Benutzer '$TARGET' wurde gelöscht." --width=350
+                        pd_info "Fertig" "✅ Benutzer '$TARGET' wurde gelöscht."
                     else
-                        zenity --error --title="Fehler" --no-markup --text="⚠️ Der Benutzer konnte nicht gelöscht werden.
+                        pd_fehler_roh "Fehler" "⚠️ Der Benutzer konnte nicht gelöscht werden.
 
-$ERR" --width=420
+$ERR"
                     fi
                 fi
             fi

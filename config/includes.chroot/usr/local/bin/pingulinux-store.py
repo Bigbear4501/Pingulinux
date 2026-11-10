@@ -1,16 +1,37 @@
 #!/usr/bin/env python3
 """Pingulinux App Store - zeigt nur kuratierte Programme (Whitelist).
 
-Installation: bevorzugt als Debian-Paket (apt); nur wenn es kein
+Beta 1: Oberfläche mit Qt6 (sieht aus wie KDE). Die Logik ist dieselbe wie
+in der GTK-Fassung:
+Installation bevorzugt als Debian-Paket (apt); nur wenn es kein
 Debian-Paket gibt, wird die Flatpak-Version von Flathub genutzt.
 Installieren und Entfernen braucht das Passwort eines Administrators (pkexec).
+
+Ersatz: Fehlt PyQt6, startet die alte GTK-Fassung (pingulinux-store-gtk.py).
 """
-import json, shlex, subprocess, threading
-import gi
-gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, GLib
+import json
+import os
+import shlex
+import subprocess
+import sys
+import threading
+
+try:
+    from PyQt6.QtCore import Qt, QObject, pyqtSignal, QSize
+    from PyQt6.QtGui import QIcon, QFont
+    from PyQt6.QtWidgets import (QApplication, QMainWindow, QWidget, QHBoxLayout, QVBoxLayout,
+                                 QListWidget, QListWidgetItem, QLabel, QPushButton, QLineEdit,
+                                 QMessageBox, QFrame, QSizePolicy)
+except ImportError:
+    gtk = "/usr/local/bin/pingulinux-store-gtk.py"
+    if os.path.exists(gtk):
+        os.execv(sys.executable, [sys.executable, gtk] + sys.argv[1:])
+    sys.stderr.write("PyQt6 fehlt (python3-pyqt6)\n")
+    sys.exit(1)
 
 CATALOG = "/usr/share/pingulinux/store-apps.json"
+LOGO = "/usr/share/pingulinux/icons/pingu.png"
+LOG = "/tmp/pingulinux-store.log"
 
 
 def is_live():
@@ -22,19 +43,13 @@ def is_live():
 
 
 LIVE = is_live()
-LOGO = "/usr/share/pingulinux/icons/pingu.png"
 
 
 def run(cmd):
-    return subprocess.run(cmd, capture_output=True, text=True)
-
-
-def apt_candidate(pkg):
-    r = run(["apt-cache", "policy", pkg])
-    for line in r.stdout.splitlines():
-        if line.strip().startswith("Candidate:"):
-            return "(none)" not in line
-    return False
+    try:
+        return subprocess.run(cmd, capture_output=True, text=True)
+    except OSError as e:              # Programm fehlt (z. B. flatpak)
+        return subprocess.CompletedProcess(cmd, 127, "", str(e))
 
 
 def apt_installed(pkg):
@@ -48,19 +63,15 @@ def flatpak_installed(ref):
 
 def apt_removal_set(pkg):
     """Simuliert 'apt-get remove' (ohne root) und liefert die Pakete,
-    die dabei mit entfernt wuerden."""
+    die dabei mit entfernt würden."""
     r = run(["apt-get", "-s", "remove", pkg])
     if r.returncode != 0:
         return None
-    names = []
-    for line in r.stdout.splitlines():
-        if line.startswith("Remv "):
-            names.append(line.split()[1])
-    return names
+    return [line.split()[1] for line in r.stdout.splitlines() if line.startswith("Remv ")]
 
 
 def pick_source(app):
-    """Debian-Paket hat immer Vorrang. Flatpak nur, wenn es fuer das
+    """Debian-Paket hat immer Vorrang. Flatpak nur, wenn es für das
     Programm gar kein Debian-Paket gibt (Eintrag ohne "apt")."""
     if app.get("apt"):
         return "apt"
@@ -69,154 +80,198 @@ def pick_source(app):
     return None
 
 
-def is_installed(app, src):
-    if src == "apt":
+def is_installed(app):
+    if app["_src"] == "apt":
         return apt_installed(app["apt"])
-    if src == "flatpak":
+    if app["_src"] == "flatpak":
         return flatpak_installed(app["flatpak"])
     return False
 
 
-class Store(Gtk.Window):
+FALLBACK_ICONS = {"Internet": "applications-internet", "Spiele": "applications-games",
+                  "Grafik": "applications-graphics", "Multimedia": "applications-multimedia",
+                  "Büro": "applications-office", "Bildung": "applications-education",
+                  "Programmieren": "applications-development",
+                  "Dienstprogramme": "applications-utilities"}
+
+
+def pick_icon(app):
+    """Programm-Symbol, sonst ein passendes Kategorie-Symbol (statt Fehler-Bild)."""
+    names = [app.get("icon") or "", (app.get("icon") or "").split(".")[-1].lower(),
+             FALLBACK_ICONS.get(app.get("category"), "applications-other"),
+             "applications-science", "application-x-executable"]
+    for n in names:
+        if n and QIcon.hasThemeIcon(n):
+            return QIcon.fromTheme(n)
+    return QIcon.fromTheme("application-x-executable")
+
+
+class Worker(QObject):
+    """Meldet das Ende von Installieren/Entfernen aus dem Hintergrund-Thread."""
+    finished = pyqtSignal(object, int, str)
+
+
+class Store(QMainWindow):
     def __init__(self):
-        super().__init__(title="Pingulinux App Store")
-        self.set_default_size(820, 600)
-        try:
-            self.set_icon_from_file(LOGO)
-        except Exception:
-            pass
+        super().__init__()
+        self.setWindowTitle("Pingulinux App Store")
+        self.resize(900, 620)
+        if os.path.exists(LOGO):
+            self.setWindowIcon(QIcon(LOGO))
+
         with open(CATALOG, encoding="utf-8") as f:
-            self.apps = json.load(f)
-        for a in self.apps:
+            apps = json.load(f)
+        seen, self.apps = set(), []
+        for a in apps:
             a["_src"] = pick_source(a)
-        seen, uniq = set(), []
-        for a in self.apps:
             keys = {a["name"].lower()}
-            if a.get("apt"): keys.add("apt:" + a["apt"])
-            if a.get("flatpak"): keys.add("fp:" + a["flatpak"])
+            if a.get("apt"):
+                keys.add("apt:" + a["apt"])
+            if a.get("flatpak"):
+                keys.add("fp:" + a["flatpak"])
             if a["_src"] and not (keys & seen):
                 seen |= keys
-                uniq.append(a)
-        self.apps = uniq
+                self.apps.append(a)
         self.cats = ["Alle"] + sorted({a["category"] for a in self.apps})
         self.busy = False
+        self.worker = Worker()
+        self.worker.finished.connect(self.done)
 
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.add(box)
+        central = QWidget()
+        self.setCentralWidget(central)
+        outer = QVBoxLayout(central)
+        outer.setContentsMargins(0, 0, 0, 0)
+        outer.setSpacing(0)
 
-        head = Gtk.HeaderBar(show_close_button=True)
-        head.set_title("Pingulinux App Store")
-        head.set_subtitle("Ausgesuchte Programme für dich")
-        self.search = Gtk.SearchEntry(placeholder_text="Suchen…")
-        self.search.connect("search-changed", lambda *_: self.refresh())
-        head.pack_end(self.search)
-        self.set_titlebar(head)
+        # Kopf: Titel, Untertitel, Suche
+        head = QWidget()
+        hl = QHBoxLayout(head)
+        hl.setContentsMargins(16, 12, 16, 12)
+        titles = QVBoxLayout()
+        t = QLabel("Pingulinux App Store")
+        f = t.font(); f.setPointSizeF(f.pointSizeF() * 1.4); f.setBold(True); t.setFont(f)
+        titles.addWidget(t)
+        titles.addWidget(QLabel("Ausgesuchte Programme für dich"))
+        hl.addLayout(titles)
+        hl.addStretch(1)
+        self.search = QLineEdit()
+        self.search.setPlaceholderText("Suchen…")
+        self.search.setClearButtonEnabled(True)
+        self.search.setMinimumWidth(240)
+        self.search.textChanged.connect(self.refresh)
+        hl.addWidget(self.search)
+        outer.addWidget(head)
+        line = QFrame(); line.setFrameShape(QFrame.Shape.HLine); line.setFrameShadow(QFrame.Shadow.Sunken)
+        outer.addWidget(line)
 
-        paned = Gtk.Box(spacing=0)
-        box.pack_start(paned, True, True, 0)
-
-        self.catlist = Gtk.ListBox()
-        self.catlist.set_size_request(180, -1)
+        body = QHBoxLayout()
+        body.setContentsMargins(0, 0, 0, 0)
+        self.catlist = QListWidget()
+        self.catlist.setFixedWidth(190)
+        self.catlist.setStyleSheet("QListWidget::item { padding-left: 12px; }")
         for c in self.cats:
-            row = Gtk.ListBoxRow()
-            lab = Gtk.Label(label=c, xalign=0)
-            lab.set_margin_top(10); lab.set_margin_bottom(10)
-            lab.set_margin_start(14); lab.set_margin_end(14)
-            row.add(lab)
-            self.catlist.add(row)
-        self.catlist.connect("row-selected", lambda *_: self.refresh())
-        paned.pack_start(self.catlist, False, False, 0)
-        paned.pack_start(Gtk.Separator(orientation=Gtk.Orientation.VERTICAL), False, False, 0)
+            it = QListWidgetItem(c)
+            it.setSizeHint(QSize(180, 40))
+            self.catlist.addItem(it)
+        self.catlist.currentRowChanged.connect(self.refresh)
+        body.addWidget(self.catlist)
 
-        sw = Gtk.ScrolledWindow()
-        self.applist = Gtk.ListBox(selection_mode=Gtk.SelectionMode.NONE)
-        sw.add(self.applist)
-        paned.pack_start(sw, True, True, 0)
+        self.applist = QListWidget()
+        self.applist.setSelectionMode(QListWidget.SelectionMode.NoSelection)
+        self.applist.setVerticalScrollMode(QListWidget.ScrollMode.ScrollPerPixel)
+        body.addWidget(self.applist, 1)
+        outer.addLayout(body, 1)
 
-        self.status = Gtk.Label(label="", xalign=0)
-        self.status.set_margin_start(12); self.status.set_margin_bottom(6); self.status.set_margin_top(6)
-        box.pack_start(self.status, False, False, 0)
+        self.status = QLabel("")
+        self.status.setContentsMargins(14, 6, 14, 8)
+        outer.addWidget(self.status)
 
-        self.catlist.select_row(self.catlist.get_row_at_index(0))
+        self.catlist.setCurrentRow(0)
 
-    def refresh(self):
-        for ch in self.applist.get_children():
-            self.applist.remove(ch)
-        row = self.catlist.get_selected_row()
-        cat = self.cats[row.get_index()] if row else "Alle"
-        q = self.search.get_text().strip().lower()
+    # ---------- Liste ----------
+    def refresh(self, *_):
+        self.applist.clear()
+        row = self.catlist.currentRow()
+        cat = self.cats[row] if row >= 0 else "Alle"
+        q = self.search.text().strip().lower()
         for app in self.apps:
             if cat != "Alle" and app["category"] != cat:
                 continue
             if q and q not in (app["name"] + " " + app["summary"]).lower():
                 continue
-            self.applist.add(self.make_row(app))
-        self.applist.show_all()
-
-    def pick_icon(self, app):
-        """Programm-Symbol, sonst ein passendes Kategorie-Symbol (statt Fehler-Bild)."""
-        theme = Gtk.IconTheme.get_default()
-        for name in (app["icon"], app["icon"].split(".")[-1].lower()):
-            if theme.has_icon(name):
-                return name
-        fallback = {"Internet": "applications-internet", "Spiele": "applications-games",
-                    "Grafik": "applications-graphics", "Multimedia": "applications-multimedia",
-                    "Büro": "applications-office", "Bildung": "applications-science",
-                    "Programmieren": "applications-development",
-                    "Dienstprogramme": "applications-utilities"}
-        for name in (fallback.get(app["category"], "applications-other"), "application-x-executable"):
-            if theme.has_icon(name):
-                return name
-        return "application-x-executable"
+            w = self.make_row(app)
+            it = QListWidgetItem()
+            it.setSizeHint(w.sizeHint())
+            self.applist.addItem(it)
+            self.applist.setItemWidget(it, w)
 
     def make_row(self, app):
-        r = Gtk.ListBoxRow()
-        h = Gtk.Box(spacing=14)
-        h.set_margin_top(10); h.set_margin_bottom(10)
-        h.set_margin_start(14); h.set_margin_end(14)
-        img = Gtk.Image.new_from_icon_name(self.pick_icon(app), Gtk.IconSize.DIALOG)
-        h.pack_start(img, False, False, 0)
-        v = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        n = Gtk.Label(xalign=0)
-        n.set_markup("<b>%s</b>" % GLib.markup_escape_text(app["name"]))
+        w = QWidget()
+        h = QHBoxLayout(w)
+        h.setContentsMargins(14, 10, 14, 10)
+        h.setSpacing(14)
+        icon = QLabel()
+        icon.setPixmap(pick_icon(app).pixmap(48, 48))
+        icon.setFixedSize(52, 52)
+        h.addWidget(icon)
+
+        v = QVBoxLayout()
+        v.setSpacing(2)
+        name = QLabel(app["name"])
+        f = name.font(); f.setBold(True); name.setFont(f)
         quelle = "Debian-Paket" if app["_src"] == "apt" else "Flatpak"
         if app.get("min_age", 0) >= 99:
             quelle += "  ·  nur für Erwachsene"
         elif app.get("min_age"):
             quelle += "  ·  ab %d Jahren" % app["min_age"]
-        s = Gtk.Label(label="%s  ·  %s" % (app["summary"], quelle), xalign=0)
-        v.pack_start(n, False, False, 0)
-        v.pack_start(s, False, False, 0)
-        h.pack_start(v, True, True, 0)
-        if is_installed(app, app["_src"]):
-            rm = Gtk.Button(label="Entfernen")
-            rm.connect("clicked", self.on_remove, app, rm)
-            h.pack_end(rm, False, False, 0)
-            ok = Gtk.Label(label="✓ Installiert")
-            h.pack_end(ok, False, False, 0)
-        elif LIVE and app["_src"] == "flatpak":
-            btn = Gtk.Button(label="Nach der Installation verfügbar")
-            btn.set_sensitive(False)
-            btn.set_tooltip_text("Dieses Programm kommt als Flatpak. Flatpaks lassen sich erst "
-                                 "installieren, wenn Pingulinux fest auf dem Computer installiert ist.")
-            h.pack_end(btn, False, False, 0)
-        else:
-            btn = Gtk.Button(label="Installieren")
-            btn.connect("clicked", self.on_install, app, btn)
-            h.pack_end(btn, False, False, 0)
-        r.add(h)
-        return r
+        sub = QLabel("%s  ·  %s" % (app["summary"], quelle))
+        sub.setWordWrap(True)
+        sub.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        v.addWidget(name)
+        v.addWidget(sub)
+        h.addLayout(v, 1)
 
-    def on_install(self, _w, app, btn):
+        if is_installed(app):
+            h.addWidget(QLabel("✓ Installiert"))
+            rm = QPushButton(QIcon.fromTheme("edit-delete"), "Entfernen")
+            rm.clicked.connect(lambda _=False, a=app, b=rm: self.on_remove(a, b))
+            h.addWidget(rm)
+        elif LIVE and app["_src"] == "flatpak":
+            btn = QPushButton("Nach der Installation verfügbar")
+            btn.setEnabled(False)
+            btn.setToolTip("Dieses Programm kommt als Flatpak. Flatpaks lassen sich erst "
+                           "installieren, wenn Pingulinux fest auf dem Computer installiert ist.")
+            h.addWidget(btn)
+        else:
+            btn = QPushButton(QIcon.fromTheme("download"), "Installieren")
+            btn.clicked.connect(lambda _=False, a=app, b=btn: self.on_install(a, b))
+            h.addWidget(btn)
+        return w
+
+    # ---------- Fragen ----------
+    def ask(self, text, secondary, question=True):
+        box = QMessageBox(self)
+        box.setWindowTitle("Pingulinux App Store")
+        box.setText("<b>%s</b>" % text.replace("&", "&amp;").replace("<", "&lt;"))
+        box.setInformativeText(secondary)
+        if question:
+            box.setIcon(QMessageBox.Icon.Question)
+            ok = box.addButton("Entfernen", QMessageBox.ButtonRole.AcceptRole)
+            box.addButton("Abbrechen", QMessageBox.ButtonRole.RejectRole)
+        else:
+            box.setIcon(QMessageBox.Icon.Information)
+            ok = box.addButton("OK", QMessageBox.ButtonRole.AcceptRole)
+        box.exec()
+        return box.clickedButton() is ok
+
+    # ---------- Installieren / Entfernen ----------
+    def on_install(self, app, btn):
         if self.busy:
             return
         self.busy = True
-        btn.set_sensitive(False)
-        btn.set_label("Bitte warten…")
-        self.status.set_text("%s wird installiert – ein Erwachsener muss das Passwort eingeben." % app["name"])
-        threading.Thread(target=self.do_install, args=(app,), daemon=True).start()
-
-    def do_install(self, app):
+        btn.setEnabled(False)
+        btn.setText("Bitte warten…")
+        self.status.setText("%s wird installiert – ein Erwachsener muss das Passwort eingeben." % app["name"])
         if app["_src"] == "apt":
             cmd = ["pkexec", "sh", "-c",
                    "export DEBIAN_FRONTEND=noninteractive; apt-get update -qq; "
@@ -225,31 +280,16 @@ class Store(Gtk.Window):
             cmd = ["pkexec", "sh", "-c",
                    "flatpak install -y --system flathub %s; rc=$?; "
                    "/usr/local/bin/pingulinux-apply-all-ages.py; exit $rc" % shlex.quote(app["flatpak"])]
-        self.run_logged(cmd, app, "install")
+        threading.Thread(target=self.run_logged, args=(cmd, app, "install"), daemon=True).start()
 
-    def ask(self, text, secondary, question=True):
-        d = Gtk.MessageDialog(transient_for=self, modal=True,
-                              message_type=Gtk.MessageType.QUESTION if question else Gtk.MessageType.INFO,
-                              buttons=Gtk.ButtonsType.NONE, text=text)
-        d.format_secondary_text(secondary)
-        if question:
-            d.add_button("Abbrechen", Gtk.ResponseType.CANCEL)
-            d.add_button("Entfernen", Gtk.ResponseType.OK)
-        else:
-            d.add_button("OK", Gtk.ResponseType.OK)
-        resp = d.run()
-        d.destroy()
-        return resp == Gtk.ResponseType.OK
-
-    def on_remove(self, _w, app, btn):
+    def on_remove(self, app, btn):
         if self.busy:
             return
         if app["_src"] == "apt":
             would = apt_removal_set(app["apt"])
             if would is None or app["apt"] not in [p.split(":")[0] for p in would]:
                 self.ask("%s kann nicht entfernt werden" % app["name"],
-                         "Das Programm gehört zum Grundsystem von Pingulinux.",
-                         question=False)
+                         "Das Programm gehört zum Grundsystem von Pingulinux.", question=False)
                 return
             others = [p for p in would if p.split(":")[0] != app["apt"]]
             if others:
@@ -264,12 +304,9 @@ class Store(Gtk.Window):
                         "Ein Erwachsener muss gleich das Passwort eingeben."):
             return
         self.busy = True
-        btn.set_sensitive(False)
-        btn.set_label("Bitte warten…")
-        self.status.set_text("%s wird entfernt – ein Erwachsener muss das Passwort eingeben." % app["name"])
-        threading.Thread(target=self.do_remove, args=(app,), daemon=True).start()
-
-    def do_remove(self, app):
+        btn.setEnabled(False)
+        btn.setText("Bitte warten…")
+        self.status.setText("%s wird entfernt – ein Erwachsener muss das Passwort eingeben." % app["name"])
         if app["_src"] == "apt":
             cmd = ["pkexec", "sh", "-c",
                    "export DEBIAN_FRONTEND=noninteractive; "
@@ -280,32 +317,35 @@ class Store(Gtk.Window):
                    "flatpak uninstall -y --system %s; rc=$?; "
                    "[ $rc -eq 0 ] && flatpak uninstall -y --system --unused; "
                    "/usr/local/bin/pingulinux-apply-all-ages.py; exit $rc" % shlex.quote(app["flatpak"])]
-        self.run_logged(cmd, app, "remove")
+        threading.Thread(target=self.run_logged, args=(cmd, app, "remove"), daemon=True).start()
 
     def run_logged(self, cmd, app, action):
         r = run(cmd)
-        with open("/tmp/pingulinux-store.log", "a") as f:
-            f.write("$ %s\n%s\n%s\n" % (" ".join(cmd), r.stdout[-3000:], r.stderr[-3000:]))
-        GLib.idle_add(self.done, app, r.returncode, action)
+        try:
+            with open(LOG, "a") as f:
+                f.write("$ %s\n%s\n%s\n" % (" ".join(cmd), r.stdout[-3000:], r.stderr[-3000:]))
+        except OSError:
+            pass
+        self.worker.finished.emit(app, r.returncode, action)   # zurück in den Haupt-Thread
 
-    def done(self, app, rc, action="install"):
+    def done(self, app, rc, action):
         self.busy = False
         if rc == 0:
-            if action == "remove":
-                self.status.set_text("✅ %s wurde entfernt." % app["name"])
-            else:
-                self.status.set_text("✅ %s ist jetzt installiert." % app["name"])
+            self.status.setText(("✅ %s wurde entfernt." if action == "remove"
+                                 else "✅ %s ist jetzt installiert.") % app["name"])
         elif rc in (126, 127):
-            self.status.set_text("Abgebrochen – es wurde nichts geändert.")
+            self.status.setText("Abgebrochen – es wurde nichts geändert.")
         elif action == "remove":
-            self.status.set_text("⚠️ Entfernen fehlgeschlagen. Details: /tmp/pingulinux-store.log")
+            self.status.setText("⚠️ Entfernen fehlgeschlagen. Details: " + LOG)
         else:
-            self.status.set_text("⚠️ Installation fehlgeschlagen. Details: /tmp/pingulinux-store.log")
+            self.status.setText("⚠️ Installation fehlgeschlagen. Details: " + LOG)
         self.refresh()
-        return False
 
 
-win = Store()
-win.connect("destroy", Gtk.main_quit)
-win.show_all()
-Gtk.main()
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    app.setApplicationName("pingulinux-store")
+    app.setDesktopFileName("pingulinux-store")
+    win = Store()
+    win.show()
+    sys.exit(app.exec())

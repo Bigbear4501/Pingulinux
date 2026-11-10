@@ -4,7 +4,7 @@
 # Prueft das System, zeigt eine verstaendliche Zusammenfassung und
 # speichert einen Bericht (ohne Passwoerter) zum Weitergeben.
 
-zenity() { command zenity --window-icon=/usr/share/pingulinux/icons/pingu.png "$@"; }
+. /usr/local/lib/pingulinux/dialog.sh
 REPORT="$HOME/Pingulinux-Diagnose.txt"
 SUMMARY=$(mktemp)
 ok()   { echo "✅ $1" >> "$SUMMARY"; }
@@ -47,11 +47,8 @@ if [ -n "$(xinput list 2>/dev/null | grep -i touch)" ]; then ok "Touchscreen erk
   echo; echo "--- Firmware-Meldungen ---"; dmesg 2>/dev/null | grep -i "firmware" | tail -15
 } > "$REPORT" 2>&1
 
-zenity --text-info --title="Hilfe und Fehlerdiagnose" --width=560 --height=440 \
-    --ok-label="Schließen" --cancel-label="Bericht öffnen" \
-    --filename="$SUMMARY" \
-    --font="Sans 12"
-[ $? -eq 1 ] && xdg-open "$REPORT" >/dev/null 2>&1 &
-zenity --info --title="Hilfe und Fehlerdiagnose" --width=460 \
-    --text="📄 Ein ausführlicher Bericht liegt in deinem Ordner:\n<b>Pingulinux-Diagnose.txt</b>\n\nDen kannst du an die Pingulinux-Community schicken, wenn etwas nicht klappt. Er enthält keine Passwörter." 
+pd_textdatei "Hilfe und Fehlerdiagnose" "$SUMMARY"
+if pd_frage "Hilfe und Fehlerdiagnose" "📄 Ein ausführlicher Bericht liegt in deinem Ordner:\n<b>Pingulinux-Diagnose.txt</b>\n\nDen kannst du an die Pingulinux-Community schicken, wenn etwas nicht klappt. Er enthält keine Passwörter." "Bericht öffnen" "Schließen"; then
+    xdg-open "$REPORT" >/dev/null 2>&1 &
+fi
 rm -f "$SUMMARY"

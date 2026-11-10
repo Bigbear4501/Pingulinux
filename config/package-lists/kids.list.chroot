@@ -3,23 +3,19 @@ zenity
 
 # Panel-Erweiterungen: Netzwerk, Helligkeit, Lautstärke, Benachrichtigungen
 network-manager
-pavucontrol
 
 # Lernsoftware
 gcompris-qt
 tuxpaint
 tuxtype
-kalzium
 kgeography
 marble
-stellarium
 
 # Programmieren lernen
 python3
 idle
 
 # Spiele
-supertuxkart
 minetest
 pingus
 tuxmath
@@ -36,12 +32,8 @@ libreoffice-writer
 libreoffice-impress
 libreoffice-calc
 libreoffice-l10n-de
-libreoffice-help-de
-krita
-krita-l10n
 
 # Bild- und PDF-Betrachter
-evince
 
 # Medienwiedergabe
 vlc
@@ -53,7 +45,6 @@ kturtle
 # Kindersicherung
 timekpr-next
 nftables
-gufw
 
 # Systemwiederherstellung (Eltern-Werkzeug, falls Kinder etwas
 # durcheinanderbringen - einfach zurückspringen können)
@@ -76,13 +67,11 @@ unattended-upgrades
 # Drucker-Unterstützung
 cups
 cups-client
-system-config-printer
 printer-driver-all
 
 # Scanner-Unterstützung
 sane-utils
 libsane-common
-simple-scan
 
 # Für Fenstertitel-Anpassung (Calamares-Installer umbenennen)
 wmctrl
@@ -101,7 +90,6 @@ task-german
 # Installer (Calamares statt Debian-Installer)
 calamares
 calamares-settings-debian
-qt5-gtk-platformtheme
 
 # Bootloader (bewusst im Live-System behalten, damit Calamares
 # später grub-install nutzen kann)
@@ -151,7 +139,7 @@ upower
 pciutils
 usbutils
 
-# --- KDE-Gegenstuecke zu den XFCE-Programmen (fuer die Plasma-Sitzung) ---
+# --- KDE-Programme ---
 gwenview
 okular
 kate
@@ -177,3 +165,8 @@ sddm
 sddm-theme-breeze
 qt6-virtualkeyboard-plugin
 systemd-zram-generator
+ufw
+
+# Pingulinux: zram, Passwort-Fenster (Polkit-Agent), WLAN MacBook Air, Social-Media-Sperre, YouTube-Kids-Fenster
+kdialog
+python3-pyqt6

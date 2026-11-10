@@ -1,0 +1,28 @@
+#!/bin/bash
+# 0490-youtube-kids-qt.hook.chroot  (Beta 1)
+#
+# Das YouTube-Kids-Fenster läuft jetzt mit Qt6-WebEngine (KDE-Unterbau)
+# statt mit WebKit/GTK. Dieser Hook installiert die Python-Anbindung und
+# prüft sie. Nur wenn das klappt, fliegt WebKit raus (spart Platz).
+# Klappt es nicht, bleibt WebKit drin und die alte GTK-Fassung springt ein.
+export DEBIAN_FRONTEND=noninteractive
+apt-get install -y python3-pyqt6 python3-pyqt6.qtwebengine >/dev/null 2>&1 || true
+
+if python3 -c "from PyQt6.QtWebEngineWidgets import QWebEngineView; from PyQt6.QtWebEngineCore import QWebEnginePage" 2>/dev/null; then
+    echo "YOUTUBE-QT: Qt-WebEngine für YouTube Kids bereit"
+    PROTECT="plasma-desktop plasma-workspace kwin-wayland sddm firefox-esr libreoffice-core calamares gcompris-qt tuxpaint python3-gi gir1.2-gtk-3.0 zenity thunderbird"
+    for p in gir1.2-webkit2-4.1 libwebkit2gtk-4.1-0; do
+        dpkg -s "$p" >/dev/null 2>&1 || continue
+        sim=$(apt-get -s purge "$p" 2>/dev/null | awk '/^(Remv|Purg) /{print $2}')
+        hit=""; for q in $sim; do for k in $PROTECT; do [ "$q" = "$k" ] && hit="$hit $q"; done; done
+        if [ -n "$hit" ]; then
+            echo "YOUTUBE-QT: $p bleibt (gebraucht von:$hit)" >&2
+        else
+            apt-get -y purge "$p" >/dev/null 2>&1 && echo "YOUTUBE-QT: $p entfernt"
+        fi
+    done
+    apt-get -y autoremove --purge >/dev/null 2>&1 || true
+else
+    echo "YOUTUBE-QT: Qt-WebEngine fehlt – WebKit bleibt, alte GTK-Fassung wird benutzt" >&2
+fi
+exit 0
