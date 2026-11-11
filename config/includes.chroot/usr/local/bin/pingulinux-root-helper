@@ -1,0 +1,55 @@
+#!/bin/bash
+#
+# pingulinux-root-helper – kleine, feste Liste von Verwaltungs-
+# befehlen, die die Qt-Fenster (Bildschirmzeit, Wiederherstellen) als root
+# brauchen. Aufruf nur über:  pkexec /usr/local/bin/pingulinux-root-helper …
+# Polkit merkt sich das Passwort ein paar Minuten (auth_admin_keep), damit
+# Eltern nicht bei jedem Klick neu gefragt werden.
+#
+# Jeder Befehl prüft seine Werte streng – nichts wird ungeprüft weitergegeben.
+
+set -u
+CMD="${1:-}"; shift || true
+
+user_ok() { [[ "$1" =~ ^[a-zA-Z_][a-zA-Z0-9_.-]{0,31}$ ]] && id "$1" >/dev/null 2>&1; }
+num_ok()  { [[ "$1" =~ ^[0-9]{1,6}$ ]]; }
+dev_ok()  { [ -z "$1" ] || { [[ "$1" =~ ^/dev/[a-zA-Z0-9/_-]+$ ]] && [ -b "$1" ]; }; }
+hours_ok(){ [[ "$1" =~ ^([0-9]{1,2};)*[0-9]{1,2}$ ]]; }
+snap_ok() { [[ "$1" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9]{2}-[0-9]{2}-[0-9]{2}$ ]]; }
+die() { echo "$1" >&2; exit 2; }
+
+devopt() { [ -n "${1:-}" ] && printf '%s\n' --snapshot-device "$1"; }
+
+case "$CMD" in
+  # ---- Bildschirmzeit (Timekpr-nExT) ----
+  tk-info)
+      user_ok "${1:-}" || die "Benutzer?"
+      exec timekpra --userinfo "$1" ;;
+  tk-limits)          # BENUTZER SEK_MO-FR SEK_SA-SO
+      user_ok "${1:-}" && num_ok "${2:-}" && num_ok "${3:-}" || die "Werte?"
+      timekpra --setalloweddays "$1" '1;2;3;4;5;6;7' >/dev/null
+      exec timekpra --settimelimits "$1" "$2;$2;$2;$2;$2;$3;$3" ;;
+  tk-hours)           # BENUTZER "8;9;10;…"
+      user_ok "${1:-}" && hours_ok "${2:-}" || die "Werte?"
+      exec timekpra --setallowedhours "$1" ALL "$2" ;;
+  tk-extra)           # BENUTZER SEKUNDEN (heute zusätzlich)
+      user_ok "${1:-}" && num_ok "${2:-}" || die "Werte?"
+      exec timekpra --settimeleft "$1" + "$2" ;;
+  # ---- Sicherung (Timeshift) ----
+  ts-list)            # [GERÄT]
+      dev_ok "${1:-}" || die "Gerät?"
+      mapfile -t D < <(devopt "${1:-}")
+      exec timeshift --list --scripted "${D[@]}" ;;
+  ts-create)          # [GERÄT]  (ohne --tags: Timeshift markiert Sicherungen von Hand selbst mit „O“; „--tags O“ lehnt es ab)
+      dev_ok "${1:-}" || die "Gerät?"
+      mapfile -t D < <(devopt "${1:-}")
+      exec nice -n 10 timeshift --create --scripted --comments "Von Hand gesichert" "${D[@]}" ;;
+  ts-restore)         # STAND [GERÄT]
+      snap_ok "${1:-}" && dev_ok "${2:-}" || die "Werte?"
+      mapfile -t D < <(devopt "${2:-}")
+      exec timeshift --restore --snapshot "$1" --scripted --yes --skip-grub "${D[@]}" ;;
+  ts-reboot)
+      exec systemctl reboot ;;
+  *)
+      die "Unbekannter Befehl" ;;
+esac

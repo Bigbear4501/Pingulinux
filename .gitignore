@@ -1,10 +1,10 @@
 # live-build: Bau-Ergebnisse und Zwischenstände (mehrere GB)
-.build/
-cache/
-chroot/
-binary/
-bootstrap/
-local/
+/.build/
+/cache/
+/chroot/
+/binary/
+/bootstrap/
+/local/
 config/bootstrap
 config/chroot
 config/binary
@@ -38,3 +38,7 @@ binary.modified_timestamps
 chroot.packages.*
 kids-distro-skeleton/
 pingulinux-branding/
+
+# Python-Zwischenspeicher
+__pycache__/
+*.pyc
