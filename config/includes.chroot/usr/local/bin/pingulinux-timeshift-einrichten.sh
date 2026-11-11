@@ -23,9 +23,23 @@ status() { echo "$1" > "$STATE"; echo "Sicherung: $1"; }
 grep -qw 'boot=live' /proc/cmdline && exit 0
 command -v timeshift >/dev/null 2>&1 || { status "Timeshift fehlt"; exit 0; }
 
-configured() {
-    [ -f "$CONF" ] && python3 -c "import json,sys; d=json.load(open('$CONF')); sys.exit(0 if d.get('backup_device_uuid') else 1)" 2>/dev/null
+MARK=/var/lib/pingulinux/timeshift-von-pingulinux   # UUID, die Pingulinux selbst eingetragen hat
+
+conf_uuid() {
+    python3 -c "import json; print(json.load(open('$CONF')).get('backup_device_uuid',''))" 2>/dev/null
 }
+configured() {
+    [ -f "$CONF" ] && [ -n "$(conf_uuid)" ]
+}
+
+# Von Pingulinux eingetragene Platte gibt es nicht mehr (z. B. neu installiert,
+# Festplatte getauscht, System kopiert) → neu einrichten. Hat ein Erwachsener
+# selbst eine andere Platte gewählt (USB), wird nichts angefasst.
+if configured && [ -f "$MARK" ] && [ "$(conf_uuid)" = "$(cat "$MARK")" ] \
+   && ! blkid -U "$(conf_uuid)" >/dev/null 2>&1; then
+    echo "Sicherungs-Platte $(conf_uuid) nicht mehr da – richte neu ein."
+    rm -f "$CONF"
+fi
 
 if ! configured; then
     FSTYPE=$(findmnt -no FSTYPE /)
@@ -71,7 +85,16 @@ if ! configured; then
   "exclude-apps" : []
 }
 JSON
+    echo "$UUID" > "$MARK"
     status "Eingerichtet: täglich, die letzten 5 Stände"
+fi
+
+# Läuft schon eine Sicherung (z. B. „System jetzt sichern“ von Hand)?
+# Dann diesmal nichts tun – sonst meldet Timeshift „Another instance …“
+# und das Kontrollzentrum zeigt fälschlich einen Fehler.
+if pgrep -x timeshift >/dev/null 2>&1; then
+    echo "Timeshift läuft gerade schon – nächste Prüfung in einer Stunde."
+    exit 0
 fi
 
 # Fällige Sicherung anlegen und zu alte löschen (macht Timeshift selbst)

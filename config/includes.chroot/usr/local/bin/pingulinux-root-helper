@@ -20,6 +20,22 @@ die() { echo "$1" >&2; exit 2; }
 
 devopt() { [ -n "${1:-}" ] && printf '%s\n' --snapshot-device "$1"; }
 
+# Timeshift mit anderem Gerät (USB-Stick): Timeshift schreibt das Gerät dabei
+# dauerhaft in seine Einstellungen. Danach liefe die tägliche Sicherung ins
+# Leere („Device not found“), sobald der Stick ab ist. Darum Einstellungen
+# vorher merken und hinterher zurücklegen.
+TSCONF=/etc/timeshift/timeshift.json
+ts() {   # ts [GERÄT] ARGUMENTE…
+    local dev="$1"; shift
+    if [ -z "$dev" ]; then exec "$@"; fi
+    local keep; keep=$(mktemp)
+    [ -f "$TSCONF" ] && cp -p "$TSCONF" "$keep"
+    "$@"; local rc=$?
+    if [ -s "$keep" ]; then cp -p "$keep" "$TSCONF"; fi
+    rm -f "$keep"
+    exit $rc
+}
+
 case "$CMD" in
   # ---- Bildschirmzeit (Timekpr-nExT) ----
   tk-info)
@@ -39,15 +55,15 @@ case "$CMD" in
   ts-list)            # [GERÄT]
       dev_ok "${1:-}" || die "Gerät?"
       mapfile -t D < <(devopt "${1:-}")
-      exec timeshift --list --scripted "${D[@]}" ;;
+      ts "${1:-}" timeshift --list --scripted "${D[@]}" ;;
   ts-create)          # [GERÄT]  (ohne --tags: Timeshift markiert Sicherungen von Hand selbst mit „O“; „--tags O“ lehnt es ab)
       dev_ok "${1:-}" || die "Gerät?"
       mapfile -t D < <(devopt "${1:-}")
-      exec nice -n 10 timeshift --create --scripted --comments "Von Hand gesichert" "${D[@]}" ;;
+      ts "${1:-}" nice -n 10 timeshift --create --scripted --comments "Von Hand gesichert" "${D[@]}" ;;
   ts-restore)         # STAND [GERÄT]
       snap_ok "${1:-}" && dev_ok "${2:-}" || die "Werte?"
       mapfile -t D < <(devopt "${2:-}")
-      exec timeshift --restore --snapshot "$1" --scripted --yes --skip-grub "${D[@]}" ;;
+      ts "${2:-}" timeshift --restore --snapshot "$1" --scripted --yes --skip-grub "${D[@]}" ;;
   ts-reboot)
       exec systemctl reboot ;;
   *)

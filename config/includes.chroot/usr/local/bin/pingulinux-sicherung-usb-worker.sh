@@ -103,6 +103,10 @@ sichern)
     if [ "$WHAT" = system ] || [ "$WHAT" = beides ]; then
         echo "# System wird gesichert (Timeshift)… das dauert eine Weile"
         if [ "$WHAT" = beides ]; then echo 55; else echo 10; fi
+        # Timeshift merkt sich den Stick sonst dauerhaft als Sicherungs-Platte –
+        # dann liefe die tägliche Sicherung ins Leere, sobald der Stick ab ist.
+        TSCONF=/etc/timeshift/timeshift.json; KEEP=$(mktemp)
+        [ -f "$TSCONF" ] && cp -p "$TSCONF" "$KEEP"
         if timeshift --create --scripted --snapshot-device "$DEV" \
                --comments "USB-Sicherung $(date '+%d.%m.%Y')" \
                >>/var/log/pingulinux-sicherung-usb.log 2>&1; then
@@ -110,6 +114,7 @@ sichern)
         else
             msgs+=("⚠️ System: Timeshift meldet einen Fehler (Details: /var/log/pingulinux-sicherung-usb.log)")
         fi
+        [ -s "$KEEP" ] && cp -p "$KEEP" "$TSCONF"; rm -f "$KEEP"
     fi
     sync
     echo 100; echo "# Fertig"

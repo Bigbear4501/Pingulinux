@@ -57,6 +57,35 @@ DEV=$(pd_menue "$TITLE" "Auf welchen Stick soll gesichert werden?" "${ARGS[@]}")
 [ -n "$DEV" ] || exit 0
 FSTYPE=$(lsblk -dno FSTYPE "$DEV" | tr -d ' ')
 
+# --- Inhalt eines Sticks: setzt ANZ (Anzahl Dateien, 0 = leer, ? = unbekannt)
+#     und GROESSE. Systemdateien von Windows/macOS/Linux zählen nicht mit.
+inhalt() {
+    local dev="$1" mp mounted=
+    ANZ="?"; GROESSE=""
+    mp=$(lsblk -no MOUNTPOINT "$dev" | head -1)
+    if [ -z "$mp" ]; then
+        udisksctl mount -b "$dev" --no-user-interaction >/dev/null 2>&1 || return 0
+        mounted=1; sleep 1
+        mp=$(lsblk -no MOUNTPOINT "$dev" | head -1)
+    fi
+    if [ -n "$mp" ] && [ -d "$mp" ]; then
+        local liste
+        liste=$(find "$mp" -mindepth 1 \
+            \( -name 'System Volume Information' -o -name '$RECYCLE.BIN' -o -name '.Trash-*' \
+               -o -name 'lost+found' -o -name '.fseventsd' -o -name '.Spotlight-V100' \
+               -o -name '.Trashes' -o -name '.TemporaryItems' \) -prune -o \
+            -type f ! -name 'Thumbs.db' ! -name 'desktop.ini' ! -name '.DS_Store' ! -name '._*' \
+            -printf '%s\n' 2>/dev/null)
+        ANZ=$(printf '%s' "$liste" | grep -c . )
+        GROESSE=$(printf '%s\n' "$liste" | awk '{s+=$1} END {
+            if (s >= 1073741824) printf "%.1f GB", s/1073741824;
+            else if (s >= 1048576) printf "%.0f MB", s/1048576;
+            else printf "%.0f KB", s/1024 }' | tr . ,)
+    fi
+    [ -n "$mounted" ] && udisksctl unmount -b "$dev" --no-user-interaction >/dev/null 2>&1
+    return 0
+}
+
 # --- Was sichern? ---
 WAHL=$(pd_auswahl "$TITLE" "Was soll auf den Stick?" \
     daten "📁  Eigene Dateien aller Konten (Fotos, Dokumente, Spielstände …)" an \
@@ -71,10 +100,21 @@ grep -qx system <<<"$WAHL" && SYSTEM=1
 case "$FSTYPE" in ext2|ext3|ext4|btrfs|xfs) LINUXFS=1 ;; *) LINUXFS= ;; esac
 if [ -n "$SYSTEM" ] && [ -z "$LINUXFS" ]; then
     NAME=$(printf '%s\n' "${STICKS[@]}" | awk -F'\t' -v d="$DEV" '$1==d {print $2}')
-    if pd_frage "$TITLE" "Die System-Sicherung braucht einen Stick im Linux-Format (ext4).\nDieser Stick hat das Format <b>$FSTYPE</b>.\n\nSoll der Stick dafür formatiert werden?\n\n⚠️ <b>Dabei wird ALLES gelöscht, was jetzt auf dem Stick ist.</b>\nDanach kann Windows den Stick nicht mehr lesen." "Stick formatieren" "Nein, nur eigene Dateien"; then
-        pd_frage "$TITLE" "Wirklich <b>alles</b> auf diesem Stick löschen?\n\n$NAME" "Ja, alles löschen" "Abbrechen" || exit 0
+    # Was liegt auf dem Stick? Leerer (neuer) Stick → ohne Nachfrage formatieren.
+    # Liegen Dateien drauf → EINE klare Frage mit Anzahl und Größe.
+    inhalt "$DEV"
+    FORMAT=
+    if [ "$ANZ" = 0 ]; then
+        FORMAT=1
+    elif [ "$ANZ" = "?" ]; then
+        pd_frage "$TITLE" "Die System-Sicherung braucht einen Stick im Linux-Format (ext4).\nWas auf diesem Stick liegt, lässt sich nicht feststellen.\n\n<b>Stick löschen und vorbereiten?</b>\n⚠️ Alles darauf geht verloren. Danach kann Windows den Stick nicht mehr lesen.\n\n$NAME" "Alles löschen" "Nein, nur eigene Dateien" && FORMAT=1
+    else
+        pd_frage "$TITLE" "Auf dem Stick liegen <b>$ANZ Dateien ($GROESSE)</b>.\n\nFür die System-Sicherung muss er gelöscht und neu vorbereitet werden (Linux-Format ext4).\n<b>Alles löschen?</b>\n\n⚠️ Die Dateien sind danach weg. Windows kann den Stick danach nicht mehr lesen.\n\n$NAME" "Alles löschen" "Nein, nur eigene Dateien" && FORMAT=1
+    fi
+    if [ -n "$FORMAT" ]; then
+        [ "$ANZ" = 0 ] && pd_info "$TITLE" "Der Stick ist leer – er wird jetzt für die Sicherung vorbereitet (ein paar Sekunden)."
         udisksctl unmount -b "$DEV" --no-user-interaction >/dev/null 2>&1
-        pkexec "$WORKER" formatieren "$DEV" | pd_fortschritt "$TITLE" "Stick wird formatiert…"
+        pkexec "$WORKER" formatieren "$DEV" | pd_fortschritt "$TITLE" "Stick wird vorbereitet…"
         if ! grep -q "✅" "$RESULT" 2>/dev/null; then
             pd_fehler "$TITLE" "$(cat "$RESULT" 2>/dev/null || echo "⚠️ Abgebrochen.")"
             exit 1

@@ -4,8 +4,10 @@
 # Die Diashow im Installer zeigte das Willkommensbild mit „Crop“: Auf
 # breiten, flachen Fenstern (z. B. Surface) wurde oben und unten
 # abgeschnitten, also auch die Überschrift „Willkommen bei Pingulinux!“.
-# Jetzt wird das Bild immer ganz gezeigt (Fit), oben ausgerichtet, auf
-# weißem Grund. Bleibt Platz frei, ist er weiß (wie der Kopf des Bildes).
+# 2. Versuch (11. Nov): Beim 1. Versuch (Fit + weißes Rechteck + Ausrichtung)
+# blieb die Diashow am Surface leer. Jetzt genau das funktionierende
+# Original aus 0110 – nur „Crop“ durch „Fit“ ersetzt: Das ganze Bild ist zu
+# sehen, nichts wird abgeschnitten, frei bleibender Platz ist Hintergrund.
 # Ersetzt nur show.qml aus 0110, das Bild selbst bleibt.
 
 D=/etc/calamares/branding/pingulinux
@@ -19,19 +21,12 @@ Presentation {
     id: presentation
 
     Slide {
-        Rectangle {
-            anchors.fill: parent
-            color: "#ffffff"
-        }
         Image {
             id: background
             source: "welcome.png"
             anchors.fill: parent
             fillMode: Image.PreserveAspectFit
-            horizontalAlignment: Image.AlignHCenter
-            verticalAlignment: Image.AlignTop
-            smooth: true
-            mipmap: true
+            clip: true
         }
     }
 

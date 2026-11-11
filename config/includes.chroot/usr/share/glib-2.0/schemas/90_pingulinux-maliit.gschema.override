@@ -1,4 +1,14 @@
-# Bildschirmtastatur in KDE (Maliit): nur Deutsch, kein Englisch
+# Bildschirmtastatur in KDE (Maliit): nur Deutsch, kein Englisch.
+# Keine Wortvorschläge, Autokorrektur oder automatische Großschreibung:
+# Im Installer (läuft als root über XWayland) weiß Maliit nicht, dass es
+# ein Passwortfeld ist – dann wurde z. B. der erste Buchstabe groß oder ein
+# Wort „korrigiert“, und das Passwort stimmte danach nicht (Bug b22).
+# Für Kinder sind ungefragte Korrekturen ohnehin eher verwirrend.
 [org.maliit.keyboard.maliit]
 enabled-languages=['de']
 active-language='de'
+auto-capitalization=false
+auto-completion=false
+predictive-text=false
+spell-checking=false
+double-space-full-stop=false
