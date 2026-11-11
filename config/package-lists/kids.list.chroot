@@ -13,7 +13,6 @@ marble
 
 # Programmieren lernen
 python3
-idle
 
 # Spiele
 minetest
@@ -24,8 +23,6 @@ supertux
 # Browser
 firefox-esr
 firefox-esr-l10n-de
-thunderbird
-thunderbird-l10n-de
 
 # Büro/Kreativität
 libreoffice-writer
@@ -149,7 +146,7 @@ kde-spectacle
 konsole
 plasma-systemmonitor
 
-# Alpha 3: WLAN MacBook Air, Social-Media-Sperre, YouTube-Kids-Fenster
+# WLAN MacBook Air, Social-Media-Sperre, YouTube-Kids-Fenster
 firmware-brcm80211
 dnsmasq-base
 gir1.2-webkit2-4.1
@@ -157,7 +154,7 @@ gstreamer1.0-plugins-good
 gstreamer1.0-plugins-bad
 gstreamer1.0-libav
 
-# Alpha 3: Passwort-Fenster (Polkit-Agent), WLAN MacBook Air, Social-Media-Sperre, YouTube-Kids-Fenster
+# Passwort-Fenster (Polkit-Agent), WLAN MacBook Air, Social-Media-Sperre, YouTube-Kids-Fenster
 polkit-kde-agent-1
 
 # Pingulinux: zram, Passwort-Fenster (Polkit-Agent), WLAN MacBook Air, Social-Media-Sperre, YouTube-Kids-Fenster

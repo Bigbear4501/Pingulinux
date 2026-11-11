@@ -1,0 +1,2 @@
+// Pingulinux: Programme aus dem App Store auf Deutsch starten (z. B. SuperTuxKart)
+DPkg::Post-Invoke { "[ -x /usr/local/lib/pingulinux/apps-deutsch.sh ] && /usr/local/lib/pingulinux/apps-deutsch.sh || true"; };

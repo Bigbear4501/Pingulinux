@@ -13,7 +13,7 @@ MARKDIR=/var/lib/pingulinux/blocksocial
 mkdir -p "$MARKDIR"
 chmod 755 "$MARKDIR"
 
-# Alte systemweite Sperre aus /etc/hosts entfernen (Alpha 2)
+# Alte systemweite Sperre aus /etc/hosts entfernen
 sed -i '/^# BEGIN pingulinux-social$/,/^# END pingulinux-social$/d' /etc/hosts
 sed -i '/^# BEGIN pingulinux-youtube$/,/^# END pingulinux-youtube$/d' /etc/hosts
 

@@ -24,7 +24,7 @@ Wenn es nur ein Eltern-Konto gibt:
 
 1. Den **Pingulinux-USB-Stick** einstecken (der Stick, mit dem Pingulinux installiert wurde, oder ein neu erstellter).
 2. Den Computer vom Stick starten. Pingulinux startet im Live-Modus.
-3. Auf dem Schreibtisch auf **„Eltern-Passwort zurücksetzen“** klicken.
+3. Im **Startmenü** unter **System** auf **„Eltern-Passwort zurücksetzen“** klicken.
 4. Das Werkzeug findet das installierte Pingulinux von selbst. Das Eltern-Konto auswählen und zweimal das neue Passwort eingeben.
 5. Stick abziehen und den Computer neu starten. Jetzt gilt das neue Passwort.
 
@@ -70,3 +70,15 @@ Pingulinux sichert das **System** einmal am Tag von selbst (mit Timeshift) und b
 
 - **Eigene Dateien:** Kontrollzentrum → Sicherung und Wiederherstellung → „Eigene Dateien vom Stick zurückholen“. Der Dateimanager öffnet sich; die Dateien liegen unter *Pingulinux-Sicherung → Name des Computers → Eigene-Dateien* und lassen sich einfach zurückkopieren.
 - **System:** Kontrollzentrum → Sicherung und Wiederherstellung → „System wiederherstellen“. Dort einen Stand auswählen – auch einen vom Stick, wenn er eingesteckt ist.
+
+### Pingulinux startet gar nicht mehr – was jetzt?
+
+Auch dann lässt sich eine Sicherung zurückspielen:
+
+1. Den **Pingulinux-USB-Stick** einstecken und den Computer davon starten (Live-Modus).
+2. Im Startmenü unter **System** auf **„System retten (Timeshift)“** klicken.
+3. Timeshift fragt, wo die Sicherungen liegen: die **eingebaute Festplatte** wählen (oder den Sicherungs-Stick, falls die Festplatte kaputt ist).
+4. Einen Stand auswählen, auf **„Wiederherstellen“** klicken und den Anweisungen folgen. Als Ziel die eingebaute Festplatte nehmen.
+5. Stick abziehen, neu starten.
+
+Die eigenen Dateien (Fotos, Dokumente) bleiben dabei unverändert. Ist die Festplatte selbst kaputt, hilft nur noch die Sicherung auf dem USB-Stick – deshalb ab und zu „Auf USB-Stick sichern“.

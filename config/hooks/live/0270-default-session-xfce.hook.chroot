@@ -1,5 +1,5 @@
 #!/bin/sh
-# Beta 1: KDE Plasma ist die Standard-Sitzung.
+# KDE Plasma ist die Standard-Sitzung.
 # (Der Dateiname bleibt, damit die alte XFCE-Fassung sicher ersetzt wird.)
 for s in /usr/bin/startplasma-x11 /usr/bin/startplasma-wayland; do
   [ -x "$s" ] && update-alternatives --set x-session-manager "$s" 2>/dev/null && break

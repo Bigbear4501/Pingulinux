@@ -1,5 +1,5 @@
 #!/bin/sh
-# 0510-timeshift-ausblenden.hook.chroot  (Beta 1)
+# 0510-timeshift-ausblenden.hook.chroot
 # Timeshift nicht im Startmenü zeigen: Sicherung und Wiederherstellung laufen
 # über das Eltern-Kontrollzentrum (pingulinux-wiederherstellen.py).
 # Timeshift selbst bleibt installiert (Unterbau, „Timeshift öffnen“ für Profis).

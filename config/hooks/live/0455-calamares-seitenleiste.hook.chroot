@@ -1,0 +1,21 @@
+#!/bin/sh
+# 0455-calamares-seitenleiste.hook.chroot  (Bug b1)
+#
+# Seitenleiste im Installer: Calamares 3.3 liest die Farben nur noch unter
+# den neuen Namen mit großem Anfangsbuchstaben (SidebarBackground …).
+# Die alten Namen aus 0110 (sidebarBackground …) ignoriert es, dann mischt
+# es eigene Standardfarben hinein – vermutlich der schwarze Kasten.
+# Ergänzt die neuen Namen mit denselben Farben; die alten bleiben stehen.
+
+F=/etc/calamares/branding/pingulinux/branding.desc
+[ -f "$F" ] || { echo "branding.desc nicht gefunden, überspringe." >&2; exit 0; }
+grep -q '^ *SidebarBackground:' "$F" && { echo "Calamares-Farben: schon eingetragen."; exit 0; }
+
+sed -i '/^style:/a\
+   SidebarBackground:         "#ffffff"\
+   SidebarText:               "#2b2b2b"\
+   SidebarTextCurrent:        "#2b2b2b"\
+   SidebarBackgroundCurrent:  "#dcefe3"' "$F"
+echo "Calamares-Farben: neue Namen für die Seitenleiste eingetragen."
+grep -A12 '^style:' "$F"
+exit 0

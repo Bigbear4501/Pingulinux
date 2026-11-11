@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Pingulinux Sicherheits-Hinweis
+Exec=/usr/local/bin/pingulinux-reset-hinweis.sh
+NoDisplay=true
+X-KDE-autostart-phase=2

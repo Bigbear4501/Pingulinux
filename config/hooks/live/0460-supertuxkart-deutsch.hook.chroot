@@ -1,5 +1,5 @@
 #!/bin/sh
-# 0460-supertuxkart-deutsch.hook.chroot  (Beta 1)
+# 0460-supertuxkart-deutsch.hook.chroot
 # SuperTuxKart folgt der Sprache aus LANGUAGE/LANG. Läuft die Sitzung nicht
 # auf Deutsch (z. B. Live-Modus ohne Startparameter), startet es englisch.
 # Der Starter gibt deshalb Deutsch fest mit. Englisch bleibt Ersatz,

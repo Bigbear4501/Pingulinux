@@ -1,5 +1,5 @@
 #!/bin/bash
-# 0470-iso-schlanker.hook.chroot  (Beta 1)
+# 0470-iso-schlanker.hook.chroot
 #
 # Entfernt große Pakete, die nur als Abhängigkeit oder Empfehlung in die
 # ISO kommen und für Kinder keinen Nutzen haben:

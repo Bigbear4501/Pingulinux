@@ -1,7 +1,7 @@
-PRETTY_NAME="Pingulinux OS Alpha 2"
+PRETTY_NAME="Pingulinux OS"
 NAME="Pingulinux OS"
 VERSION_ID="0.2"
-VERSION="Alpha 2 (trixie-based)"
+VERSION="trixie-based"
 VERSION_CODENAME=trixie
 ID=pingulinux
 ID_LIKE=debian

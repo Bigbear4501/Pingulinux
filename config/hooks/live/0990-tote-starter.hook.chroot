@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+# 0990-tote-starter.hook.chroot – läuft als letzter Hook
+#
+# Entfernt Starter aus Taskleiste/Favoriten, deren Programm nicht (mehr) in
+# der ISO ist – z. B. Krita, Stellarium, SuperTuxKart, die jetzt über den
+# App Store kommen. Sonst zeigt KDE dort ein leeres, verwaistes Symbol.
+# Allgemein: Jeder Verweis „applications:NAME.desktop“ oder
+# „file:///usr/share/applications/NAME.desktop“, zu dem es keine
+# .desktop-Datei gibt, fliegt raus.
+import os
+import re
+
+DIRS = ["/etc/skel", "/etc/xdg", "/usr/share/plasma", "/usr/local/bin"]
+APPDIRS = ["/usr/share/applications", "/usr/local/share/applications",
+           "/var/lib/flatpak/exports/share/applications"]
+TOKEN = re.compile(r'(applications:|file:///usr/share/applications/)([A-Za-z0-9_.+-]+\.desktop)')
+
+
+def exists(name):
+    return any(os.path.exists(os.path.join(d, name)) for d in APPDIRS)
+
+
+def clean_line(line, dead):
+    for name in dead:
+        line = re.sub(r',?\s*"?(applications:|file:///usr/share/applications/)' + re.escape(name) + r'"?', "", line)
+    line = re.sub(r'\[\s*,', "[", line)
+    line = line.replace("launchers=,", "launchers=")
+    line = re.sub(r',\s*,', ",", line)
+    line = re.sub(r',\s*(\]|$)', r"\1", line)
+    return line
+
+
+for base in DIRS:
+    for root, _, files in os.walk(base):
+        for f in files:
+            p = os.path.join(root, f)
+            if os.path.islink(p) or os.path.getsize(p) > 2_000_000:
+                continue
+            try:
+                text = open(p, encoding="utf-8").read()
+            except (UnicodeDecodeError, OSError):
+                continue
+            dead = sorted({m.group(2) for m in TOKEN.finditer(text) if not exists(m.group(2))})
+            if not dead:
+                continue
+            new = "\n".join(clean_line(l, dead) if any(d in l for d in dead) else l
+                            for l in text.split("\n"))
+            if new != text:
+                open(p, "w", encoding="utf-8").write(new)
+                print("Tote Starter entfernt aus %s: %s" % (p, ", ".join(dead)))

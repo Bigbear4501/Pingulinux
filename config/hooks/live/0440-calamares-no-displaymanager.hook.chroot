@@ -1,5 +1,5 @@
 #!/bin/sh
-# 0440-calamares-no-displaymanager.hook.chroot  (Beta 1, Bug b13)
+# 0440-calamares-no-displaymanager.hook.chroot  (Bug b13)
 #
 # Der Installer (Calamares 3.3) zeigt den Haken „Automatisch anmelden“ und
 # lässt sich nicht ausblenden. Ist er gesetzt, richtet das Calamares-Modul

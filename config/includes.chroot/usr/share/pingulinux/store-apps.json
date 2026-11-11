@@ -598,5 +598,25 @@
   "flatpak": null,
   "cmd": "kalzium",
   "min_age": 10
+ },
+ {
+  "category": "Internet",
+  "name": "Thunderbird",
+  "summary": "E-Mail-Programm (für Eltern und Ältere)",
+  "icon": "thunderbird",
+  "apt": "thunderbird thunderbird-l10n-de",
+  "flatpak": null,
+  "cmd": "thunderbird",
+  "min_age": 12
+ },
+ {
+  "category": "Programmieren",
+  "name": "IDLE (Python)",
+  "summary": "Python lernen: Editor und Python-Konsole",
+  "icon": "idle",
+  "apt": "idle",
+  "flatpak": null,
+  "cmd": "idle",
+  "min_age": 10
  }
 ]

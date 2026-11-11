@@ -162,5 +162,9 @@
  {
   "cmd": "skanpage",
   "min_age": 10
+ },
+ {
+  "cmd": "marknote",
+  "min_age": 6
  }
 ]

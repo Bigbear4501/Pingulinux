@@ -1,6 +1,6 @@
 #!/bin/bash
 # 0430-remove-xfce.hook.chroot
-# Beta 1: Pingulinux nutzt nur noch KDE Plasma.
+# Pingulinux nutzt nur noch KDE Plasma.
 # - Terminal-Sperre für Kinder auf Konsole (statt xfce4-terminal)
 # - XFCE-Reste aufräumen, falls ein Paket XFCE doch mitgezogen hat
 set -e

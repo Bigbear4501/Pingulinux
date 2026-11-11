@@ -1,17 +1,17 @@
 #!/bin/sh
-# 0480-neue-kde-programme.hook.chroot  (Beta 1)
+# 0480-neue-kde-programme.hook.chroot
 # Neue Programme (Wunsch Mike, 8. Nov):
 #   crow-translate  Übersetzer
-#   knotes          Notizzettel für KDE
+#   marknote        Notizen (KDE; KNotes gibt es in Debian 13 nicht mehr)
 #   skanpage        Scanner (KDE, ersetzt „Dokument-Scanner“ simple-scan)
 #   kamoso          Kamera-App (KDE)
 #   print-manager   Drucker (KDE, ersetzt system-config-printer)
 #   plasma-firewall Firewall (KDE, ersetzt Gufw; ufw bleibt als Unterbau)
-#   ktuberling blinken klettres khangman kanagram kbruch   KDE-Lernspiele
+#   ktuberling klettres kbruch   KDE-Lernspiele (Blinken, KHangMan, Kanagram: 10. Nov wieder raus)
 # Jedes Paket einzeln: Fehlt eines in Debian 13, bricht der Bau NICHT ab,
 # im Bau-Log steht dann „NEU: … fehlt“.
 export DEBIAN_FRONTEND=noninteractive
-for p in ufw plasma-firewall crow-translate knotes skanpage kamoso print-manager ktuberling blinken klettres khangman kanagram kbruch; do
+for p in ufw plasma-firewall crow-translate marknote skanpage kamoso print-manager ktuberling klettres kbruch; do
     if apt-get install -y "$p" >/dev/null 2>&1; then
         echo "NEU: $p installiert"
     else

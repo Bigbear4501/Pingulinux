@@ -1,5 +1,5 @@
 #!/bin/sh
-# 0450-calamares-slideshow-fit.hook.chroot  (Beta 1, Bug b17)
+# 0450-calamares-slideshow-fit.hook.chroot  (Bug b17)
 #
 # Die Diashow im Installer zeigte das Willkommensbild mit „Crop“: Auf
 # breiten, flachen Fenstern (z. B. Surface) wurde oben und unten

@@ -1,0 +1,11 @@
+#!/bin/sh
+# 0530-firewall-an.hook.chroot
+# Firewall (ufw) ab Werk einschalten: eingehende Verbindungen gesperrt,
+# ausgehende erlaubt. Debian liefert ufw ausgeschaltet aus.
+# (mDNS für Drucker im Netz lässt ufw von sich aus zu.)
+[ -f /etc/ufw/ufw.conf ] || { echo "ufw fehlt, überspringe" >&2; exit 0; }
+sed -i 's/^ENABLED=.*/ENABLED=yes/' /etc/ufw/ufw.conf
+sed -i 's/^DEFAULT_INPUT_POLICY=.*/DEFAULT_INPUT_POLICY="DROP"/; s/^DEFAULT_OUTPUT_POLICY=.*/DEFAULT_OUTPUT_POLICY="ACCEPT"/' /etc/default/ufw
+systemctl enable ufw.service >/dev/null 2>&1
+echo "Firewall: ab Werk eingeschaltet (eingehend gesperrt)"
+exit 0

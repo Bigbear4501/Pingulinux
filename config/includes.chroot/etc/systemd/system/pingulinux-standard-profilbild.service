@@ -1,0 +1,13 @@
+[Unit]
+Description=Pingulinux: Pingu als Profilbild für Konten ohne eigenes Bild
+After=accounts-daemon.service local-fs.target
+Wants=accounts-daemon.service
+Before=display-manager.service sddm.service
+ConditionKernelCommandLine=!boot=live
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/pingulinux-standard-profilbild.sh
+
+[Install]
+WantedBy=multi-user.target

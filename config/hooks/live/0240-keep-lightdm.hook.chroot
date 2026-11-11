@@ -1,5 +1,5 @@
 #!/bin/sh
-# Beta 1: SDDM (KDE) ist der Anmeldebildschirm, LightDM wird nicht mehr benutzt.
+# SDDM (KDE) ist der Anmeldebildschirm, LightDM wird nicht mehr benutzt.
 # (Der Dateiname bleibt, damit die alte LightDM-Fassung sicher ersetzt wird.)
 echo "/usr/bin/sddm" > /etc/X11/default-display-manager
 ln -sf /usr/lib/systemd/system/sddm.service /etc/systemd/system/display-manager.service

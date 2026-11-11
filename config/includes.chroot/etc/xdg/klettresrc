@@ -1,0 +1,4 @@
+# Pingulinux: KLettres startet mit deutschen Buchstaben und Stimme (Bug b21).
+# Systemweite Voreinstellung – gilt für alle Konten, auch bestehende.
+[General]
+Language=de

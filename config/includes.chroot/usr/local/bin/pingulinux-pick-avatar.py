@@ -2,7 +2,7 @@
 """Profilbild-Auswahl: Galerie mit Bildern aus Debian/Plasma plus eigenes Bild.
 Gibt den gewählten Dateipfad aus (leer = Abbruch).
 
-Beta 1: Qt6-Oberfläche (KDE-Stil). Ersatz: pingulinux-pick-avatar-gtk.py
+Qt6-Oberfläche (KDE-Stil). Ersatz: pingulinux-pick-avatar-gtk.py
 """
 import os
 import sys

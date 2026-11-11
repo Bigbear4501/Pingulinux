@@ -1,0 +1,16 @@
+#!/bin/sh
+# live-config (läuft nur im Live-Modus beim Start):
+# Rettungs-Werkzeuge im Startmenü (System) sichtbar machen:
+#   • „Eltern-Passwort zurücksetzen“
+#   • Timeshift („System retten“) – Sicherung zurückspielen, wenn das
+#     installierte System gar nicht mehr startet
+# Im installierten System bleiben beide Einträge unsichtbar.
+F=/usr/share/applications/pingulinux-passwort-zuruecksetzen.desktop
+[ -f "$F" ] && sed -i 's/^NoDisplay=true/NoDisplay=false/' "$F"
+for T in /usr/share/applications/timeshift-gtk.desktop /usr/share/applications/timeshift.desktop; do
+    [ -f "$T" ] || continue
+    sed -i 's/^NoDisplay=true/NoDisplay=false/' "$T"
+    grep -q '^Name\[de\]=' "$T" && sed -i 's/^Name\[de\]=.*/Name[de]=System retten (Timeshift)/' "$T" \
+        || sed -i '/^\[Desktop Entry\]/a Name[de]=System retten (Timeshift)' "$T"
+done
+exit 0

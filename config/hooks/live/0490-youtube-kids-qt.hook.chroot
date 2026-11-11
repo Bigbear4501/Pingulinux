@@ -1,5 +1,5 @@
 #!/bin/bash
-# 0490-youtube-kids-qt.hook.chroot  (Beta 1)
+# 0490-youtube-kids-qt.hook.chroot
 #
 # Das YouTube-Kids-Fenster läuft jetzt mit Qt6-WebEngine (KDE-Unterbau)
 # statt mit WebKit/GTK. Dieser Hook installiert die Python-Anbindung und

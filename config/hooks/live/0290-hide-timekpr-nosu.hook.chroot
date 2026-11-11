@@ -1,6 +1,6 @@
 #!/bin/sh
 # 0290: Timekpr-Einträge im Startmenü ausblenden (alle, auch der SU-Modus).
-# Beta 1: Die Bildschirmzeit stellen Eltern im Kontrollzentrum ein
+# Die Bildschirmzeit stellen Eltern im Kontrollzentrum ein
 # (pingulinux-bildschirmzeit.py). Timekpr-nExT bleibt der Unterbau; die
 # Timekpr-Oberfläche gibt es dort über „Timekpr öffnen“.
 # Das Kinder-Symbol (Restzeit in der Taskleiste) bleibt unverändert.

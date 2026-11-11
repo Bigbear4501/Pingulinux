@@ -1,0 +1,4 @@
+#!/bin/sh
+# 0540 (t3): Pingu als Profilbild für Konten ohne eigenes Bild
+systemctl enable pingulinux-standard-profilbild.service
+exit 0

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Pingulinux App Store - zeigt nur kuratierte Programme (Whitelist).
 
-Beta 1: Oberfläche mit Qt6 (sieht aus wie KDE). Die Logik ist dieselbe wie
+Oberfläche mit Qt6 (sieht aus wie KDE). Die Logik ist dieselbe wie
 in der GTK-Fassung:
 Installation bevorzugt als Debian-Paket (apt); nur wenn es kein
 Debian-Paket gibt, wird die Flatpak-Version von Flathub genutzt.
@@ -63,8 +63,8 @@ def flatpak_installed(ref):
 
 def apt_removal_set(pkg):
     """Simuliert 'apt-get remove' (ohne root) und liefert die Pakete,
-    die dabei mit entfernt würden."""
-    r = run(["apt-get", "-s", "remove", pkg])
+    die dabei mit entfernt würden. pkg darf mehrere Namen (Leerzeichen) enthalten."""
+    r = run(["apt-get", "-s", "remove"] + pkg.split())
     if r.returncode != 0:
         return None
     return [line.split()[1] for line in r.stdout.splitlines() if line.startswith("Remv ")]
@@ -80,9 +80,15 @@ def pick_source(app):
     return None
 
 
+def apt_pkgs(app):
+    """„apt“ darf mehrere Pakete enthalten, z. B. "thunderbird thunderbird-l10n-de"
+    (Programm plus deutsche Übersetzung). Das erste ist das Programm."""
+    return app["apt"].split()
+
+
 def is_installed(app):
     if app["_src"] == "apt":
-        return apt_installed(app["apt"])
+        return apt_installed(apt_pkgs(app)[0])
     if app["_src"] == "flatpak":
         return flatpak_installed(app["flatpak"])
     return False
@@ -126,7 +132,7 @@ class Store(QMainWindow):
             a["_src"] = pick_source(a)
             keys = {a["name"].lower()}
             if a.get("apt"):
-                keys.add("apt:" + a["apt"])
+                keys.add("apt:" + a["apt"].split()[0])
             if a.get("flatpak"):
                 keys.add("fp:" + a["flatpak"])
             if a["_src"] and not (keys & seen):
@@ -275,7 +281,7 @@ class Store(QMainWindow):
         if app["_src"] == "apt":
             cmd = ["pkexec", "sh", "-c",
                    "export DEBIAN_FRONTEND=noninteractive; apt-get update -qq; "
-                   "apt-get install -y %s" % shlex.quote(app["apt"])]
+                   "apt-get install -y %s" % " ".join(shlex.quote(p) for p in apt_pkgs(app))]
         else:
             cmd = ["pkexec", "sh", "-c",
                    "flatpak install -y --system flathub %s; rc=$?; "
@@ -286,12 +292,13 @@ class Store(QMainWindow):
         if self.busy:
             return
         if app["_src"] == "apt":
-            would = apt_removal_set(app["apt"])
-            if would is None or app["apt"] not in [p.split(":")[0] for p in would]:
+            pkgs = apt_pkgs(app)
+            would = apt_removal_set(" ".join(pkgs))
+            if would is None or pkgs[0] not in [p.split(":")[0] for p in would]:
                 self.ask("%s kann nicht entfernt werden" % app["name"],
                          "Das Programm gehört zum Grundsystem von Pingulinux.", question=False)
                 return
-            others = [p for p in would if p.split(":")[0] != app["apt"]]
+            others = [p for p in would if p.split(":")[0] not in pkgs]
             if others:
                 self.ask("%s kann nicht einzeln entfernt werden" % app["name"],
                          "Dabei würden auch andere Programme oder Systemteile entfernt:\n%s"
@@ -311,7 +318,8 @@ class Store(QMainWindow):
             cmd = ["pkexec", "sh", "-c",
                    "export DEBIAN_FRONTEND=noninteractive; "
                    "apt-get remove -y --no-auto-remove %s; rc=$?; "
-                   "/usr/local/bin/pingulinux-apply-all-ages.py; exit $rc" % shlex.quote(app["apt"])]
+                   "/usr/local/bin/pingulinux-apply-all-ages.py; exit $rc"
+                   % " ".join(shlex.quote(p) for p in apt_pkgs(app))]
         else:
             cmd = ["pkexec", "sh", "-c",
                    "flatpak uninstall -y --system %s; rc=$?; "
