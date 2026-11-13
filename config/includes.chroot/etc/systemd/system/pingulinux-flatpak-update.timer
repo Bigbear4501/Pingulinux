@@ -1,0 +1,11 @@
+[Unit]
+Description=Pingulinux: täglich Flatpak-Updates
+
+[Timer]
+OnBootSec=30min
+OnCalendar=daily
+RandomizedDelaySec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target

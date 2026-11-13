@@ -1,94 +1,97 @@
 # Pingulinux OS 🐧
 
-Ein kinderfreundliches Linux-System für Kinder von 2 bis 14 Jahren, basierend auf **Debian 13 („trixie")**.
+Ein kinderfreundliches Linux-System für Kinder von 2 bis 14 Jahren, basierend auf **Debian 13 („trixie“)** und **KDE Plasma**.
 Maskottchen ist **Pingu**, ein Pinguin mit grüner Kappe und Sonnenbrille.
 
-> **Status: Alpha 3.** Pingulinux ist in früher Entwicklung. Bitte nicht auf dem einzigen Familien-Rechner installieren, sondern zuerst in einer virtuellen Maschine oder auf einem Zweitgerät ausprobieren.
+> ⚠️ **Status: Beta 1 – Testversion.** Bitte zum Ausprobieren nutzen, zum Beispiel in einer virtuellen Maschine oder auf einem Zweitgerät, **noch nicht als Alltags-PC für Kinder.**
 >
-> **„Pingulinux“ ist ein Arbeitstitel.** Vor Version 1.0 wird der Name noch einmal geprüft und kann sich ändern. Das Projekt selbst, die Funktionen und dieses Repository bleiben dabei bestehen.
+> **„Pingulinux“ ist ein Arbeitstitel.** Vor Version 1.0 wird der Name noch einmal geprüft und kann sich ändern. Das Projekt, die Funktionen und dieses Repository bleiben dabei bestehen.
 
 ## Was ist drin?
 
-- **Oberfläche:** XFCE und KDE Plasma, beide im Login-Menü wählbar. KDE ist im Pingulinux-Look eingerichtet (Pingu im Startmenü, Eigener Ordner und Papierkorb auf dem Schreibtisch) und eignet sich auch für Tablets und Touch. Ab Beta 1 wird Pingulinux nur noch KDE verwenden.
+- **Oberfläche:** KDE Plasma im Pingulinux-Look (Pingu im Startmenü, Eigener Ordner und Papierkorb auf dem Schreibtisch). Eignet sich auch für Tablets und Touch.
+- **Anmeldebildschirm** (SDDM) mit Pingu-Hintergrund und Profilbildern. Auf Touch-Geräten geht die Bildschirmtastatur beim Antippen des Passwortfelds von selbst auf, mit Maus und Tastatur bleibt sie zu.
 - **Installer:** Calamares, auf Deutsch.
-- **Eltern-Kontrollzentrum** mit großen Kacheln: Bildschirmzeit (Timekpr-nExT), Firewall, Kinderschutz-Filter (DNS), Drucker und Scanner, Sicherung und Wiederherstellung (Timeshift), Benutzerkonten, Konten-Übersicht, App Store, Update-Assistent, Systembereinigung, Hilfe und Fehlerdiagnose. Alles, was Administrator-Rechte braucht, fragt in einem Fenster nach dem Passwort eines Erwachsenen.
-- **Alter wächst mit:** Beim Anlegen eines Kinderkontos gibst du Geburtsmonat und -jahr an. Bildschirmzeit, erlaubte Programme und Sperren passen sich automatisch an, wenn das Kind älter wird. Programme über der Altersgrenze werden im Menü ausgeblendet.
-- **Konten-Übersicht:** Alle Kinderkonten mit Alter und Bildschirmzeit auf einen Blick.
-- **Sperren pro Konto:** YouTube und soziale Netzwerke sind für Kinder unter 13 Jahren gesperrt, auch im privaten Fenster. Ab 13 und für Eltern sind sie frei.
-- **Kinderschutz-Filter (DNS):** Wahlweise CleanBrowsing Family oder DNS4EU (Kinderschutz). Kinder können den DNS-Server nicht selbst ändern.
-- **Browser:** Firefox mit kinderfreundlicher Startseite (fragFINN) und Kindersuchmaschine (Kiddle). `about:config` ist gesperrt.
-- **YouTube Kids** im eigenen, abgeschotteten Fenster: kein Browser, keine Adressleiste, nur YouTube Kids. Kinder brauchen zum Starten die Freigabe eines Erwachsenen (Passwort). Mit Knopf für Vollbild und „Vollbild beenden“.
-- **Eigener, geprüfter App Store** („Pingulinux App Store"): Debian-Pakete haben Vorrang, Flatpak wird nur angeboten, wenn es kein Debian-Paket gibt. Programme lassen sich auch wieder entfernen.
-- **Lernen und Spielen:** GCompris, Tux Paint, Tux Typing (auf Deutsch), Tux Math, Kalzium, KGeography, Stellarium, Marble, Krita, SuperTuxKart und mehr. In KDE zusätzlich Gwenview, KWrite, Okular, Spectacle, Ark und KCalc.
-- **Büro:** LibreOffice, Thunderbird.
-- **Update-Assistent** für normale Updates und für den Wechsel auf eine neue Debian-Version (mit Sicherung per Timeshift). Dazu eine Systembereinigung.
-- **Tablets:** Bildschirmdrehung, Touch und Bildschirmtastatur in KDE (nur Deutsch).
-- **Firmware** für gängige WLAN-Chips ist dabei, auch für ältere MacBooks (Broadcom).
+- **Eltern-Kontrollzentrum** mit großen Kacheln: Bildschirmzeit, Benutzerkonten, Konten-Übersicht, Kinderschutz-Filter, Firewall, App Store, Sicherung, Update-Assistent, Systembereinigung, Drucker und Scanner, Fehlerdiagnose und Hilfe. Kinder sehen es nicht. Alles, was Administrator-Rechte braucht, fragt nach dem Passwort eines Erwachsenen.
+- **Eltern-Handbuch** direkt im System (Kontrollzentrum → Hilfe), auch ohne Internet: jede Kachel erklärt, dazu Fragen von Eltern (Passwort vergessen, Sicherung, Notfall).
+- **Bildschirmzeit** in einem eigenen Fenster: heute genutzt und übrig, Extrazeit („+15 Min. heute“), Minuten pro Tag für Montag–Freitag und das Wochenende, erlaubte Uhrzeiten. Unterbau ist Timekpr-nExT.
+- **Alter wächst mit:** Beim Anlegen eines Kinderkontos gibst du Geburtsmonat und -jahr an. Erlaubte Programme und Sperren passen sich an, wenn das Kind älter wird. Programme über der Altersgrenze erscheinen im Menü nicht.
+- **Sperren pro Konto:** YouTube und soziale Netzwerke sind für Kinder unter 13 Jahren gesperrt, auch im privaten Fenster.
+- **Kinderschutz-Filter (DNS):** CleanBrowsing Family (Standard) oder DNS4EU Kinderschutz. Kinder können ihn nicht umstellen.
+- **Firewall** ab Werk eingeschaltet.
+- **Browser:** Firefox mit kinderfreundlicher Startseite (fragFINN) und Kindersuchmaschine. `about:config` ist gesperrt.
+- **YouTube Kids** im eigenen, abgeschotteten Fenster: kein Browser, keine Adressleiste, nur YouTube Kids. Die Bildschirmzeit begrenzt es wie jedes andere Programm.
+- **Eigener, geprüfter App Store** mit Altersangabe pro Programm. Debian-Pakete haben Vorrang, Flatpak nur, wenn es kein Debian-Paket gibt. Programme lassen sich auch wieder entfernen.
+- **Sicherung:**
+  - das System **täglich von selbst** (Timeshift), dazu „System jetzt sichern“
+  - **auf einen USB-Stick:** eigene Dateien aller Konten und auf Wunsch das System
+  - **„Gestern wiederherstellen“**, falls nach einem Update etwas nicht mehr läuft
+  - **Notfall:** Startet gar nichts mehr, lässt sich das System vom Pingulinux-Stick aus zurückholen
+- **Updates:** Debian-Sicherheitsupdates und Programme aus dem App Store werden täglich von selbst installiert, vorher läuft die Sicherung. Der Update-Assistent hilft beim Wechsel auf eine neue Debian-Version.
+- **Eltern-Passwort vergessen?** Ein zweites Eltern-Konto setzt es zurück, oder das Werkzeug „Eltern-Passwort zurücksetzen“ auf dem Pingulinux-Stick.
+- **Lernen und Spielen:** GCompris, Tux Paint, Tux Typing, Tux Math, KTuberling, KLettres, KBruch, KGeography, Marble und mehr. Im App Store zusätzlich SuperTuxKart, Stellarium, Krita, Kalzium und weitere.
+- **Büro und Alltag:** LibreOffice (im KDE-Stil), Marknote (Notizen), Crow Translate, Skanpage (Scannen), Kamoso (Kamera), Okular, Gwenview. Thunderbird gibt es im App Store.
+- **Tablets:** Bildschirmdrehung, Touch und Bildschirmtastatur (nur Deutsch, ohne Autokorrektur).
+- **Firmware** für gängige WLAN- und Grafikchips ist dabei, auch für ältere MacBooks (Broadcom).
 
-## Neu in Alpha 3
+## Neu in Beta 1
 
-- Kontrollzentrum als Kacheln, mit Passwort-Fenster für Bildschirmzeit, Firewall und Sicherung
-- Neue Kachel „Konten-Übersicht“ (Alter und Bildschirmzeit aller Kinder)
-- Alter wächst mit (Geburtsmonat und -jahr statt festem Alter)
-- YouTube- und Social-Media-Sperre pro Konto, nach Alter (unter 13 gesperrt)
-- YouTube Kids im eigenen Fenster statt in Firefox (weiter mit Eltern-Freigabe)
-- `about:config` in Firefox gesperrt
-- DNS4EU als Alternative zu CleanBrowsing
-- App Store: mehr Programme, Entfernen-Knopf, im Live-Modus Hinweis „Nach der Installation verfügbar“ bei Flatpaks
-- KDE im Pingulinux-Look: Pingu im Startmenü, kein Willkommenscenter, kein Discover-Hinweis, nur ein Bluetooth-Symbol, Eigener Ordner und Papierkorb auf dem Schreibtisch, Bildschirmtastatur nur auf Deutsch
-- Gesperrte Programme werden im Menü ausgeblendet
-- Tux Typing startet auf Deutsch
-- WLAN-Firmware für MacBook Air (2011/2012, Broadcom BCM43224)
-- Automatische Anmeldung bleibt auch dann aus, wenn sie im Installer angehakt wurde
+- **Nur noch KDE:** XFCE ist entfernt. Der letzte Stand mit XFCE bleibt im Zweig `xfce-light` erhalten.
+- **Neue Eltern-Fenster im KDE-Stil:** Kontrollzentrum, Bildschirmzeit, Sicherung und Wiederherstellung, App Store und YouTube Kids
+- **Sicherung:** täglich automatisch, auf USB-Stick, „Gestern wiederherstellen“ und Notfall-Rettung vom Stick
+- **Automatische Updates** für Debian-Sicherheitsupdates und App-Store-Programme
+- **Eltern-Handbuch** im System
+- **Neuer Anmeldebildschirm (SDDM)** mit Bildschirmtastatur, die auf Touch-Geräten von selbst aufgeht
+- **YouTube Kids ohne Eltern-Passwort**, begrenzt durch die Bildschirmzeit
+- **Firewall** ab Werk an
+- **Viel kleinere ISO:** rund 2,6 GB statt 4,2 GB (alte Pakete entfernt, Firmware bleibt)
+- **Neue KDE-Programme:** Marknote, Crow Translate, Skanpage, Kamoso, KTuberling, KLettres, KBruch; einige größere Programme sind in den App Store gewandert
+- **Behoben:** Passwort mit Zahlen im Installer per Bildschirmtastatur, Profilbild im Anmeldebildschirm, Live-Benutzer heißt „Pingu“, SuperTuxKart und KLettres auf Deutsch
 
 ## Download
 
-> ⚠️ Die ISO ist rund 4 GB groß und liegt deshalb **nicht** in diesem Repository.
+> Die ISO ist rund 2,6 GB groß und liegt deshalb auf **SourceForge**, nicht in diesem Repository.
 
-<!-- Nach dem Hochladen der Alpha-3-ISO: Link und Prüfsumme hier eintragen. -->
-- **ISO-Download (Alpha 3):** [pingulinux-alpha3-amd64.iso](https://sourceforge.net/projects/pingulinux/files/Alpha3/pingulinux-alpha3-amd64.iso/download) (SourceForge)
+<!-- Nach dem Hochladen: Prüfsumme eintragen -->
+- **ISO-Download (Beta 1):** [pingulinux-beta1-amd64.iso](https://sourceforge.net/projects/pingulinux/files/Beta-1/pingulinux-beta1-amd64.iso/download) (SourceForge)
 - **SHA256-Prüfsumme:**
 
 ```
-PRÜFSUMME-HIER-EINTRAGEN
+ba350165141db393439bc25c6a9cf42ec78721a70a527725fd9ef6654155254e
 ```
 
 Prüfsumme nach dem Download prüfen (im Ordner mit der ISO):
 
 ```bash
-sha256sum pingulinux-alpha3-amd64.iso
+sha256sum pingulinux-beta1-amd64.iso
 ```
 
-Die angezeigte Zahl muss mit der Prüfsumme oben übereinstimmen. Unter Windows: `certutil -hashfile pingulinux-alpha3-amd64.iso SHA256`.
+Die angezeigte Zahl muss mit der Prüfsumme oben übereinstimmen. Unter Windows: `certutil -hashfile pingulinux-beta1-amd64.iso SHA256`.
 
 Ältere Versionen findest du auf [SourceForge](https://sourceforge.net/projects/pingulinux/files/).
 
 ## Ausprobieren
 
 1. ISO herunterladen und Prüfsumme prüfen.
-2. In einer virtuellen Maschine (z. B. GNOME Boxes, VirtualBox) starten, oder mit einem Programm wie Balena Etcher auf einen USB-Stick schreiben.
-3. Im Live-Modus ausprobieren. Dort braucht das Eltern-Kontrollzentrum kein Passwort. Flatpak-Programme lassen sich im Live-Modus nicht installieren, nur im installierten System.
-4. Zum Installieren das Symbol „Pingulinux installieren" benutzen. Auf dem installierten System fragt das Eltern-Kontrollzentrum nach dem Administrator-Passwort.
+2. In einer virtuellen Maschine starten (z. B. GNOME Boxes, VirtualBox) oder mit einem Programm wie Balena Etcher auf einen USB-Stick schreiben.
+3. Im **Live-Modus** ausprobieren. Dort braucht das Eltern-Kontrollzentrum kein Passwort. Das Passwort des Live-Kontos „Pingu“ ist `live`. Flatpak-Programme lassen sich erst im installierten System installieren.
+4. Zum Installieren das Symbol **„Pingulinux OS installieren“** benutzen. Das erste Konto ist das Eltern-Konto. Kinderkonten legst du danach im Kontrollzentrum unter „Benutzerkonten“ an.
 
-**Getestet auf:** virtuellen Maschinen (GNOME Boxes), MacBook Air 2011/2012 (XFCE und KDE) und Microsoft Surface Go 2 (KDE mit Wayland, Tablet-Modus).
+**Getestet auf:** virtuellen Maschinen (GNOME Boxes), Microsoft Surface Go 2 (Touch, Secure Boot) und MacBook Air 2011/2012 (Live-Modus).
 
-## Bekannte Fehler (Alpha 3)
+## Bekannte Fehler (Beta 1)
 
 | Fehler | Auswirkung | Geplant |
 |---|---|---|
-| Surface und andere Tablets: Die Bildschirmtastatur erscheint im Anmeldebildschirm nicht von selbst. | Lässt sich oben rechts über das Symbol für Barrierefreiheit von Hand öffnen. | Beta 1 (neuer Anmeldebildschirm SDDM) |
-| Timekpr-nExT (Bildschirmzeit) erscheint eventuell auf Englisch. | Nur die Sprache, die Funktion ist nicht betroffen. | Beta 1 |
-| Installer: Der Haken „Automatisch anmelden“ ist noch sichtbar. | Ohne Wirkung: Die automatische Anmeldung bleibt trotzdem aus. | Beta 1 |
-| Installer: kleiner schwarzer Kasten in der Seitenleiste. | Rein optisch. | offen |
+| Touch-Geräte ohne Tastatur: Die Suche im Startmenü mit der Bildschirmtastatur kann die Oberfläche einfrieren („plasmashell reagiert nicht“). Ursache ist ein Fehler in KDE. | Im Menü durchklicken oder mit einer echten Tastatur suchen. Falls es hängt: „Plasma beenden“ antippen, die Oberfläche startet von selbst neu. | Beta 2 |
+| Auf manchen Geräten stimmen Uhrzeit oder Datum nicht. | Kann die Bildschirmzeit und Webseiten (Zertifikate) stören. Bitte melden, falls es bei dir auftritt. | Beta 2 |
 
 ## Bekannte Einschränkungen
 
 - **Kinderschutz-Filter (DNS):** Nutzt einen externen DNS-Dienst (CleanBrowsing oder DNS4EU). Dabei werden DNS-Anfragen an diesen Dienst gesendet. Wer das nicht möchte, kann den Filter im Kontrollzentrum ausschalten.
 - **`about:config`** ist in Firefox für alle Konten gesperrt, auch für Eltern. Normale Einstellungen gehen weiter über die Firefox-Einstellungen.
 - **Flatpaks** lassen sich nur im installierten System installieren, nicht im Live-Modus.
-- **Tablet-Modus** gibt es nur in der KDE-Sitzung.
-- **Platzhalter-Links:** Im Installer und in `/etc/pingulinux/links.conf` fehlen noch Links für Datenschutz und Impressum. Wird bis 1.0 ergänzt.
-- **Größe:** Die ISO ist noch rund 4 GB groß. Eine schlankere Version (Ziel rund 2 GB, Firmware bleibt drin) ist für Beta 2 geplant.
+- **Platzhalter-Links:** Links für Datenschutz und Impressum fehlen noch. Wird bis 1.0 ergänzt.
 
 ## Fehler melden
 
@@ -96,8 +99,8 @@ Bitte öffne ein [Issue](../../issues) und nenne dabei:
 
 - Was hast du gemacht, und was ist passiert?
 - Auf welchem Gerät (Modell, virtuelle Maschine oder echtes Gerät)?
-- XFCE oder KDE, Live-Modus oder installiert?
-- Die Ausgabe des Programms „Hilfe und Fehlerdiagnose" im Eltern-Kontrollzentrum (falls möglich).
+- Live-Modus oder installiert?
+- Den Bericht der **Fehlerdiagnose** aus dem Eltern-Kontrollzentrum (`Pingulinux-Diagnose.txt` im Eigenen Ordner), falls möglich.
 
 ## Aus den Quellen bauen
 
@@ -111,39 +114,31 @@ sudo lb clean
 ./rebuild.sh
 ```
 
-Die fertige ISO liegt danach im Ordner `~/kids-distro`.
+Die fertige ISO liegt danach im Ordner `~/kids-distro`. Bei jedem Push prüft GitHub die Skripte automatisch auf Fehler (`.github/workflows/pruefung.yml`).
 
 ## Roadmap
 
-### ✅ Alpha 3 (aktuell)
-Siehe „Neu in Alpha 3“ oben.
+### ✅ Beta 1 (aktuell)
+Siehe „Neu in Beta 1“ oben.
 
-### Beta 1: Sicherheit, nur noch KDE
-- **Sicherheitsprüfung:** Umgehungsversuche durch Kinder, Secure Boot, Dual-Boot
-- **DNS-Filter vergleichen:** Bietet DNS4EU dieselben Schutzfunktionen wie CleanBrowsing (SafeSearch, VPN-Sperre)? Wenn ja, wird DNS4EU wegen des Datenschutzes der Standard.
-- **Automatische Updates**, auch für die eigenen Pingulinux-Programme und die Store-Liste
-- **Eigenes Paket-Repository** als Grundlage für diese Updates
-- **Liste kompatibler Geräte**
-- **Einfache Oberfläche für 2- bis 6-Jährige**
-- **Nur noch KDE:** XFCE wird entfernt. Der letzte Stand mit XFCE bleibt im Zweig `xfce-light` erhalten, für eine mögliche Light-Version.
-- **Neuer Anmeldebildschirm (SDDM)** mit eingebauter Bildschirmtastatur
-- **YouTube Kids ohne Passwort:** Kinder starten es direkt, die Bildschirmzeit begrenzt weiter. Im Kontrollzentrum ein Schalter „nur mit Eltern-Passwort“ für Familien, die es strenger wollen.
-- **Eltern-Dashboard** mit Nutzungsstatistik
-- **App-Listen pro Kind**
-- **App Store:** letzte Programme und Feinschliff
-
-### Beta 2: Praxis
-- **Schlankere ISO** (Ziel rund 2 GB, Firmware bleibt drin), vor dem Familientest
+### Beta 2: Praxis und Feinschliff
 - **Test mit echten Familien**
+- **Sicherung der eigenen Dateien automatisch**, sobald der Sicherungs-Stick eingesteckt ist
+- **Kinderkonten ohne Passwort** für die Kleinen (2–6 Jahre)
+- **Treiber-Assistent** für Grafik- und WLAN-Treiber, wie bei Ubuntu
+- **Fortschrittsanzeige** bei der System-Sicherung
 - **Alle bekannten Fehler beheben**, auch die aus dem Familientest
+
+### Beta 3
+- Festplattenverschlüsselung prüfen und testen
+- Feinschliff aus Beta 2
 
 ### 1.0
 - Name endgültig festlegen
+- ISO weiter verschlanken
 - Rechtliches: Impressum, Datenschutz, Lizenzen
 - Release-Prozess mit Prüfsummen, Signatur und Changelog
-- Webseite (GitHub Pages) und Dokumentation für Eltern
-- Bau-Anleitung aus dem Repository prüfen
-- Versionsangaben und Links in Systemdateien und Installer vervollständigen
+- Webseite und Eltern-Handbuch als PDF
 
 ## Lizenz
 

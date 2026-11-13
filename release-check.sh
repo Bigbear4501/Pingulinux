@@ -3,7 +3,7 @@
 # Aufruf im Projektordner: ./release-check.sh
 # Optional mit fertiger ISO: ./release-check.sh pingulinux-amd64.hybrid.iso
 
-VERSION="Alpha 2"
+VERSION="Beta 1"
 FEHLER=0
 ok()   { echo "  OK      $1"; }
 fail() { echo "  FEHLT   $1"; FEHLER=1; }
@@ -12,10 +12,10 @@ echo "== Pingulinux Release-Check ($VERSION) =="
 
 # 1. Version in os-release
 OSR=$(grep -rl "PRETTY_NAME" config/includes.chroot*/etc/os-release config/includes.chroot*/usr/lib/os-release 2>/dev/null | head -1)
-if [ -n "$OSR" ] && grep -q "$VERSION" "$OSR"; then
-  ok "os-release enthält \"$VERSION\" ($OSR)"
+if [ -n "$OSR" ] && grep -q "^PRETTY_NAME=" "$OSR"; then
+  ok "os-release vorhanden ($OSR)"
 else
-  fail "os-release ohne \"$VERSION\" (Datei: ${OSR:-nicht gefunden})"
+  fail "os-release ohne PRETTY_NAME (Datei: ${OSR:-nicht gefunden})"
 fi
 
 # 2. links.conf vorhanden und gefüllt

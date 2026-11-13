@@ -1,0 +1,6 @@
+// Pingulinux: Debian-Sicherheitsupdates täglich von selbst installieren (bz22).
+// Was genau installiert wird, regelt 50unattended-upgrades (ab Werk: nur
+// Debian und Debian-Security der eigenen Version, keine neue Debian-Version).
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+APT::Periodic::AutocleanInterval "7";

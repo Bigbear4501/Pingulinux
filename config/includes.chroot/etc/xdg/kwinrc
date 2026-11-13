@@ -1,0 +1,6 @@
+# Pingulinux: Systemweite KWin-Voreinstellungen (gelten für alle Konten).
+# Gleitende Popups aus (b23): Mit der Bildschirmtastatur hing sich das
+# Startmenü am Surface auf. Menüs erscheinen jetzt sofort statt zu gleiten –
+# spart nebenbei etwas Grafikleistung auf schwachen Geräten.
+[Plugins]
+slidingpopupsEnabled=false

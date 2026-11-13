@@ -167,3 +167,6 @@ ufw
 # Pingulinux: zram, Passwort-Fenster (Polkit-Agent), WLAN MacBook Air, Social-Media-Sperre, YouTube-Kids-Fenster
 kdialog
 python3-pyqt6
+firmware-cirrus
+firmware-libertas
+ipp-usb
