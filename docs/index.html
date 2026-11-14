@@ -140,6 +140,15 @@ summary::after{content:"+";color:var(--halo);font-size:1.4rem;line-height:1}
 details[open] summary::after{content:"–"}
 details p{color:var(--soft);padding-bottom:16px}
 
+/* Transparenz-Tabelle */
+.conn{margin-top:22px;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:6px 22px 18px}
+.conn summary{font-size:1.1rem}
+.tbl{overflow-x:auto;margin-top:10px;border:1px solid var(--line);border-radius:12px}
+.conn table{width:100%;border-collapse:collapse;font-size:.92rem;min-width:640px}
+.conn th,.conn td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+.conn th{font-family:var(--font-display);background:var(--sky)}
+.conn tr:last-child td{border-bottom:none}
+.conn td:nth-child(2),.conn td:nth-child(4){color:var(--soft);white-space:normal}
 footer{background:var(--night);color:#fff;margin-top:72px}
 footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding-block:30px;font-size:.92rem}
 footer nav{display:flex;gap:18px;flex-wrap:wrap}
@@ -335,9 +344,30 @@ footer .muted{opacity:.65}
         <div>
           <h2>Daten, die Serafino über Ihr Kind sammelt.</h2>
           <p style="margin-top:12px">Kein Konto, keine Werbung, keine Statistik. Was Ihr Kind am Computer macht, bleibt auf dem Computer.</p>
-          <p class="small">Einzige Ausnahme: Damit der Kinderschutz-Filter funktioniert, fragt der Computer beim Surfen einen Filter-Dienst nach der Adresse einer Seite (CleanBrowsing, auf Wunsch DNS4EU). Der Dienst sieht dabei, welche Seiten aufgerufen werden, aber nicht, wer Sie sind. Auch diese Webseite lädt nichts von fremden Servern.</p>
+          <p class="small">Serafino selbst schickt nichts nach Hause. Damit Sie genau wissen, woran Sie sind, listen wir unten <b>jede Verbindung</b> auf, die der Computer ins Internet aufbaut – auch die ganz gewöhnlichen.</p>
         </div>
       </div>
+      <details class="conn" open>
+        <summary>Alle Verbindungen ins Internet im Überblick</summary>
+        <p class="small">Stand Beta 1. Bevor Version 1.0 erscheint, schreiben wir auf einem frisch installierten Computer einen Tag lang mit, welche Server er wirklich kontaktiert, und ergänzen diese Liste.</p>
+        <div class="tbl">
+        <table>
+          <thead><tr><th>Wer?</th><th>Wann?</th><th>Was geht raus?</th><th>Abschalten?</th></tr></thead>
+          <tbody>
+            <tr><td><b>Kinderschutz-Filter</b><br>CleanBrowsing, auf Wunsch DNS4EU</td><td>bei jeder Webseite</td><td>Der Name der Seite (z.&nbsp;B. „fragfinn.de“), damit der Filter prüfen kann, ob sie erlaubt ist. Keine Inhalte, kein Name, kein Konto.</td><td>Ja, im Kontrollzentrum (dann ohne Filter)</td></tr>
+            <tr><td><b>Debian</b><br>Sicherheits-Updates</td><td>einmal am Tag</td><td>Abfrage der Paketlisten und Download von Updates. Der Server sieht die Internet-Adresse.</td><td>Nicht empfohlen</td></tr>
+            <tr><td><b>Flathub</b><br>Programme aus dem App Store</td><td>einmal am Tag, nur wenn solche Programme installiert sind</td><td>Abfrage nach Updates und Download. Flathub zählt Downloads, ohne Konto.</td><td>Nicht empfohlen</td></tr>
+            <tr><td><b>App Store</b><br>Debian oder Flathub</td><td>nur wenn Eltern ein Programm installieren</td><td>Download des Programms</td><td>–</td></tr>
+            <tr><td><b>Firefox: Safe Browsing</b><br>Mozilla / Google</td><td>regelmäßig</td><td>Firefox lädt Listen gefährlicher Seiten. Bei einem Treffer wird nur ein kurzer, verschlüsselter Teil der Adresse abgeglichen, nicht die Adresse selbst.</td><td>In den Firefox-Einstellungen</td></tr>
+            <tr><td><b>Firefox: Mozilla</b></td><td>regelmäßig</td><td>Updates für Erweiterungen, Sperrlisten und Zertifikate. <b>Keine Telemetrie, keine Studien</b> – beides ist bei Serafino abgeschaltet.</td><td>–</td></tr>
+            <tr><td><b>uBlock Origin</b><br>Werbeblocker in Firefox</td><td>alle paar Tage</td><td>Download der aktuellen Werbe-Sperrlisten</td><td>–</td></tr>
+            <tr><td><b>Uhrzeit</b><br>Zeitserver im Internet</td><td>beim Start und gelegentlich</td><td>Frage nach der genauen Uhrzeit, wichtig für die Bildschirmzeit</td><td>–</td></tr>
+            <tr><td><b>Webseiten und Dienste</b><br>z.&nbsp;B. fragFINN, Kiddle, YouTube Kids</td><td>nur wenn Ihr Kind sie öffnet</td><td>Wie bei jedem Computer. YouTube Kids gehört zu Google und hat eigene Datenschutz-Regeln.</td><td>Altersgrenzen im Kontrollzentrum</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="small" style="margin-top:12px"><b>Nicht dabei:</b> keine Nutzungsstatistik, keine Absturzberichte, kein Konto, keine Werbung. Die KDE-Rückmeldefunktion ist aus, das Debian-Statistikpaket („popularity-contest“) ist nicht installiert. Die Fehlerdiagnose speichert ihren Bericht nur auf dem Computer. Diese Webseite lädt nichts von fremden Servern.</p>
+      </details>
     </div>
   </section>
 
@@ -353,6 +383,7 @@ footer .muted{opacity:.65}
           <span class="status">Beta-Version</span>
           <h3>Serafino herunterladen</h3>
           <p>Serafino ist noch in Entwicklung. Wir freuen uns über jede Rückmeldung von Familien.</p>
+          <p><b>Hinweis:</b> Die aktuelle Beta heißt noch <b>Pingulinux</b> (Arbeitstitel) und zeigt das Maskottchen Pingu. Mit einer der nächsten Versionen wird daraus Serafino.</p>
           <ol class="steps">
             <li>ISO-Datei herunterladen (ca. 2,7 GB)</li>
             <li>Mit einem Programm wie balenaEtcher oder Ventoy auf einen USB-Stick schreiben</li>
@@ -370,8 +401,7 @@ footer .muted{opacity:.65}
             <dt>Getestet</dt><dd>Surface Go 2, MacBook Air 2011/12, virtuelle Maschine</dd>
             <dt>Lizenz</dt><dd>Freie Software, Quellcode auf GitHub</dd>
           </dl>
-          <!-- Link nach dem Umbenennen anpassen (GitHub leitet alte Links weiter) -->
-          <a href="https://github.com/Bigbear4501/Pingulinux">Quellcode auf GitHub ansehen</a>
+          <a href="https://github.com/Bigbear4501/Serafino">Quellcode auf GitHub ansehen</a>
         </div>
       </div>
     </div>
@@ -398,11 +428,11 @@ footer .muted{opacity:.65}
         </details>
         <details>
           <summary>Kann Windows auf dem Computer bleiben?</summary>
-          <p>Ja, Serafino lässt sich neben Windows installieren. Die Sperren gelten dann aber nur in Serafino. Wenn Windows mit BitLocker verschlüsselt ist, holen Sie sich vorher Ihren Wiederherstellungsschlüssel.</p>
+          <p>Grundsätzlich ja, der Installer bietet das an. Getestet haben wir die Installation neben Windows aber noch nicht, das folgt vor Version 1.0. Bis dahin empfehlen wir einen eigenen Computer für Serafino. Wichtig: Die Sperren gelten nur in Serafino, nicht in Windows. Wenn Windows mit BitLocker verschlüsselt ist, holen Sie sich vorher Ihren Wiederherstellungsschlüssel.</p>
         </details>
         <details>
           <summary>Braucht Serafino einen Virenscanner?</summary>
-          <p>Nein. Kinder können bei Serafino keine heruntergeladenen Programme starten, und der Filter sperrt gefährliche Seiten schon vorher. Wer USB-Sticks für Windows-Rechner prüfen will, findet einen Virenscanner im App Store.</p>
+          <p>Nein. Kinder können bei Serafino keine heruntergeladenen Programme starten, und der Filter sperrt gefährliche Seiten schon vorher. Wer USB-Sticks für Windows-Rechner prüfen will, findet bald einen Virenscanner im App Store.</p>
         </details>
         <details>
           <summary>Wo melde ich einen Fehler?</summary>
@@ -417,9 +447,10 @@ footer .muted{opacity:.65}
   <div class="wrap">
     <span>Serafino · mit Liebe für Familien gemacht</span>
     <nav aria-label="Rechtliches">
+      <!-- Impressum und Datenschutz werden noch geprüft; Links wieder einfügen, sobald die Seiten existieren:
       <a href="impressum.html">Impressum</a>
-      <a href="datenschutz.html">Datenschutz</a>
-      <a href="https://github.com/Bigbear4501/Pingulinux">GitHub</a>
+      <a href="datenschutz.html">Datenschutz</a> -->
+      <a href="https://github.com/Bigbear4501/Serafino">GitHub</a>
     </nav>
     <span class="muted">Serafino ist ein unabhängiges, nicht-kommerzielles Projekt auf Basis von Debian. Fino basiert auf Tux von Larry Ewing (lewing@isc.tamu.edu), erstellt mit The GIMP.</span>
   </div>
